@@ -5,7 +5,7 @@ fail_under = 90
 addopts = '--pydocstyle'
 
 [tool.black]
-target-version = ['py36','py37','py38']
+target-version = ['py36','py37']
 include = '\.pyi?$'
 exclude = '''
 (

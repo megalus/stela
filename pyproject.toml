@@ -1,5 +1,35 @@
+[tool.coverage.report]
+fail_under = 90
+
+[tool.pytest]
+addopts = '--pydocstyle'
+
+[tool.black]
+target-version = ['py36','py37','py38']
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | \venv
+    | \.aws-sam
+    | _build
+    | buck-out
+    | build
+    | dist
+    | node_modules
+  )/
+)
+'''
+
 [tool.stela]
 config_file_path = "./tests/fixtures"
+default_environment = "test"
 
 [tool.poetry]
 name = "stela"
@@ -10,17 +40,23 @@ license = "GPL-3.0"
 
 [tool.poetry.dependencies]
 python = "^3.7"
-scalpl = "*"
 loguru = "*"
-toml = "*"
 pyyaml = "*"
 rootpath = "*"
+scalpl = "*"
+toml = "*"
 
 [tool.poetry.dev-dependencies]
-pytest = "*"
-pytest-mock = "*"
-pytest-lazy-fixture = "*"
 black = {version = "*", allow-prereleases = true}
+pytest = "*"
+pytest-black = "*"
+pytest-cov = "*"
+pytest-lazy-fixture = "*"
+pytest-mock = "*"
+pytest-mypy = "*"
+pytest-pydocstyle = "*"
+pytest-xdist ="*"
+yamllint = "*"
 
 [build-system]
 requires = ["poetry>=0.12"]

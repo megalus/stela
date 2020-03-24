@@ -11,12 +11,15 @@ from stela.utils import StelaFileType
 @pytest.fixture
 def stela_default_settings():
     return {
-        "environment_name": "ENVIRONMENT",
+        "environment_variable_name": "ENVIRONMENT",
+        "default_environment": "test",
         "config_file_extension": StelaFileType.INI,
         "config_file_prefix": "",
+        "config_file_suffix": "",
         "config_file_path": "./tests/fixtures",
         "environment_prefix": "",
-        "evaluate_data": True,
+        "environment_suffix": "",
+        "evaluate_data": False,
     }
 
 
@@ -58,7 +61,10 @@ def options_with_pre_loader():
 
     @pre_load
     def pre_load_test(self, options: StelaOptions):
-        return {"environment_name": options.environment_name, "pre_attribute": True}
+        return {
+            "environment_name": options.environment_variable_name,
+            "pre_attribute": True,
+        }
 
     yield
     delattr(StelaOptions, "pre_load")
@@ -82,7 +88,7 @@ def options_with_post_loader():
 
     @post_load
     def post_load_test(self, data: dict, options: StelaOptions):
-        return {"environment": options.environment, "post_attribute": True}
+        return {"environment": options.current_environment, "post_attribute": True}
 
     yield
     delattr(StelaOptions, "post_load")

@@ -1,8 +1,6 @@
-from importlib import reload
-
 import pytest
 
-import stela
+from stela import stela_reload
 from stela.stela_options import StelaOptions
 
 
@@ -23,11 +21,10 @@ def test_decorator_in_options(options, method, stela_default_settings):
 def test_run_pre_load(stela_default_settings, options_with_pre_loader):
     stela_options = StelaOptions(**stela_default_settings)
     assert stela_options.pre_load(stela_options) == {
-        "environment_name": stela_options.environment_name,
+        "environment_name": stela_options.environment_variable_name,
         "pre_attribute": True,
     }
-    reload(stela)
-    from stela import settings
+    settings = stela_reload()
 
     assert settings["app.number_of_cats"] == "1"
     assert settings.get("post_attribute", None) is None
@@ -40,8 +37,7 @@ def test_run_custom_load(stela_default_settings, options_with_loader):
         "evaluate_data": stela_options.evaluate_data,
         "attribute": True,
     }
-    reload(stela)
-    from stela import settings
+    settings = stela_reload()
 
     assert settings.get("app.number_of_cats", None) is None
     assert settings.get("post_attribute", None) is None
@@ -52,11 +48,10 @@ def test_run_custom_load(stela_default_settings, options_with_loader):
 def test_run_post_load(stela_default_settings, options_with_post_loader):
     stela_options = StelaOptions(**stela_default_settings)
     assert stela_options.post_load({}, stela_options) == {
-        "environment": stela_options.environment,
+        "environment": stela_options.current_environment,
         "post_attribute": True,
     }
-    reload(stela)
-    from stela import settings
+    settings = stela_reload()
 
     assert settings["app.number_of_cats"] == "1"
     assert settings.get("pre_attribute", None) is None

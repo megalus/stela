@@ -1,13 +1,10 @@
-from importlib import reload
-
 import pytest
 
-import stela
+from stela import stela_reload
 
 
 def test_get_from_ini_file():
-    reload(stela)
-    from stela import settings
+    settings = stela_reload()
 
     assert settings.to_dict == {
         "DEFAULT": {},
@@ -18,7 +15,8 @@ def test_get_from_ini_file():
 
 def test_evaluated_value_from_ini_file(monkeypatch):
     monkeypatch.setenv("APP_NUMBER_OF_CATS", 10)
-    from stela import settings
+    monkeypatch.setenv("STELA_EVALUATE_DATA", True)
+    settings = stela_reload()
 
     assert settings["app.number_of_cats"] == 10
 
@@ -49,6 +47,8 @@ def test_get_from_config_file(settings):
     ids=["From JSON file", "From YAML file", "From TOML file"],
 )
 def test_evaluated_value_from_environment(settings, monkeypatch):
+    monkeypatch.setenv("STELA_EVALUATE_DATA", True)
     monkeypatch.setenv("CAT_NAMES", "['Mr. Bigglesworth','Grumpy Cat']")
+    settings = stela_reload()
     assert settings["cat.names"] == ["Mr. Bigglesworth", "Grumpy Cat"]
     assert settings.get("cat.names") == ["Mr. Bigglesworth", "Grumpy Cat"]

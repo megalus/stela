@@ -16,7 +16,7 @@ jobs:
         uses: Gr1N/setup-poetry@v1
       - name: Install Python dependencies
         run: |
-          make pre-ci
+          make install
       - name: Run CI Tests
         run: |
           make ci

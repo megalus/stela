@@ -7,10 +7,6 @@ jobs:
       matrix:
         python-version: [3.6, 3.7, 3.8]
     steps:
-      - name: Setup SSH Key
-        uses: webfactory/ssh-agent@v0.2.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v1

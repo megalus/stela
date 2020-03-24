@@ -45,6 +45,7 @@ pyyaml = "*"
 rootpath = "*"
 scalpl = "*"
 toml = "*"
+dataclasses = { version = "*", python = "^3.6" }
 
 [tool.poetry.dev-dependencies]
 black = {version = "*", allow-prereleases = true}

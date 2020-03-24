@@ -1,6 +1,5 @@
 install:
 	@poetry install
-	rm -rf ./src
 
 test:
 	@poetry run pytest -v -x -p no:warnings --cov-report term-missing --cov=./stela

@@ -26,6 +26,7 @@ class StelaOptions:
     evaluate_data: bool = False
     config_file_path: str = "."
     filenames: List[str] = field(default_factory=list)
+    show_logs: bool = True
 
     def get_extensions(self) -> List[str]:
         """Return file extensions for project configuration files."""
@@ -48,11 +49,9 @@ class StelaOptions:
     @classmethod
     def get_config(cls) -> "StelaOptions":
         """Get config from pyproject.toml."""
-        from loguru import logger
 
         path = rootpath.detect()
         filepath = Path(path).joinpath(f"pyproject.toml")
-        logger.debug(f"Looking for file {filepath}")
         if filepath.exists():
             toml_settings = toml.load(filepath)
             file_settings = toml_settings.get("tool", {}).get("stela", {})
@@ -86,6 +85,9 @@ class StelaOptions:
             ),
             "config_file_path": cls.get_from_env_or_settings(
                 "config_file_path", file_settings, cls.config_file_path
+            ),
+            "show_logs": cls.get_from_env_or_settings(
+                "show_logs", file_settings, cls.show_logs
             ),
         }
         try:

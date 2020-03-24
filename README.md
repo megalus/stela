@@ -247,6 +247,7 @@ environment_prefix = ""  # ex.: settings["foo.bar"'] looks for MY_PREFIX_FOO_BAR
 environment_suffix = ""  # ex.: settings["foo.bar"'] looks for FOO_BAR_MY_SUFFIX
 default_environment = ""
 evaluate_data = false
+show_logs = true  # as per loguru settings.
 ```
 
 ### Not working?

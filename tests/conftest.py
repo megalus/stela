@@ -20,6 +20,7 @@ def stela_default_settings():
         "environment_prefix": "",
         "environment_suffix": "",
         "evaluate_data": False,
+        "show_logs": True,
     }
 
 

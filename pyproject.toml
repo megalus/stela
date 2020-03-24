@@ -1,0 +1,27 @@
+[tool.stela]
+config_file_path = "./tests/fixtures"
+
+[tool.poetry]
+name = "stela"
+version = "0.1.0"
+description = "Find and read your project configuration files easily"
+authors = ["Chris Maillefaud <chrismaillefaud@gmail.com>"]
+license = "GPL-3.0"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+scalpl = "*"
+loguru = "*"
+toml = "*"
+pyyaml = "*"
+rootpath = "*"
+
+[tool.poetry.dev-dependencies]
+pytest = "*"
+pytest-mock = "*"
+pytest-lazy-fixture = "*"
+black = {version = "*", allow-prereleases = true}
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

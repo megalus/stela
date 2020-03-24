@@ -1,4 +1,5 @@
 # Welcome to Stela
+
 [![Build](https://github.com/chrismaille/stela/workflows/tests/badge.svg)](https://github.com/chrismaille/stela/actions)
 [![Python](https://img.shields.io/badge/python-3.6%20%7C%203.7-green)](https://www.python.org)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
@@ -7,8 +8,8 @@ src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 
 [Stela](https://en.wikipedia.org/wiki/Stele) were the "configuration
 files" of ancient times. This library aims to simplify your project
-configurations, from *json*, *yaml*, *ini* or *toml* files in a single Python
-dictionary, which values can be easily be override by environment
+configurations, from *json*, *yaml*, *ini* or *toml* files in a single
+Python dictionary, which values can be easily be override by environment
 variables.
 
 ### Install
@@ -45,6 +46,9 @@ from stela import settings
 my_conf = settings["foo.bar"]
 # my_conf = "value"
 ```
+
+This is possible because Stela uses under the hood the
+[Scalpl](https://github.com/ducdetronquito/scalpl) library.
 
 ### How Stela find the configuration files?
 
@@ -171,6 +175,7 @@ def add_ssm_parameters(data: dict, options: StelaOptions) -> Dict[Any, Any]:
     )
     return parameters
 ```
+
 ### When Stela read the data?
 
 Stela are imported once, at module level. This is the python equivalent
@@ -213,10 +218,11 @@ always return values as string, TOML files returning datetime objects,
 etc...
 
 For environment variables, Stela will return value as string, by
-default. For example: `NUMBER_OF_CATS=3` will return a integer.
+default. For example: `NUMBER_OF_CATS=3` will return a string.
 
 You can set Stela to literal evaluate these values, as per
-`ast.literal_eval` rules. To do this, add in `pyproject.toml`:
+[ast.literal_eval](https://docs.python.org/3.7/library/ast.html?highlight=literal_eval#ast.literal_eval)
+rules. To do this, add in `pyproject.toml`:
 
 ```toml
 [tool.stela]
@@ -237,12 +243,13 @@ config_file_extension = "INI" # YAML, TOML, JSON
 config_file_prefix = ""  # You can add a prefix before name - ex.: env_development.ini
 config_file_suffix = ""  # You can add a suffix after name - ex.: development_v1.ini
 config_file_path = "."
-environment_prefix = ""
-environment_suffix = ""
+environment_prefix = ""  # ex.: settings["foo.bar"'] looks for MY_PREFIX_FOO_BAR
+environment_suffix = ""  # ex.: settings["foo.bar"'] looks for FOO_BAR_MY_SUFFIX
 default_environment = ""
 evaluate_data = false
 ```
 
 ### Not working?
 
-Dont panic. Get a towel and, please, open a [issue](https://github.com/chrismaille/stela/issues).
+Dont panic. Get a towel and, please, open a
+[issue](https://github.com/chrismaille/stela/issues).

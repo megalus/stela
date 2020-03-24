@@ -65,7 +65,7 @@ default_environment = "development" # use this if you do not want to define the 
 config_file_path = "."  # relative path from project root for configuration files
 ```
 
-#### How Stela find the Environment Variables?
+### How Stela find the Environment Variables?
 
 When asked for a value, Stela will try to find a environment variable
 using the full uppercase slug path. For example, if key is `foo.bar`,
@@ -206,7 +206,7 @@ def test_different_environments(monkeypatch):
     monkeypatch.delenv("ENVIRONMENT")
 ```
 
-# How Stela read the dictionary values?
+### How Stela read the dictionary values?
 
 Stela will respect the file format limitations. For example, INI files
 always return values as string, TOML files returning datetime objects,
@@ -242,3 +242,7 @@ environment_suffix = ""
 default_environment = ""
 evaluate_data = false
 ```
+
+### Not working?
+
+Dont panic. Get a towel and, please, open a [issue](https://github.com/chrismaille/stela/issues).

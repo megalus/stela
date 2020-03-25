@@ -36,6 +36,16 @@ name = "stela"
 version = "1.0.0-alpha.0"
 description = "Find and read your project configuration files easily"
 authors = ["Chris Maillefaud <chrismaillefaud@gmail.com>"]
+readme = "README.md"
+repository = "https://github.com/chrismaille/stela"
+keywords = ["settings", "configuration", "parser"]
+classifiers = [
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Intended Audience :: Developers",
+    "Topic :: Operating System :: MacOS",
+    "Topic :: Operating System :: Microsoft :: Windows :: Windows 10",
+    "Topic :: Operating System :: POSIX :: Linux"
+]
 license = "GPL-3.0"
 
 [tool.poetry.dependencies]

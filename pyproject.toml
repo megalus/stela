@@ -58,6 +58,7 @@ pytest-mypy = "*"
 pytest-pydocstyle = "*"
 pytest-xdist ="*"
 yamllint = "*"
+auto-changelog = "*"
 
 [build-system]
 requires = ["poetry>=0.12"]

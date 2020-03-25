@@ -3,6 +3,7 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
+    if: "! contains(toJSON(github.event.commits.*.msg), '[skip-ci]')"
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]

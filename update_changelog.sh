@@ -48,9 +48,11 @@ auto-changelog -v ${PACKAGE_NEW_VERSION}
 
 # Commit alterations
 echo "Commiting alterations..."
+git config --global user.email "chrismaillefaud@gmail.com"
+git config --global user.name "Chris Maillefaud"
 git add CHANGELOG.md
 git add pyproject.toml
-git commit -m "Auto-bump version ${PACKAGE_NEW_VERSION}"
+git commit -m "[skip-ci] Auto-bump version ${PACKAGE_NEW_VERSION}"
 git tag ${PACKAGE_NEW_VERSION}
 git push
 

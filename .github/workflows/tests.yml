@@ -27,7 +27,7 @@ jobs:
     needs:
       - test
     runs-on: ubuntu-latest
-    branches:
+    branch:
       - master
       - release/**
       - hotfix/**

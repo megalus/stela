@@ -42,7 +42,7 @@ jobs:
         uses: Gr1N/setup-poetry@v1
       - name: Update Changelog
         run: |
-          sudo ./update_changelog.sh
+          ./update_changelog.sh
       - name: Build Package
         run: |
           poetry build

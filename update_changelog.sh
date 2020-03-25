@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # Inspect Unreleased Changelog
 UNRELEASE_DATA=$(auto-changelog -u --stdout)

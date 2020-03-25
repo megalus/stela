@@ -5,12 +5,14 @@ UNRELEASE_DATA=$(auto-changelog -u --stdout)
 has_features=false
 breaking_changes=false
 
-if [[ $(echo ${UNRELEASE_DATA} | grep "#### New Features") == "" ]]
+if [[ $(echo ${UNRELEASE_DATA} | grep "#### New Features") != "" ]]
 then
+	echo "Unreleased commits has new features..."
 	has_features=true
 fi
-if [[ $(echo ${UNRELEASE_DATA} | grep "BREAKING") == "" ]]
+if [[ $(echo ${UNRELEASE_DATA} | grep "BREAKING") != "" ]]
 then
+	echo "Unreleased commits has breaking changes..."
 	breaking_changes=true
 fi
 
@@ -25,17 +27,22 @@ else
 	version_level="patch"
 fi
 
+PACKAGE_VERSION=$(poetry version | grep -o -P "(?<=stela )\S+")
+echo "Current version: ${PACKAGE_VERSION}"
+
 # Determine Bump Rule
 current_branch=$(git branch | grep -o -P "(?<=\* )\S+")
 if [[ ${current_branch} == "master" ]]
 then
 	version_rule=${version_level}
 else
-	version_rule="pre${version_level}"
+	if [[ ${PACKAGE_VERSION} == *"alpha"* ]]; then
+		version_rule="prerelease"
+	else
+		version_rule="pre${version_level}"
+	fi
 fi
 
-PACKAGE_VERSION=$(poetry version | grep -o -P "(?<=stela )\S+")
-echo "Current version: ${PACKAGE_VERSION}"
 echo "Bump rule: ${version_rule}"
 
 # Update Version
@@ -54,7 +61,7 @@ git add CHANGELOG.md
 git add pyproject.toml
 git commit -m "[skip-ci] Auto-bump version ${PACKAGE_NEW_VERSION}"
 git tag ${PACKAGE_NEW_VERSION}
-git push
+git push --tags
 
 # Back Merge to develop if master
 if [[ ${current_branch} == "master" ]]

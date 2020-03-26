@@ -59,14 +59,15 @@ git config --global user.email "chrismaillefaud@gmail.com"
 git config --global user.name "Chris Maillefaud"
 git add CHANGELOG.md
 git add pyproject.toml
-git commit -m "[skip-ci] Auto-bump version ${PACKAGE_NEW_VERSION}"
+git commit -m "[skip-ci] auto-bump version ${PACKAGE_NEW_VERSION}"
+git push origin/${current_branch}
 
 # Tag new Version
 if [[ ${current_branch} == "master" ]]
 then
 	git tag ${PACKAGE_NEW_VERSION}
+	git push origin/${current_branch} --tags
 fi
-git push --tags
 
 # Back Merge to develop if master
 if [[ ${current_branch} == "master" ]]
@@ -75,5 +76,5 @@ then
 	git reset --hard HEAD
 	git checkout develop
 	git merge origin/master
-	git push
+	git push origin/develop
 fi

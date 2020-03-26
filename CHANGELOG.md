@@ -4,4 +4,4 @@
 
 #### Others
 
-* remove git pull in script
+* add credential in git checkout

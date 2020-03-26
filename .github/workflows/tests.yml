@@ -42,6 +42,8 @@ jobs:
       - name: Setup Poetry
         uses: Gr1N/setup-poetry@v1
       - name: Update Changelog
+        env:
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
         run: |
           ./update_changelog.sh
       - name: Build Package

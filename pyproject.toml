@@ -33,7 +33,7 @@ default_environment = "test"
 
 [tool.poetry]
 name = "stela"
-version = "1.0.0-alpha.6"
+version = "1.0.0-alpha.7"
 description = "Find and read your project configuration files easily"
 authors = ["Chris Maillefaud <chrismaillefaud@gmail.com>"]
 readme = "README.md"

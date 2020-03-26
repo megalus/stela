@@ -57,17 +57,17 @@ echo "Commiting alterations..."
 git config --global user.email "chrismaillefaud@gmail.com"
 git config --global user.name "Chris Maillefaud"
 git fetch --all
-git pull origin/${current_branch}
+git pull ${current_branch}
 git add CHANGELOG.md
 git add pyproject.toml
 git commit -m "[skip-ci] auto-bump version ${PACKAGE_NEW_VERSION}"
-git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git" origin/${current_branch}
+git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git" ${current_branch}
 
 # Tag new Version
 if [[ ${current_branch} == "master" ]]
 then
 	git tag ${PACKAGE_NEW_VERSION}
-	git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git" origin/${current_branch} --tags
+	git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git" ${current_branch} --tags
 fi
 
 # Back Merge to develop if master
@@ -77,5 +77,5 @@ then
 	git reset --hard HEAD
 	git checkout develop
 	git merge origin/master
-	git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git" origin/develop
+	git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git" develop
 fi

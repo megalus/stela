@@ -69,12 +69,3 @@ then
 	git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git" "${current_branch}" --tags
 fi
 
-# Back Merge to develop if master
-if [[ ${current_branch} == "master" ]]
-then
-	echo "Back merging alterations..."
-	git reset --hard HEAD
-	git checkout --track origin/develop
-	git merge origin/master --allow-unrelated-histories
-	git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git" develop
-fi

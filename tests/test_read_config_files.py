@@ -52,3 +52,10 @@ def test_evaluated_value_from_environment(settings, monkeypatch):
     settings = stela_reload()
     assert settings["cat.names"] == ["Mr. Bigglesworth", "Grumpy Cat"]
     assert settings.get("cat.names") == ["Mr. Bigglesworth", "Grumpy Cat"]
+
+
+def test_do_not_read_from_environment(monkeypatch):
+    monkeypatch.setenv("STELA_DO_NOT_READ_ENVIRONMENT", True)
+    monkeypatch.setenv("NUMBER_OF_CATS", "10")
+    settings = stela_reload()
+    assert settings["app.number_of_cats"] == "1"

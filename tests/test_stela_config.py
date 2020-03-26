@@ -22,6 +22,11 @@ def test_get_default_config(stela_default_settings, monkeypatch):
     )
     assert stela_config.evaluate_data == stela_default_settings["evaluate_data"]
     assert stela_config.config_file_path == stela_default_settings["config_file_path"]
+    assert (
+        stela_config.do_not_read_environment
+        == stela_default_settings["do_not_read_environment"]
+    )
+    assert stela_config.show_logs == stela_default_settings["show_logs"]
 
 
 def test_different_environments(monkeypatch):

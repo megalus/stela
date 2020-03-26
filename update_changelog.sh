@@ -75,6 +75,6 @@ then
 	echo "Back merging alterations..."
 	git reset --hard HEAD
 	git checkout --track origin/develop
-	git merge origin/master
+	git merge origin/master --allow-unrelated-histories
 	git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git" develop
 fi

@@ -74,7 +74,7 @@ if [[ ${current_branch} == "master" ]]
 then
 	echo "Back merging alterations..."
 	git reset --hard HEAD
-	git checkout develop
+	git checkout "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git" --track origin/develop
 	git merge origin/master
 	git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git" develop
 fi

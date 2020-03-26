@@ -56,6 +56,8 @@ auto-changelog -v ${PACKAGE_NEW_VERSION}
 echo "Commiting alterations..."
 git config --global user.email "chrismaillefaud@gmail.com"
 git config --global user.name "Chris Maillefaud"
+git fetch --all
+git pull origin/${current_branch}
 git add CHANGELOG.md
 git add pyproject.toml
 git commit -m "[skip-ci] auto-bump version ${PACKAGE_NEW_VERSION}"

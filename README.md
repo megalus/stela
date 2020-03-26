@@ -95,6 +95,14 @@ my_conf = settings["foo.bar"]
 # my_conf = "hello world"
 ```
 
+Also, you can define Stela to never get values from environment
+variables, only from dictionary:
+
+```toml
+[tools.stela]
+do_not_read_environment = true
+```
+
 ### How Stela handle more complex cases?
 
 Stela uses this lifecycle to handle the settings load:
@@ -247,6 +255,7 @@ environment_prefix = ""  # ex.: settings["foo.bar"'] looks for MY_PREFIX_FOO_BAR
 environment_suffix = ""  # ex.: settings["foo.bar"'] looks for FOO_BAR_MY_SUFFIX
 default_environment = ""
 evaluate_data = false
+do_not_read_environment = false
 show_logs = true  # as per loguru settings.
 ```
 

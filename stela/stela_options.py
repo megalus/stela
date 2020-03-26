@@ -27,6 +27,7 @@ class StelaOptions:
     config_file_path: str = "."
     filenames: List[str] = field(default_factory=list)
     show_logs: bool = True
+    do_not_read_environment: bool = False
 
     def get_extensions(self) -> List[str]:
         """Return file extensions for project configuration files."""
@@ -88,6 +89,9 @@ class StelaOptions:
             ),
             "show_logs": cls.get_from_env_or_settings(
                 "show_logs", file_settings, cls.show_logs
+            ),
+            "do_not_read_environment": cls.get_from_env_or_settings(
+                "do_not_read_environment", file_settings, cls.do_not_read_environment
             ),
         }
         try:

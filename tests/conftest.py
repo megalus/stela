@@ -21,6 +21,7 @@ def stela_default_settings():
         "environment_suffix": "",
         "evaluate_data": False,
         "show_logs": True,
+        "do_not_read_environment": False,
     }
 
 

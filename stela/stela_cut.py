@@ -107,7 +107,7 @@ class StelaCut(Cut):  # type: ignore
         :param kwargs: python keyword arguments
         :return: Any
         """
-        if not "[" in path:
+        if not "[" in path and not self.stela_options.do_not_read_environment:
             environment_variable = (
                 f"{self.stela_options.environment_prefix}"
                 f"{path.replace('.', '_')}"

@@ -65,8 +65,8 @@ git commit -m "[skip-ci] Auto-bump version ${PACKAGE_NEW_VERSION}"
 if [[ ${current_branch} == "master" ]]
 then
 	git tag ${PACKAGE_NEW_VERSION}
-	git push --tags
 fi
+git push --tags
 
 # Back Merge to develop if master
 if [[ ${current_branch} == "master" ]]

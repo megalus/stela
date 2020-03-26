@@ -42,7 +42,6 @@ else
 		version_rule="pre${version_level}"
 	fi
 fi
-
 echo "Bump rule: ${version_rule}"
 
 # Update Version

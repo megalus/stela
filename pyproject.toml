@@ -1,0 +1,68 @@
+[tool.coverage.report]
+fail_under = 90
+
+[tool.pytest]
+addopts = '--pydocstyle'
+
+[tool.black]
+target-version = ['py36','py37']
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | \venv
+    | \.aws-sam
+    | _build
+    | buck-out
+    | build
+    | dist
+    | node_modules
+  )/
+)
+'''
+
+[tool.stela]
+config_file_path = "./tests/fixtures"
+default_environment = "test"
+
+[tool.poetry]
+name = "stela"
+version = "1.0.0-alpha.10"
+description = "Find and read your project configuration files easily"
+authors = ["Chris Maillefaud <chrismaillefaud@gmail.com>"]
+readme = "README.md"
+repository = "https://github.com/chrismaille/stela"
+keywords = ["settings", "configuration", "parser"]
+license = "GPL-3.0"
+
+[tool.poetry.dependencies]
+python = ">=3.0, !=3.1, !=3.2, !=3.3, !=3.4, !=3.5, ^3.6, !=3.8, <4"
+loguru = "*"
+pyyaml = "*"
+rootpath = "*"
+scalpl = "*"
+toml = "*"
+dataclasses = { version = "*", python = "^3.6" }
+
+[tool.poetry.dev-dependencies]
+black = {version = "*", allow-prereleases = true}
+pytest = "*"
+pytest-black = "*"
+pytest-cov = "*"
+pytest-lazy-fixture = "*"
+pytest-mock = "*"
+pytest-mypy = "*"
+pytest-pydocstyle = "*"
+pytest-xdist ="*"
+yamllint = "*"
+auto-changelog = "*"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

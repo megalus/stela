@@ -45,7 +45,7 @@ fi
 echo "Bump rule: ${version_rule}"
 
 # Update Version
-poetry version ${version_rule}
+poetry version "${version_rule}"
 
 # Update Changelog
 PACKAGE_NEW_VERSION=$(poetry version | grep -o -P "(?<=stela )\S+")

@@ -5,9 +5,11 @@ jobs:
     runs-on: ubuntu-latest
     if: "! contains(toJSON(github.event.commits.*.msg), '[skip-ci]')"
     strategy:
+      # Not including 3.8 until issue is resolved:
+      # https://github.community/t5/GitHub-Actions/Seg-Faults-with-Python-in-Linux-while-Running-Pytest/td-p/39912
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: [3.6, 3.7, 3.8]
+        python-version: [3.6, 3.7]
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}

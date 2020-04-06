@@ -1,6 +1,7 @@
 import os
 import re
 from os import listdir, path
+from typing import Any, Optional
 
 import six
 
@@ -8,21 +9,12 @@ DEFAULT_PATH = "stela"
 DEFAULT_ROOT_FILENAME_MATCH_PATTERN = ".git|pyproject\.toml;"
 
 
-def detect(current_path=None, pattern=None):
-    """
+def detect(current_path: Optional[str] = None, pattern: Optional[str] = None) -> Any:
+    """Find Project Root.
+
     Find project root path from specified file/directory path,
     based on common project root file pattern.
-
-    Examples:
-
-        import rootpath
-
-        rootpath.detect()
-        rootpath.detect(__file__)
-        rootpath.detect('./src')
-
     """
-
     current_path = current_path or os.getcwd()
     current_path = path.abspath(path.normpath(path.expanduser(current_path)))
     pattern = pattern or DEFAULT_ROOT_FILENAME_MATCH_PATTERN
@@ -53,7 +45,7 @@ def detect(current_path=None, pattern=None):
                 return None
 
             root_file_names = filter(pattern.match, file_names)
-            root_file_names = list(root_file_names)
+            root_file_names = list(root_file_names)  # type: ignore
 
             found_root = bool(len(root_file_names) > 0)
 
@@ -69,4 +61,4 @@ def detect(current_path=None, pattern=None):
 
             current_path = path.abspath(path.join(current_path, ".."))
 
-    return find_root_path(current_path, pattern)
+    return find_root_path(current_path, pattern)  # type: ignore

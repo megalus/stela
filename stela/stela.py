@@ -11,10 +11,10 @@ from typing import Any, Dict
 import toml
 import yaml
 
-from stela.detect import detect
 from stela.exceptions import StelaEnvironmentNotFoundError
 from stela.stela_cut import StelaCut
 from stela.stela_options import StelaOptions
+from stela.utils import find_pyproject_folder
 
 
 class Stela:
@@ -38,9 +38,9 @@ class Stela:
         """
         from loguru import logger
 
-        path = detect()
+        path = find_pyproject_folder() or Path().cwd()
         for filename in options.filenames:
-            filepath = Path(path).joinpath(self.options.config_file_path, filename)
+            filepath = path.joinpath(self.options.config_file_path, filename)
             logger.debug(f"Looking for file {filepath}...")
             if filepath.exists():
                 settings_data = self.load_from_file(filepath)

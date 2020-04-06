@@ -1,14 +1,12 @@
 """Stela Options module."""
 import os
 from dataclasses import dataclass, field
-from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import toml
 
-from stela.detect import detect
 from stela.exceptions import StelaEnvironmentNotFoundError, StelaFileTypeError
-from stela.utils import StelaFileType
+from stela.utils import StelaFileType, find_pyproject_folder
 
 
 @dataclass
@@ -51,13 +49,12 @@ class StelaOptions:
     def get_config(cls) -> "StelaOptions":
         """Get config from pyproject.toml."""
 
-        path = detect()
-        filepath = Path(path).joinpath(f"pyproject.toml")
-        if filepath.exists():
+        file_settings = {}
+        path = find_pyproject_folder()
+        if path:
+            filepath = path.joinpath(f"pyproject.toml")
             toml_settings = toml.load(filepath)
             file_settings = toml_settings.get("tool", {}).get("stela", {})
-        else:
-            file_settings = {}
         settings = {
             "environment_variable_name": cls.get_from_env_or_settings(
                 "environment_variable_name",

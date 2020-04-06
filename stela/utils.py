@@ -46,7 +46,7 @@ def find_pyproject_folder() -> Optional[Path]:
         if current_path.joinpath("pyproject.toml").exists():
             logger.debug(f"File pyproject.toml found in folder: {current_path}")
             return current_path
-        if str(current_path) == Path().root:
+        if str(current_path) in ["/", "\\"]:
             logger.debug("File pyproject.toml not found.")
             return None
         return look_for_file(current_path.parent)

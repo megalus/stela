@@ -8,10 +8,10 @@ import json
 from pathlib import Path
 from typing import Any, Dict
 
-import rootpath
 import toml
 import yaml
 
+from stela.detect import detect
 from stela.exceptions import StelaEnvironmentNotFoundError
 from stela.stela_cut import StelaCut
 from stela.stela_options import StelaOptions
@@ -38,7 +38,7 @@ class Stela:
         """
         from loguru import logger
 
-        path = rootpath.detect()
+        path = detect()
         for filename in options.filenames:
             filepath = Path(path).joinpath(self.options.config_file_path, filename)
             logger.debug(f"Looking for file {filepath}...")

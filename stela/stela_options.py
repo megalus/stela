@@ -4,9 +4,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-import rootpath
 import toml
 
+from stela.detect import detect
 from stela.exceptions import StelaEnvironmentNotFoundError, StelaFileTypeError
 from stela.utils import StelaFileType
 
@@ -51,7 +51,7 @@ class StelaOptions:
     def get_config(cls) -> "StelaOptions":
         """Get config from pyproject.toml."""
 
-        path = rootpath.detect()
+        path = detect()
         filepath = Path(path).joinpath(f"pyproject.toml")
         if filepath.exists():
             toml_settings = toml.load(filepath)

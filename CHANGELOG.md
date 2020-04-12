@@ -1,7 +1,7 @@
 # Changelog
 
-## 1.0.10 (2020-04-12)
+## 1.0.11 (2020-04-12)
 
-#### Docs
+#### Fixes
 
-* Add pypi badge
+* small fixes in deploy process

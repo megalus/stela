@@ -46,6 +46,8 @@ jobs:
       - name: Update Changelog
         env:
           GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+          GIT_NAME: ${{ secrets.GIT_NAME }}
+          GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
         run: |
           ./update_changelog.sh
       - name: Build Package

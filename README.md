@@ -1,5 +1,6 @@
 # Welcome to Stela
 
+![PyPI](https://img.shields.io/pypi/v/stela)
 [![Build](https://github.com/chrismaille/stela/workflows/tests/badge.svg)](https://github.com/chrismaille/stela/actions)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/stela)](https://www.python.org)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)

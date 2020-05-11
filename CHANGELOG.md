@@ -1,7 +1,7 @@
 # Changelog
 
-## 1.0.11 (2020-04-12)
+## 1.0.12 (2020-05-11)
 
 #### Fixes
 
-* small fixes in deploy process
+* coverage level for new scalpl code

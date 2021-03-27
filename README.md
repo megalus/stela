@@ -28,7 +28,8 @@ environment variables.
 11. [When Stela read the data?](#when-stela-read-the-data)
 12. [Refreshing Stela settings](#refreshing-stela-settings)
 13. [How Stela read the dictionary values?](#how-stela-read-the-dictionary-values)
-14. [All Stela Configuration Options:](#all-stela-configuration-options)
+14. [All Stela Configuration Options](#all-stela-configuration-options)
+15. [Migrate from version 1.x](#migrate-from-version-1x)
 
 
 ## Install
@@ -72,7 +73,7 @@ For example, for `my_database_credentials` Stela will look for
 2. `MY_DATABASE_CREDENTIALS` in `.env` file, if exists
 3. `my_database_credentials` in `pyproject.toml`
 
-#### Using layered environments
+### Using layered environments
 
 For now, Stela are looking only for the `environment` table in your
 `pyproject.toml`. But for layered environments you maybe need to define
@@ -305,13 +306,13 @@ def get_from_plaster(options: StelaOptions) -> Dict[Any, Any]:
 
 #### The Load Phase
 
-In this phase Stela will run 3 default loaders and a fourth optional
-custom loader, if defined, on this default order:
+In this phase Stela will run 2 default loaders and a third optional
+custom loader (if defined) on this default order:
 
 1. Runs `embed` loader (retrieve data from `pyproject.toml`, if exists)
 2. Runs `file` loader (retrieve data from config files, if exists)
-3. Runs `dotenv` loader (retrieve data from `.env` file, if exists)
-4. Runs `custom` loader if defined (from `load` decorator, if exists)
+3. Runs `custom` loader if defined (from `custom_load` decorator, if
+   exists)
 
 Each step updates data received from the previous step. You can change
 this order, modifying the `load_order` in config:
@@ -319,7 +320,8 @@ this order, modifying the `load_order` in config:
 ```toml
 # Or STELA_LOAD_ORDER
 [tool.stela]
-load_order = ["file", "custom", "dotenv"]
+# Default value is ["embed", "file", "custom"]
+load_order = ["custom"]
 ```
 
 Custom Load Example:
@@ -468,15 +470,30 @@ config_file_prefix = ""                             # You can add a prefix befor
 config_file_suffix = ""                             # You can add a suffix after name - ex.: development_v1.ini
 default_environment = ""                            # The default value for Environment variable
 do_not_read_environment = false                     # Do not read environment variables from shell
+do_not_read_dotenv = false                          # Do not read dotenv file
 env_file = ".env"                                   # dotenv file name
 env_table = "environment"                           # The main environment table in pyproject.toml
 environment_prefix = ""                             # ex.: settings["foo.bar"] looks for MY_PREFIX_FOO_BAR
 environment_suffix = ""                             # ex.: settings["foo.bar"] looks for FOO_BAR_MY_SUFFIX
 environment_variable_name = "ENVIRONMENT"           # The Environment variable
 evaluate_data = false                               # Evaluate data received from config files
-load_order = ["embed", "file", "dotenv", "custom"]  # Default order for Loaders in Load Phase
+load_order = ["embed", "file", "custom"]            # Default order for Loaders in Load Phase
 show_logs = true                                    # As per loguru settings.
 use_environment_layers = false                      # Use environment layers
+```
+
+### Migrate from version 1.x
+
+* The `stela_reload` function now is imported now from `stela.utils`
+* The `@load` decorator now was renamed to `@custom_load`
+* To mimic Stela load behavior from 1.x, please configure the old
+  lifecycle in `pyproject.toml`:
+
+```toml
+[tool.stela]
+use_environment_layers = true
+do_not_read_dotenv = true
+load_order = ["file"] # or ["custom"] together with @custom_load decorator
 ```
 
 ### Not working?

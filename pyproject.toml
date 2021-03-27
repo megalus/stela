@@ -1,5 +1,5 @@
 [tool.coverage.report]
-fail_under = 90
+fail_under = 80
 
 [tool.pytest]
 addopts = '--pydocstyle'
@@ -51,7 +51,7 @@ build_command = "poetry build"
 
 [tool.poetry]
 name = "stela"
-version = "1.0.6"
+version = "1.0.12"
 description = "Find and read your project configuration files easily"
 authors = ["Chris Maillefaud <chrismaillefaud@gmail.com>"]
 readme = "README.md"

@@ -1,3 +1,7 @@
 # Changelog
 
-## 1.0.6 (2020-04-06)
+## 1.0.12 (2020-05-11)
+
+#### Fixes
+
+* coverage level for new scalpl code

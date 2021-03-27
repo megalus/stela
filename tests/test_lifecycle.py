@@ -1,8 +1,8 @@
-from stela import Stela, StelaOptions
+from stela import Stela
 from stela.utils import stela_reload
 
 
-def test_default_lifecycle(full_lifecycle, stela_default_settings, monkeypatch):
+def test_default_lifecycle(full_lifecycle, monkeypatch):
     """Test Stela Full Lifecycle.
 
     Value for key "secret" using default Order:
@@ -12,8 +12,7 @@ def test_default_lifecycle(full_lifecycle, stela_default_settings, monkeypatch):
         4. From custom loader:  "custom_load_secret" (@custom_load function)
         5. From post_load:      "post_load_secret" (@post_load function)
     """
-    test_options = StelaOptions(**stela_default_settings).get_config()
-    test_stela = Stela(options=test_options)
+    test_stela = Stela(options=full_lifecycle)
     test_settings = test_stela.get_project_settings()
 
     assert test_stela._pre_loader_data["secret"] == "pre_load_secret"

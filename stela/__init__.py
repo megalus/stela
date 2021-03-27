@@ -12,7 +12,14 @@ from stela.stela_options import StelaOptions
 
 __version__ = "2.0.3"
 
-settings: StelaCut = Stela(options=StelaOptions.get_config()).get_project_settings()
+_stela_config = StelaOptions.get_config()
+
+try:
+    import conf_stela  # noqa
+except ImportError:
+    pass
+
+settings: StelaCut = Stela(options=_stela_config).get_project_settings()
 
 if not settings.stela_options.show_logs:
     logger.disable("stela")

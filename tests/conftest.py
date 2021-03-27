@@ -4,7 +4,6 @@ import pytest
 
 import stela
 from stela import StelaOptions
-from stela.decorators import custom_load, post_load, pre_load
 from stela.stela_options import DEFAULT_ORDER
 from stela.utils import StelaFileType
 
@@ -92,73 +91,58 @@ def toml_settings(monkeypatch):
 
 
 @pytest.fixture()
-def options_with_pre_loader():
-    reload(stela)
-
-    @pre_load
-    def pre_load_test(self, options: StelaOptions):
+def options_with_pre_loader(stela_default_settings) -> StelaOptions:
+    def pre_load_test(options: StelaOptions):
         return {
             "environment_name": options.environment_variable_name,
             "pre_attribute": True,
         }
 
-    yield
-    delattr(StelaOptions, "pre_load")
+    stela_options = StelaOptions(**stela_default_settings)
+    setattr(stela_options, "pre_load", pre_load_test)
+
+    yield stela_options
 
 
 @pytest.fixture()
-def options_with_custom_loader():
-    reload(stela)
-
-    @custom_load
-    def custom_load_test(self, data: dict, options: StelaOptions):
+def options_with_custom_loader(stela_default_settings):
+    def custom_load_test(data: dict, options: StelaOptions):
         return {"evaluate_data": options.evaluate_data, "attribute": True}
 
-    yield
-    delattr(StelaOptions, "load")
+    stela_options = StelaOptions(**stela_default_settings)
+    setattr(stela_options, "load", custom_load_test)
+
+    yield stela_options
 
 
 @pytest.fixture()
-def options_with_post_loader():
-    reload(stela)
-
-    @post_load
-    def post_load_test(self, data: dict, options: StelaOptions):
-        return {"environment": options.current_environment, "post_attribute": True}
-
-    yield
-    delattr(StelaOptions, "post_load")
-
-
-@pytest.fixture()
-def full_lifecycle(monkeypatch):
+def full_lifecycle(monkeypatch, stela_default_settings):
     monkeypatch.setenv("STELA_USE_ENVIRONMENT_LAYERS", "True")
     monkeypatch.setenv("STELA_ENV_TABLE", "env")
     monkeypatch.setenv("STELA_ENV_FILE", ".env.test")
-    reload(stela)
 
-    @pre_load
-    def pre_load_test(self, options: StelaOptions):
+    def pre_load_test(options: StelaOptions):
         return {
             "secret": "pre_load_secret",
         }
 
-    @custom_load
-    def custom_load_test(self, data: dict, options: StelaOptions):
+    def custom_load_test(data: dict, options: StelaOptions):
         return {
             "secret": "custom_load_secret",
         }
 
-    @post_load
-    def post_load_test(self, data: dict, options: StelaOptions):
+    def post_load_test(data: dict, options: StelaOptions):
         return {
             "secret": "post_load_secret",
         }
 
-    yield
-    delattr(StelaOptions, "pre_load")
-    delattr(StelaOptions, "load")
-    delattr(StelaOptions, "post_load")
+    stela_options = StelaOptions().get_config()
+    setattr(stela_options, "pre_load", pre_load_test)
+    setattr(stela_options, "load", custom_load_test)
+    setattr(stela_options, "post_load", post_load_test)
+
+    yield stela_options
+
     monkeypatch.delenv("STELA_ENV_TABLE")
     monkeypatch.delenv("STELA_ENV_FILE")
     monkeypatch.delenv("STELA_USE_ENVIRONMENT_LAYERS")

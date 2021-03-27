@@ -278,12 +278,14 @@ Stela uses this lifecycle to handle the settings load:
 
 #### The Pre-Load Phase (optional)
 
-If defined, will always be the first step. Use the `pre_load` decorator.
-Must return a valid python dictionary.
+If defined, will always be the first step. To setup, create a
+`conf_stela.py` file on project root and use the `pre_load` decorator
+for your code. This function must return a valid python dictionary.
 
 Pre-Load Example:
 
 ```python
+# conf_stela.py at project root
 import plaster
 from stela.decorators import pre_load
 from stela.stela_options import StelaOptions
@@ -327,6 +329,7 @@ load_order = ["custom"]
 Custom Load Example:
 
 ```python
+# conf_stela.py at project root
 from stela.decorators import custom_load
 from stela.stela_options import StelaOptions
 from typing import Dict, Any
@@ -351,6 +354,7 @@ def remove_bad_data(data: Dict[Any, Any], options: StelaOptions) -> Dict[Any, An
 This is, always, the last phase.
 
 ```python
+# conf_stela.py at project root
 import boto3
 from stela.decorators import post_load
 from stela import StelaOptions
@@ -378,6 +382,7 @@ def add_ssm_parameters(data: dict, options: StelaOptions) -> Dict[Any, Any]:
 ### Full Lifecycle example
 
 ```python
+# conf_stela.py at project root
 from stela.decorators import pre_load, custom_load, post_load
 from typing import Dict, Any
 from stela import StelaOptions

@@ -17,10 +17,10 @@ def pre_load(f):
     def wrapper(self, *args, **kwargs):
         return f(self, *args, **kwargs)
 
-    from stela.stela_options import StelaOptions
+    from stela import _stela_config
 
-    if not getattr(StelaOptions, "pre_load", None):
-        setattr(StelaOptions, "pre_load", f)
+    if not getattr(_stela_config, "pre_load", None):
+        setattr(_stela_config, "pre_load", f)
 
     return wrapper
 
@@ -39,10 +39,10 @@ def custom_load(f):
     def wrapper(self, *args, **kwargs):
         return f(self, *args, **kwargs)
 
-    from stela.stela_options import StelaOptions
+    from stela import _stela_config
 
-    if not getattr(StelaOptions, "load", None):
-        setattr(StelaOptions, "load", f)
+    if not getattr(_stela_config, "load", None):
+        setattr(_stela_config, "load", f)
 
     return wrapper
 
@@ -62,9 +62,9 @@ def post_load(f):
     def wrapper(self, *args, **kwargs):
         return f(self, *args, **kwargs)
 
-    from stela.stela_options import StelaOptions
+    from stela import _stela_config
 
-    if not getattr(StelaOptions, "post_load", None):
-        setattr(StelaOptions, "post_load", f)
+    if not getattr(_stela_config, "post_load", None):
+        setattr(_stela_config, "post_load", f)
 
     return wrapper

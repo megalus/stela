@@ -10,7 +10,7 @@ from stela.stela import Stela
 from stela.stela_cut import StelaCut
 from stela.stela_options import StelaOptions
 
-__version__ = "2.0.3"
+__version__ = "2.0.4"
 
 _stela_config = StelaOptions.get_config()
 

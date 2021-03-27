@@ -484,6 +484,7 @@ use_environment_layers = false                      # Use environment layers
 
 ### Migrate from version 1.x
 
+* Support for Python 3.6 was dropped
 * The `stela_reload` function now is imported now from `stela.utils`
 * The `@load` decorator now was renamed to `@custom_load`
 * To mimic Stela load behavior from 1.x, please configure the old

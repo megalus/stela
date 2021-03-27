@@ -47,7 +47,7 @@ version_variable = [
 branch = "main"
 upload_to_pypi = true
 upload_to_release = true
-build_command = "pip install poetry && poetry build"
+build_command = "python -m pip install --user -U pip poetry && poetry build"
 
 [tool.poetry]
 name = "stela"
@@ -89,6 +89,7 @@ isort = "*"
 bandit = "*"
 pre-commit = "*"
 flake8 = "*"
+twine = "*"
 
 [build-system]
 requires = ["poetry>=0.12"]

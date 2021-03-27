@@ -25,7 +25,7 @@ def pre_load(f):
     return wrapper
 
 
-def load(f):
+def custom_load(f):
     """Run Custom Loader decorator.
 
     This loader will be invoked instead
@@ -53,7 +53,7 @@ def post_load(f):
     Use this decorator to handle data
     after invoking
     the custom load or default_loader.
-    
+
     :param f: decorated function
     :return: wrapper function
     """

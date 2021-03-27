@@ -1,5 +1,5 @@
-from stela import stela_reload
 from stela.stela_options import StelaOptions
+from stela.utils import stela_reload
 
 
 def test_get_default_config(stela_default_settings, monkeypatch):
@@ -38,3 +38,13 @@ def test_different_environments(monkeypatch):
     settings = stela_reload()
     assert settings.stela_options.current_environment == "production"
     monkeypatch.delenv("ENVIRONMENT")
+
+
+def test_get_environment_from_env(dotenv2_settings, monkeypatch):
+    # From .env
+    assert dotenv2_settings.stela_options.current_environment == "homolog"
+
+    # From Environment
+    monkeypatch.setenv("ENVIRONMENT", "staging")
+    settings = stela_reload()
+    assert settings.stela_options.current_environment == "staging"

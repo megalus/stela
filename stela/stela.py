@@ -1,80 +1,78 @@
-"""Stela Class.
+"""Stela Class."""
+from dataclasses import dataclass, field
+from typing import Any, Dict, Optional
 
-This class run the Stela lifecycle:
-   Pre-Load (optional) -> Load or Default Loader -> Post-Load (optional)
-"""
-import configparser
-import json
-from pathlib import Path
-from typing import Any, Dict
-
-import toml
-import yaml
+from loguru import logger
 
 from stela.exceptions import StelaEnvironmentNotFoundError
+from stela.loaders.embed import read_embed
+from stela.loaders.file import read_file
 from stela.stela_cut import StelaCut
 from stela.stela_options import StelaOptions
-from stela.utils import find_pyproject_folder
 
 
+@dataclass
 class Stela:
     """Stela Class."""
 
-    def __init__(self, stela_options: StelaOptions) -> None:
-        """Initialize class.
+    options: StelaOptions
+    settings: Dict[Any, Any] = field(default_factory=dict)
 
-        :param stela_options: StelaOptions instance
-        """
-        self.options = stela_options
+    _pre_loader_data: Optional[Dict[Any, Any]] = None
+    _embed_data: Optional[Dict[Any, Any]] = None
+    _file_loader_data: Optional[Dict[Any, Any]] = None
+    _custom_loader_data: Optional[Dict[Any, Any]] = None
+    _post_loader_data: Optional[Dict[Any, Any]] = None
 
-    def default_loader(
-        self, data: Dict[Any, Any], options: StelaOptions
-    ) -> Dict[Any, Any]:
-        """Stela Default Loader.
+    def run_preload(self):
+        if getattr(self.options, "pre_load", None) is not None:
+            self._pre_loader_data = self.options.pre_load(options=self.options)
+            self.settings.update(self._pre_loader_data)
 
-        :param data: Current data parsed from pre-load
-        :param options: StelaOptions instance
-        :return: Dict
-        """
-        from loguru import logger
+    def run_embed_loader(self):
+        self._embed_data = read_embed(self.options)
+        self.settings.update(self._embed_data)
 
-        path = find_pyproject_folder() or Path().cwd()
-        for filename in options.filenames:
-            filepath = path.joinpath(self.options.config_file_path, filename)
-            logger.debug(f"Looking for file {filepath}...")
-            if filepath.exists():
-                settings_data = self.load_from_file(filepath)
-                data.update(settings_data)
-                return data
-        return data
+    def run_file_loader(self):
+        self._file_loader_data = read_file(self.options)
+        self.settings.update(self._file_loader_data)
+
+    def run_custom_loader(self):
+        if getattr(self.options, "load", None) is not None:
+            self._custom_loader_data = self.options.load(
+                data=self.settings, options=self.options
+            )
+            self.settings.update(self._custom_loader_data)
+
+    def run_postload(self):
+        if getattr(self.options, "post_load", None) is not None:
+            self._post_loader_data = self.options.post_load(  # type: ignore
+                data=self.settings, options=self.options
+            )
+            self.settings.update(self._post_loader_data)
 
     def get_project_settings(self) -> "StelaCut":
         """Get project settings running Stela Lifecycle.
 
         :return: Dict
         """
-        settings_data = {}
+        # Pre-Load Phase
+        logger.debug("Starting Stela Pre-Load Phase...")
+        self.run_preload()
 
-        # Run pre_load
-        if getattr(self.options, "pre_load", None) is not None:
-            pre_load_data = self.options.pre_load(options=self.options)  # type: ignore
-            settings_data.update(pre_load_data)
+        # Load Phase
+        logger.debug(
+            f"Starting Stela Load Phase. Order is: "
+            f"[{', '.join(self.options.load_order)}] ..."
+        )
+        for loader_name in self.options.load_order:
+            getattr(self, f"run_{loader_name}_loader")()
 
-        # Run load or default_load
-        if getattr(self.options, "load", None) is not None:
-            load_data = self.options.load(data=settings_data, options=self.options)  # type: ignore
-        else:
-            load_data = self.default_loader(data=settings_data, options=self.options)
-        settings_data.update(load_data)
+        # Post-Load Phase
+        logger.debug("Starting Stela Post-Load Phase...")
+        self.run_postload()
 
-        # Run post_load
-        if getattr(self.options, "post_load", None) is not None:
-            pre_load_data = self.options.post_load(  # type: ignore
-                data=settings_data, options=self.options
-            )
-            settings_data.update(pre_load_data)
-
-        proxy = StelaCut(settings_data)
+        proxy = StelaCut(self.settings)
         proxy.stela_options = self.options
         return proxy
 
@@ -84,54 +82,3 @@ class Stela:
         if not self.options.current_environment:
             raise StelaEnvironmentNotFoundError("Environment not found.")
         return self.options.current_environment
-
-    def load_from_file(self, filepath: Path) -> Dict[Any, Any]:
-        """Resolve correct function for file extension."""
-        function_name = (
-            f"load_{self.options.config_file_extension.value[0].replace('.', '')}"
-        )
-        return getattr(self, function_name)(filepath)  # type: ignore
-
-    def load_ini(self, filepath: Path) -> Dict[Any, Any]:
-        """Load INI files.
-
-        :param filepath: Path instance
-        :return: Dict
-        """
-        config = configparser.ConfigParser()
-        config.read(filepath)
-        ini_settings: Dict[Any, Any] = {}
-        for main_key in config.keys():
-            ini_settings[main_key] = {}
-            for key in config[main_key].keys():
-                ini_settings[main_key][key] = config[main_key][key]
-        return ini_settings
-
-    def load_yaml(self, filepath: Path) -> Dict[Any, Any]:
-        """Load YAML files.
-
-        :param filepath: Path instance
-        :return: Dict
-        """
-        with open(filepath, "r") as yaml_file:
-            config = yaml.safe_load(yaml_file)
-            return config  # type: ignore
-
-    def load_toml(self, filepath: Path) -> Dict[Any, Any]:
-        """Load TOML files.
-
-        :param filepath: Path instance
-        :return: Dict
-        """
-        config = toml.load(filepath)
-        return config  # type: ignore
-
-    def load_json(self, filepath: Path) -> Dict[Any, Any]:
-        """Load JSON files.
-
-        :param filepath: Path instance
-        :return: Dict
-        """
-        with open(filepath, "r") as json_file:
-            config = json.load(json_file)
-            return config  # type: ignore

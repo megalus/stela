@@ -8,7 +8,7 @@ from ast import literal_eval
 from typing import Any, Dict, Optional, Tuple
 
 from scalpl import Cut
-from scalpl.scalpl import index_error, key_error
+from scalpl.scalpl import index_error, key_error, split_path, traverse, type_error
 
 
 class FakeNone:
@@ -37,36 +37,7 @@ class StelaCut(Cut):  # type: ignore
 
     @property
     def to_dict(self) -> Dict[Any, Any]:
-        """Return Cut as Python Dictionary.
-
-        When thinking on Scalpl context, its fair to
-        convert data from Cut to dict.
-
-        But in Stela, the main context is to use the full
-        path key to investigate possible environment variables
-        before returning the combined keys' value.
-
-        For example, suppose we have:
-        APP = "my project" and
-        APP_SECRET = "bar"
-
-        Our dictionary:
-        {
-            "app": {
-                "secret": "foo"
-                }
-            }
-        }
-
-        Retrieving settings["app.secret"] can reach both values (dict and env) correctly.
-        Retrieving settings["app"] correct gives us the env value.
-
-        But if you're looking only at the Dict, determine both
-        environment variables can be tricky.
-
-        We suggest use this property for dictionary-only contexts
-        or for tests.
-        """
+        """Return Cut as Python Dictionary."""
         return dict(self)
 
     def get(self, path: str, default: Optional[Any] = FakeNone) -> Any:
@@ -78,19 +49,27 @@ class StelaCut(Cut):  # type: ignore
                 return default
             raise error
 
-    def pop(self, path: str, default: Any = FakeNone) -> Any:
-        """Oveerride Pop from Dict code."""
-        parent, last_key = self._traverse(self.data, path)
+    def pop(self, path: str, default: Any = FakeNone, *args) -> Any:  # type: ignore
+        """Override Pop from Dict code."""
+        *keys, last_key = split_path(path, self.sep)
+
         try:
-            return parent.pop(last_key)
-        except IndexError as error:
+            item = traverse(data=self.data, keys=keys, original_path=path)
+        except (KeyError, IndexError) as error:
             if default is not FakeNone:
                 return default
-            raise index_error(last_key, path, error)
+            raise error
+
+        try:
+            return item.pop(last_key)
         except (AttributeError, KeyError) as error:
             if default is not FakeNone:
                 return default
             raise key_error(last_key, path, error)
+        except IndexError as error:
+            if default is not FakeNone:
+                return default
+            raise index_error(last_key, path, error)
 
     def __getitem__(
         self, path: str, *args: Tuple[Any], **kwargs: Dict[Any, Any]
@@ -107,29 +86,64 @@ class StelaCut(Cut):  # type: ignore
         :param kwargs: python keyword arguments
         :return: Any
         """
-        if not "[" in path and not self.stela_options.do_not_read_environment:
-            environment_variable = (
-                f"{self.stela_options.environment_prefix}"
-                f"{path.replace('.', '_')}"
-                f"{self.stela_options.environment_suffix}".upper()
-            )
-            value = os.getenv(environment_variable)
+        if "[" not in path:
+            environment_variable = self.get_environment_variable_name(path)
+            value = self.get_value_from_memory(
+                environment_variable
+            ) or self.get_value_from_dotenv(environment_variable)
             if value:
-                from loguru import logger
-
-                logger.debug(f"Using value from variable {environment_variable}")
                 if self.stela_options.evaluate_data:
                     try:
                         value = literal_eval(value)
-                    except:
-                        pass
+                    except ValueError:
+                        from loguru import logger
+
+                        logger.debug(
+                            f"Error when evaluating value: "
+                            f"{environment_variable}={value[:3]}***"
+                        )
                 return value
 
-        parent, last_key = self._traverse(self.data, path)
+        *keys, last_key = split_path(path, self.sep)
+        item = traverse(data=self.data, keys=keys, original_path=path)
 
         try:
-            return parent[last_key]
+            return item[last_key]
         except KeyError as error:
             raise key_error(last_key, path, error)
         except IndexError as error:
             raise index_error(last_key, path, error)
+        except TypeError:
+            raise type_error(last_key, path, item)
+
+    def get_value_from_memory(self, environment_variable):
+        from loguru import logger
+
+        if self.stela_options.do_not_read_environment:
+            logger.debug("Ignoring Environment variables in memory.")
+            return
+
+        value = os.getenv(environment_variable)
+        if value:
+            logger.debug(f"Using value from memory for: {environment_variable}")
+        return value
+
+    def get_environment_variable_name(self, path):
+        environment_variable = (
+            f"{self.stela_options.environment_prefix}"
+            f"{path.replace('.', '_')}"
+            f"{self.stela_options.environment_suffix}".upper().strip()
+        )
+        return environment_variable
+
+    def get_value_from_dotenv(self, environment_variable):
+        from loguru import logger
+
+        if self.stela_options.do_not_read_dotenv:
+            logger.debug("Ignoring Environment variables in dotenv file.")
+            return
+
+        value = self.stela_options.dotenv_data.get(environment_variable)
+        if value:
+            logger.debug(f"Using value from dotenv for: {environment_variable}")
+        return value

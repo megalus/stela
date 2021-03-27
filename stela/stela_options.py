@@ -4,9 +4,13 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
 import toml
+from loguru import logger
 
 from stela.exceptions import StelaEnvironmentNotFoundError, StelaFileTypeError
+from stela.loaders.dotenv import read_dotenv
 from stela.utils import StelaFileType, find_pyproject_folder
+
+DEFAULT_ORDER = ["embed", "file", "custom"]
 
 
 @dataclass
@@ -14,6 +18,8 @@ class StelaOptions:
     """Stela Options data class."""
 
     current_environment: Optional[str] = None
+    dotenv_data: Optional[Dict[Any, Any]] = None
+
     default_environment: Optional[str] = None
     environment_variable_name: str = "ENVIRONMENT"
     config_file_prefix: str = ""
@@ -26,6 +32,11 @@ class StelaOptions:
     filenames: List[str] = field(default_factory=list)
     show_logs: bool = True
     do_not_read_environment: bool = False
+    do_not_read_dotenv: bool = False
+    env_file: str = ".env"
+    load_order: List[str] = field(default_factory=list)
+    env_table: str = "environment"
+    use_environment_layers: bool = False
 
     def get_extensions(self) -> List[str]:
         """Return file extensions for project configuration files."""
@@ -52,7 +63,7 @@ class StelaOptions:
         file_settings = {}
         path = find_pyproject_folder()
         if path:
-            filepath = path.joinpath(f"pyproject.toml")
+            filepath = path.joinpath("pyproject.toml")
             toml_settings = toml.load(filepath)
             file_settings = toml_settings.get("tool", {}).get("stela", {})
         settings = {
@@ -87,8 +98,33 @@ class StelaOptions:
             "show_logs": cls.get_from_env_or_settings(
                 "show_logs", file_settings, cls.show_logs
             ),
-            "do_not_read_environment": cls.get_from_env_or_settings(
-                "do_not_read_environment", file_settings, cls.do_not_read_environment
+            "do_not_read_environment": bool(
+                cls.get_from_env_or_settings(
+                    "do_not_read_environment",
+                    file_settings,
+                    cls.do_not_read_environment,
+                )
+            ),
+            "do_not_read_dotenv": bool(
+                cls.get_from_env_or_settings(
+                    "do_not_read_dotenv",
+                    file_settings,
+                    cls.do_not_read_dotenv,
+                )
+            ),
+            "env_file": cls.get_from_env_or_settings(
+                "env_file", file_settings, cls.env_file
+            ),
+            "load_order": cls.get_from_env_or_settings(
+                "load_order", file_settings, DEFAULT_ORDER
+            ),
+            "env_table": cls.get_from_env_or_settings(
+                "env_table", file_settings, cls.env_table
+            ),
+            "use_environment_layers": bool(
+                cls.get_from_env_or_settings(
+                    "use_environment_layers", file_settings, cls.use_environment_layers
+                )
             ),
         }
         try:
@@ -102,15 +138,52 @@ class StelaOptions:
             raise StelaFileTypeError(
                 f"Invalid file type: {file_settings.get('config_file_extension')}"
             )
-        settings["current_environment"] = os.getenv(
-            settings["environment_variable_name"]
-        )
-        if not settings["current_environment"]:
-            settings["current_environment"] = settings["default_environment"]
-        if not settings["current_environment"]:
-            raise StelaEnvironmentNotFoundError(f"Environment not found")
+        cls._get_dotenv_data(settings)
+        cls._get_current_environment(settings)
         settings["filenames"] = [
-            f"{settings['config_file_prefix']}{settings['current_environment']}{extension}"
+            f"{settings['config_file_prefix']}"
+            f"{settings['current_environment']}{extension}"
             for extension in settings["config_file_extension"].value
         ]
         return cls(**settings)
+
+    @classmethod
+    def _get_current_environment(cls, settings):
+        # Get from Memory
+        settings["current_environment"] = os.getenv(
+            settings["environment_variable_name"]
+        )
+
+        # Get from .env if available
+        if not settings["current_environment"]:
+            settings["current_environment"] = settings["dotenv_data"].get(
+                settings["environment_variable_name"]
+            )
+
+        # Get from Default
+        if not settings["current_environment"]:
+            settings["current_environment"] = settings["default_environment"]
+
+        # No environment found.
+        if not settings["current_environment"] and settings["use_environment_layers"]:
+            raise StelaEnvironmentNotFoundError("Environment not found.")
+
+        if (
+            not settings["current_environment"]
+            and not settings["use_environment_layers"]
+        ):
+            logger.debug(
+                f"No Environment found. Stela will lookup only "
+                f"in table [{settings['env_table']}] in pyproject.toml"
+            )
+
+    @classmethod
+    def _get_dotenv_data(cls, settings):
+        """Get data from dotenv files."""
+        if settings["do_not_read_dotenv"]:
+            settings["dotenv_data"] = {}
+        else:
+            settings["dotenv_data"] = read_dotenv(
+                config_file_path=settings["config_file_path"],
+                env_file=settings["env_file"],
+            )

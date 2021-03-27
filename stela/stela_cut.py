@@ -37,36 +37,7 @@ class StelaCut(Cut):  # type: ignore
 
     @property
     def to_dict(self) -> Dict[Any, Any]:
-        """Return Cut as Python Dictionary.
-
-        When thinking on Scalpl context, its fair to
-        convert data from Cut to dict.
-
-        But in Stela, the main context is to use the full
-        path key to investigate possible environment variables
-        before returning the combined keys' value.
-
-        For example, suppose we have:
-        APP = "my project" and
-        APP_SECRET = "bar"
-
-        Our dictionary:
-        {
-            "app": {
-                "secret": "foo"
-                }
-            }
-        }
-
-        Retrieving settings["app.secret"] can reach both values (dict and env) correctly.
-        Retrieving settings["app"] correct gives us the env value.
-
-        But if you're looking only at the Dict, determine both
-        environment variables can be tricky.
-
-        We suggest use this property for dictionary-only contexts
-        or for tests.
-        """
+        """Return Cut as Python Dictionary."""
         return dict(self)
 
     def get(self, path: str, default: Optional[Any] = FakeNone) -> Any:
@@ -115,22 +86,22 @@ class StelaCut(Cut):  # type: ignore
         :param kwargs: python keyword arguments
         :return: Any
         """
-        if not "[" in path and not self.stela_options.do_not_read_environment:
-            environment_variable = (
-                f"{self.stela_options.environment_prefix}"
-                f"{path.replace('.', '_')}"
-                f"{self.stela_options.environment_suffix}".upper()
-            )
-            value = os.getenv(environment_variable)
+        if "[" not in path:
+            environment_variable = self.get_environment_variable_name(path)
+            value = self.get_value_from_memory(
+                environment_variable
+            ) or self.get_value_from_dotenv(environment_variable)
             if value:
-                from loguru import logger
-
-                logger.debug(f"Using value from variable {environment_variable}")
                 if self.stela_options.evaluate_data:
                     try:
                         value = literal_eval(value)
-                    except:
-                        pass
+                    except ValueError:
+                        from loguru import logger
+
+                        logger.debug(
+                            f"Error when evaluating value: "
+                            f"{environment_variable}={value[:3]}***"
+                        )
                 return value
 
         *keys, last_key = split_path(path, self.sep)
@@ -144,3 +115,35 @@ class StelaCut(Cut):  # type: ignore
             raise index_error(last_key, path, error)
         except TypeError:
             raise type_error(last_key, path, item)
+
+    def get_value_from_memory(self, environment_variable):
+        from loguru import logger
+
+        if self.stela_options.do_not_read_environment:
+            logger.debug("Ignoring Environment variables in memory.")
+            return
+
+        value = os.getenv(environment_variable)
+        if value:
+            logger.debug(f"Using value from memory for: {environment_variable}")
+        return value
+
+    def get_environment_variable_name(self, path):
+        environment_variable = (
+            f"{self.stela_options.environment_prefix}"
+            f"{path.replace('.', '_')}"
+            f"{self.stela_options.environment_suffix}".upper().strip()
+        )
+        return environment_variable
+
+    def get_value_from_dotenv(self, environment_variable):
+        from loguru import logger
+
+        if self.stela_options.do_not_read_dotenv:
+            logger.debug("Ignoring Environment variables in dotenv file.")
+            return
+
+        value = self.stela_options.dotenv_data.get(environment_variable)
+        if value:
+            logger.debug(f"Using value from dotenv for: {environment_variable}")
+        return value

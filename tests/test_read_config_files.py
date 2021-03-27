@@ -1,6 +1,6 @@
 import pytest
 
-from stela import stela_reload
+from stela.utils import stela_reload
 
 
 def test_get_from_ini_file():

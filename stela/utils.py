@@ -13,6 +13,7 @@ class StelaFileType(Enum):
     JSON = [".json"]
     YAML = [".yaml", ".yml"]
     TOML = [".toml"]
+    ENV = [".env"]
 
 
 def stela_reload() -> "StelaCut":  # type: ignore

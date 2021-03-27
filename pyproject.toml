@@ -5,7 +5,7 @@ fail_under = 80
 addopts = '--pydocstyle'
 
 [tool.black]
-target-version = ['py36','py37']
+target-version = ['py37', 'py38']
 include = '\.pyi?$'
 exclude = '''
 (
@@ -27,9 +27,27 @@ exclude = '''
 )
 '''
 
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+
 [tool.stela]
 config_file_path = "./tests/fixtures"
 default_environment = "test"
+
+[tool.semantic_release]
+version_variable = [
+    "stela/__init__.py:__version__",
+    "pyproject.toml:version"
+]
+branch = "master"
+upload_to_pypi = true
+upload_to_release = true
+build_command = "poetry build"
 
 [tool.poetry]
 name = "stela"
@@ -42,12 +60,18 @@ keywords = ["settings", "configuration", "parser"]
 license = "GPL-3.0"
 
 [tool.poetry.dependencies]
-python = ">=3.0, !=3.1, !=3.2, !=3.3, !=3.4, !=3.5, ^3.6, <4"
+python = ">=3.0, !=3.1, !=3.2, !=3.3, !=3.4, !=3.5, !=3.6, ^3.7, <4"
 loguru = "*"
 pyyaml = "*"
 scalpl = "*"
 toml = "*"
-dataclasses = { version = "*", python = "<3.7" }
+python-dotenv = "*"
+
+[env]
+shared_attribute = "foo.bar"
+
+[env.test]
+secret = "embed_secret"
 
 [tool.poetry.dev-dependencies]
 black = {version = "*", allow-prereleases = true}
@@ -61,6 +85,10 @@ pytest-pydocstyle = "*"
 pytest-xdist ="*"
 yamllint = "*"
 auto-changelog = "*"
+isort = "*"
+bandit = "*"
+pre-commit = "*"
+flake8 = "*"
 
 [build-system]
 requires = ["poetry>=0.12"]

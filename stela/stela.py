@@ -56,6 +56,7 @@ class Stela:
 
         :return: Dict
         """
+
         # Pre-Load Phase
         logger.debug("Starting Stela Pre-Load Phase...")
         self.run_preload()

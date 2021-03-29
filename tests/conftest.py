@@ -37,6 +37,7 @@ def json_settings(monkeypatch):
     reload(stela)
     yield stela.settings
     monkeypatch.delenv("STELA_CONFIG_FILE_EXTENSION")
+    reload(stela)
 
 
 @pytest.fixture()
@@ -47,6 +48,7 @@ def yaml_settings(monkeypatch):
     reload(stela)
     yield stela.settings
     monkeypatch.delenv("STELA_CONFIG_FILE_EXTENSION")
+    reload(stela)
 
 
 @pytest.fixture()
@@ -57,6 +59,7 @@ def dotenv_settings(monkeypatch):
     reload(stela)
     yield stela.settings
     monkeypatch.delenv("STELA_ENV_FILE")
+    reload(stela)
 
 
 @pytest.fixture()
@@ -67,6 +70,7 @@ def dotenv2_settings(monkeypatch):
     reload(stela)
     yield stela.settings
     monkeypatch.delenv("STELA_ENV_FILE")
+    reload(stela)
 
 
 @pytest.fixture()
@@ -74,11 +78,14 @@ def embed_settings(monkeypatch):
     import stela
 
     monkeypatch.setenv("STELA_ENV_TABLE", "env")
-    monkeypatch.setenv("STELA_USE_ENVIRONMENT_LAYERS", "True")
+    monkeypatch.setenv("STELA_USE_ENVIRONMENT_LAYERS", True)
+    monkeypatch.setenv("STELA_DO_NOT_READ_DOTENV", True)
     reload(stela)
     yield stela.settings
     monkeypatch.delenv("STELA_ENV_TABLE")
     monkeypatch.delenv("STELA_USE_ENVIRONMENT_LAYERS")
+    monkeypatch.delenv("STELA_DO_NOT_READ_DOTENV")
+    reload(stela)
 
 
 @pytest.fixture()
@@ -88,6 +95,7 @@ def toml_settings(monkeypatch):
     reload(stela)
     yield stela.settings
     monkeypatch.delenv("STELA_CONFIG_FILE_EXTENSION")
+    reload(stela)
 
 
 @pytest.fixture()
@@ -146,3 +154,4 @@ def full_lifecycle(monkeypatch, stela_default_settings):
     monkeypatch.delenv("STELA_ENV_TABLE")
     monkeypatch.delenv("STELA_ENV_FILE")
     monkeypatch.delenv("STELA_USE_ENVIRONMENT_LAYERS")
+    reload(stela)

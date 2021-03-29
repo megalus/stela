@@ -37,6 +37,7 @@ class StelaOptions:
     load_order: List[str] = field(default_factory=list)
     env_table: str = "environment"
     use_environment_layers: bool = False
+    dotenv_overwrites_memory: bool = True
 
     def get_extensions(self) -> List[str]:
         """Return file extensions for project configuration files."""
@@ -54,7 +55,10 @@ class StelaOptions:
         :return: Any
         """
         environment_name = f"STELA_{key.upper().replace('.', '_')}"
-        return os.getenv(environment_name, file_settings.get(key, default))
+        value = os.getenv(environment_name, file_settings.get(key, default))
+        if value and isinstance(value, str) and isinstance(default, bool):
+            return value.lower() == "true"
+        return value
 
     @classmethod
     def get_config(cls) -> "StelaOptions":
@@ -87,10 +91,8 @@ class StelaOptions:
             "environment_suffix": cls.get_from_env_or_settings(
                 "environment_suffix", file_settings, cls.environment_suffix
             ),
-            "evaluate_data": bool(
-                cls.get_from_env_or_settings(
-                    "evaluate_data", file_settings, cls.evaluate_data
-                )
+            "evaluate_data": cls.get_from_env_or_settings(
+                "evaluate_data", file_settings, cls.evaluate_data
             ),
             "config_file_path": cls.get_from_env_or_settings(
                 "config_file_path", file_settings, cls.config_file_path
@@ -98,19 +100,15 @@ class StelaOptions:
             "show_logs": cls.get_from_env_or_settings(
                 "show_logs", file_settings, cls.show_logs
             ),
-            "do_not_read_environment": bool(
-                cls.get_from_env_or_settings(
-                    "do_not_read_environment",
-                    file_settings,
-                    cls.do_not_read_environment,
-                )
+            "do_not_read_environment": cls.get_from_env_or_settings(
+                "do_not_read_environment",
+                file_settings,
+                cls.do_not_read_environment,
             ),
-            "do_not_read_dotenv": bool(
-                cls.get_from_env_or_settings(
-                    "do_not_read_dotenv",
-                    file_settings,
-                    cls.do_not_read_dotenv,
-                )
+            "do_not_read_dotenv": cls.get_from_env_or_settings(
+                "do_not_read_dotenv",
+                file_settings,
+                cls.do_not_read_dotenv,
             ),
             "env_file": cls.get_from_env_or_settings(
                 "env_file", file_settings, cls.env_file
@@ -121,10 +119,11 @@ class StelaOptions:
             "env_table": cls.get_from_env_or_settings(
                 "env_table", file_settings, cls.env_table
             ),
-            "use_environment_layers": bool(
-                cls.get_from_env_or_settings(
-                    "use_environment_layers", file_settings, cls.use_environment_layers
-                )
+            "use_environment_layers": cls.get_from_env_or_settings(
+                "use_environment_layers", file_settings, cls.use_environment_layers
+            ),
+            "dotenv_overwrites_memory": cls.get_from_env_or_settings(
+                "dotenv_overwrites_memory", file_settings, cls.dotenv_overwrites_memory
             ),
         }
         try:
@@ -186,4 +185,5 @@ class StelaOptions:
             settings["dotenv_data"] = read_dotenv(
                 config_file_path=settings["config_file_path"],
                 env_file=settings["env_file"],
+                overwrites_memory=settings["dotenv_overwrites_memory"],
             )

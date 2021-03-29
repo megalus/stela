@@ -19,6 +19,9 @@ def test_evaluated_value_from_ini_file(monkeypatch):
     settings = stela_reload()
 
     assert settings["app.number_of_cats"] == 10
+    monkeypatch.delenv("APP_NUMBER_OF_CATS")
+    monkeypatch.delenv("STELA_EVALUATE_DATA")
+    stela_reload()
 
 
 @pytest.mark.parametrize(
@@ -52,6 +55,9 @@ def test_evaluated_value_from_environment(settings, monkeypatch):
     settings = stela_reload()
     assert settings["cat.names"] == ["Mr. Bigglesworth", "Grumpy Cat"]
     assert settings.get("cat.names") == ["Mr. Bigglesworth", "Grumpy Cat"]
+    monkeypatch.delenv("STELA_EVALUATE_DATA")
+    monkeypatch.delenv("CAT_NAMES")
+    stela_reload()
 
 
 def test_do_not_read_from_environment(monkeypatch):
@@ -59,3 +65,6 @@ def test_do_not_read_from_environment(monkeypatch):
     monkeypatch.setenv("NUMBER_OF_CATS", "10")
     settings = stela_reload()
     assert settings["app.number_of_cats"] == "1"
+    monkeypatch.delenv("STELA_DO_NOT_READ_ENVIRONMENT")
+    monkeypatch.delenv("NUMBER_OF_CATS")
+    stela_reload()

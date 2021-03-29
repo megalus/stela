@@ -88,9 +88,7 @@ class StelaCut(Cut):  # type: ignore
         """
         if "[" not in path:
             environment_variable = self.get_environment_variable_name(path)
-            value = self.get_value_from_memory(
-                environment_variable
-            ) or self.get_value_from_dotenv(environment_variable)
+            value = self.get_value_from_memory(environment_variable)
             if value:
                 if self.stela_options.evaluate_data:
                     try:
@@ -135,15 +133,3 @@ class StelaCut(Cut):  # type: ignore
             f"{self.stela_options.environment_suffix}".upper().strip()
         )
         return environment_variable
-
-    def get_value_from_dotenv(self, environment_variable):
-        from loguru import logger
-
-        if self.stela_options.do_not_read_dotenv:
-            logger.debug("Ignoring Environment variables in dotenv file.")
-            return
-
-        value = self.stela_options.dotenv_data.get(environment_variable)
-        if value:
-            logger.debug(f"Using value from dotenv for: {environment_variable}")
-        return value

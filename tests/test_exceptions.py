@@ -12,6 +12,7 @@ def test_no_environment_found(mocker, monkeypatch):
     with pytest.raises(StelaEnvironmentNotFoundError):
         stela_reload()
     monkeypatch.delenv("STELA_USE_ENVIRONMENT_LAYERS")
+    stela_reload()
 
 
 def test_wrong_file_type(monkeypatch):
@@ -19,3 +20,4 @@ def test_wrong_file_type(monkeypatch):
     with pytest.raises(StelaFileTypeError):
         stela_reload()
     monkeypatch.delenv("STELA_CONFIG_FILE_EXTENSION")
+    stela_reload()

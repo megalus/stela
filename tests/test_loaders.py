@@ -10,16 +10,6 @@ def test_dotenv_loader(dotenv_settings):
     assert dotenv_settings["secret"] == "dotenv_secret"
 
 
-def test_embed_loader(embed_settings):
-    # Assert
-    assert embed_settings.to_dict == {
-        "DEFAULT": {},
-        "shared_attribute": "foo.bar",
-        "secret": "embed_secret",
-        "app": {"number_of_cats": "1", "secret": "foo", "use_scalpl": "true"},
-    }
-
-
 def test_file_loader(stela_default_settings):
     # Arrange
     test_config = StelaOptions(**stela_default_settings).get_config()

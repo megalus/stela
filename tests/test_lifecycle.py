@@ -32,3 +32,4 @@ def test_default_lifecycle(full_lifecycle, monkeypatch):
     monkeypatch.setenv("SECRET", "my_super_secret")
     assert settings["secret"] == "my_super_secret"
     monkeypatch.delenv("SECRET")
+    stela_reload()

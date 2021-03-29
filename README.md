@@ -68,10 +68,10 @@ will return the `pyproject.toml` value.
 For example, for `my_database_credentials` Stela will look for
 `MY_DATABASE_CREDENTIALS` in the following order:
 
-1. `MY_DATABASE_CREDENTIALS` exported or defined in shell (ex. `export
-   MY_DATABASE_CREDENTIALS=foo`), if exists
-2. `MY_DATABASE_CREDENTIALS` in `.env` file, if exists
-3. `my_database_credentials` in `pyproject.toml`
+1. Add `.env` data in python environment, overwriting original data
+   if exists.
+2. Check for `MY_DATABASE_CREDENTIALS` in `os.environ`
+3. Check for `my_database_credentials` in `pyproject.toml`
 
 ### Using layered environments
 
@@ -152,6 +152,8 @@ env_table = "environment"                   # The main environment table in pypr
 use_environment_layers = false              # Use environment layers
 env_file = ".env"                           # dotenv file name
 config_file_path = "."                      # relative path for configuration files
+do_not_read_dotenv = False                  # If True, will load dotenv file in os.environ
+dotenv_overwrites_memory = True             # If True, will not overwrite keys from dotenv file if they exists on environ
 ```
 
 Example:
@@ -485,6 +487,7 @@ evaluate_data = false                               # Evaluate data received fro
 load_order = ["embed", "file", "custom"]            # Default order for Loaders in Load Phase
 show_logs = true                                    # As per loguru settings.
 use_environment_layers = false                      # Use environment layers
+dotenv_overwrites_memory = True                     # If True, will not overwrite keys from dotenv file if they exists on environ
 ```
 
 ### Migrate from version 1.x

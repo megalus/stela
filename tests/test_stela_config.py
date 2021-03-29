@@ -46,5 +46,8 @@ def test_get_environment_from_env(dotenv2_settings, monkeypatch):
 
     # From Environment
     monkeypatch.setenv("ENVIRONMENT", "staging")
+    monkeypatch.setenv("STELA_DOTENV_OVERWRITES_MEMORY", False)
     settings = stela_reload()
     assert settings.stela_options.current_environment == "staging"
+    monkeypatch.delenv("STELA_DOTENV_OVERWRITES_MEMORY")
+    monkeypatch.delenv("ENVIRONMENT")

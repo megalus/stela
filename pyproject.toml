@@ -68,10 +68,11 @@ toml = "*"
 python-dotenv = "*"
 
 [env]
-shared_attribute = "foo.bar"
+project.shared_attribute = "foo.bar"
 
 [env.test]
-secret = "embed_secret"
+project.secret = "embed_secret"
+
 
 [tool.poetry.dev-dependencies]
 black = {version = "*", allow-prereleases = true}

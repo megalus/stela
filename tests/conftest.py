@@ -13,6 +13,7 @@ def stela_default_settings():
     return {
         "environment_variable_name": "ENVIRONMENT",
         "default_environment": "test",
+        "current_environment": "test",
         "config_file_extension": StelaFileType.INI,
         "config_file_prefix": "",
         "config_file_suffix": "",
@@ -26,6 +27,9 @@ def stela_default_settings():
         "env_file": ".env",
         "load_order": DEFAULT_ORDER,
         "env_table": "environment",
+        "filenames": ["test.ini"],
+        "use_environment_layers": True,
+        "dotenv_overwrites_memory": True,
     }
 
 

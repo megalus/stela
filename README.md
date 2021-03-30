@@ -171,17 +171,17 @@ environment_variable_name = "DJANGO_ENV"
 env_table = "my_project.config"
 
 [my_project.config]
-DEBUG = true
+project.debug = true
 
 [my_project.config.production]
-DEBUG = false
+project.debug = false
 ```
 
 ```python
 # settings.py
 from stela import settings
 
-DEBUG = settings["DEBUG"]  # False
+DEBUG = settings["project.debug"]  # False from pyproject.toml or from PROJECT_DEBUG in environment
 ```
 
 ## Advanced Use

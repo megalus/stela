@@ -374,11 +374,11 @@ def add_ssm_parameters(data: dict, options: StelaOptions) -> Dict[Any, Any]:
     """
     ssm = boto3.client('ssm')
     environment = options.current_environment
-    parameters = ssm.get_parameters_by_path(
-        Name=f'/foo/bar/{environment}',
+    response = ssm.get_parameters_by_path(
+        Path=f'/foo/bar/{environment}',
         WithDecryption=True
     )
-    return parameters
+    return {parameter["Name"]: parameter["Value"] for parameter in response["Parameters"]}
 ```
 
 ### Full Lifecycle example
@@ -487,22 +487,22 @@ evaluate_data = false                               # Evaluate data received fro
 load_order = ["embed", "file", "custom"]            # Default order for Loaders in Load Phase
 show_logs = true                                    # As per loguru settings.
 use_environment_layers = false                      # Use environment layers
-dotenv_overwrites_memory = True                     # If True, will not overwrite keys from dotenv file if they exists on environ
+dotenv_overwrites_memory = true                     # If True, will not overwrite keys from dotenv file if they exists on environ
 ```
 
-### Migrate from version 1.x
+### Migrating from version 1.x
 
 * Support for Python 3.6 was dropped
 * The `stela_reload` function now is imported now from `stela.utils`
 * The `@load` decorator now was renamed to `@custom_load`
-* To mimic Stela load behavior from 1.x, please configure the old
-  lifecycle in `pyproject.toml`:
+* To mimic Stela load behavior from 1.x (Pre -> Load or Custom -> Post),
+  please configure the old lifecycle in `pyproject.toml`:
 
 ```toml
 [tool.stela]
 use_environment_layers = true
 do_not_read_dotenv = true
-load_order = ["file"] # or ["custom"] together with @custom_load decorator
+load_order = ["file"] # or ["custom"] with @custom_load decorator
 ```
 
 ### Not working?

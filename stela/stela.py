@@ -9,6 +9,7 @@ from stela.loaders.embed import read_embed
 from stela.loaders.file import read_file
 from stela.stela_cut import StelaCut
 from stela.stela_options import StelaOptions
+from stela.utils import merge_dicts
 
 
 @dataclass
@@ -27,29 +28,29 @@ class Stela:
     def run_preload(self):
         if getattr(self.options, "pre_load", None) is not None:
             self._pre_loader_data = self.options.pre_load(options=self.options)
-            self.settings.update(self._pre_loader_data)
+            merge_dicts(self._pre_loader_data, self.settings)
 
     def run_embed_loader(self):
         self._embed_data = read_embed(self.options)
-        self.settings.update(self._embed_data)
+        merge_dicts(self._embed_data, self.settings)
 
     def run_file_loader(self):
         self._file_loader_data = read_file(self.options)
-        self.settings.update(self._file_loader_data)
+        merge_dicts(self._file_loader_data, self.settings)
 
     def run_custom_loader(self):
         if getattr(self.options, "load", None) is not None:
             self._custom_loader_data = self.options.load(
                 data=self.settings, options=self.options
             )
-            self.settings.update(self._custom_loader_data)
+            merge_dicts(self._custom_loader_data, self.settings)
 
     def run_postload(self):
         if getattr(self.options, "post_load", None) is not None:
             self._post_loader_data = self.options.post_load(  # type: ignore
                 data=self.settings, options=self.options
             )
-            self.settings.update(self._post_loader_data)
+            merge_dicts(self._post_loader_data, self.settings)
 
     def get_project_settings(self) -> "StelaCut":
         """Get project settings running Stela Lifecycle.

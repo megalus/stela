@@ -6,41 +6,7 @@ from typing import Any, Dict
 import toml
 from scalpl import Cut
 
-from stela.utils import find_pyproject_folder
-
-
-def update_value(env_data, shared_data, env_key):
-    """Update Sub Dicts.
-
-    Example:
-
-        [environment]
-        test = true
-        project.foo = "bar"
-
-        [environment.local]
-        project.bar = "foo"
-        project.db.name = "test"
-
-    Result for ENVIRONMENT=local:
-        {
-            "test": True,
-            "project": {
-                "foo": "bar,
-                "bar": "foo",
-                "db": {
-                    "name": "test"
-                }
-            }
-
-    """
-    if isinstance(env_data[env_key], dict):
-        for k in env_data[env_key]:
-            if not shared_data[env_key].get(k):
-                shared_data[env_key][k] = {}
-            update_value(env_data[env_key], shared_data[env_key], k)
-    else:
-        shared_data[env_key] = env_data[env_key]
+from stela.utils import find_pyproject_folder, merge_dicts
 
 
 def read_embed(options: "StelaOptions") -> Dict[Any, Any]:
@@ -78,6 +44,5 @@ def read_embed(options: "StelaOptions") -> Dict[Any, Any]:
         sub_table = f"{table}.{options.current_environment}"
         logger.debug(f"Looking for sub-table [{sub_table}] inside pyproject.toml...")
         sub_table = proxy.get(sub_table, {})
-        for key in sub_table.keys():
-            update_value(sub_table, first_level_data, key)
+        merge_dicts(source_dict=sub_table, target_dict=first_level_data)
     return first_level_data

@@ -117,7 +117,10 @@ class StelaCut(Cut):  # type: ignore
     def get_value_from_memory(self, environment_variable):
         from loguru import logger
 
-        if self.stela_options.do_not_read_environment:
+        if (
+            self.stela_options.do_not_read_environment
+            and environment_variable != self.stela_options.environment_variable_name
+        ):
             logger.debug("Ignoring Environment variables in memory.")
             return
 

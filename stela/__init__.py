@@ -11,7 +11,7 @@ from stela.stela import Stela
 from stela.stela_cut import StelaCut
 from stela.stela_options import StelaOptions
 
-__version__ = "2.0.9"
+__version__ = "3.0.0"
 
 
 def get_stela() -> Stela:

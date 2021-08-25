@@ -17,10 +17,10 @@ def pre_load(f):
     def wrapper(self, *args, **kwargs):
         return f(self, *args, **kwargs)
 
-    from stela import _stela_config
+    from stela.stela_loader import StelaLoader
 
-    if not getattr(_stela_config, "pre_load", None):
-        setattr(_stela_config, "pre_load", f)
+    loader = StelaLoader()
+    loader.add_pre_loader(f)
 
     return wrapper
 
@@ -39,10 +39,10 @@ def custom_load(f):
     def wrapper(self, *args, **kwargs):
         return f(self, *args, **kwargs)
 
-    from stela import _stela_config
+    from stela.stela_loader import StelaLoader
 
-    if not getattr(_stela_config, "load", None):
-        setattr(_stela_config, "load", f)
+    loader = StelaLoader()
+    loader.add_custom_loader(f)
 
     return wrapper
 
@@ -62,9 +62,38 @@ def post_load(f):
     def wrapper(self, *args, **kwargs):
         return f(self, *args, **kwargs)
 
-    from stela import _stela_config
+    from stela.stela_loader import StelaLoader
 
-    if not getattr(_stela_config, "post_load", None):
-        setattr(_stela_config, "post_load", f)
+    loader = StelaLoader()
+    loader.add_post_loader(f)
+
+    return wrapper
+
+
+def stela_enable_logs(f):
+    from loguru import logger
+
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        logger.enable("stela")
+        ret = f(*args, **kwargs)
+        logger.disable("stela")
+        return ret
+
+    return wrapper
+
+
+def stela_disable_logs(f):
+    from loguru import logger
+
+    from stela import settings
+
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        logger.disable("stela")
+        ret = f(*args, **kwargs)
+        if settings.stela_options.show_logs:
+            logger.enable("stela")
+        return ret
 
     return wrapper

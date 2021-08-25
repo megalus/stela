@@ -22,7 +22,7 @@ def read_dotenv(
     filepath = path.joinpath(config_file_path, env_file)
     dotenv_path = find_dotenv(str(filepath))
     if dotenv_path:
-        logger.debug(f"Looking for {env_file} file...")
+        logger.info(f"Looking for {env_file} file...")
 
     load_dotenv(dotenv_path=dotenv_path, override=overwrites_memory)
     env_data = dotenv_values(dotenv_path)

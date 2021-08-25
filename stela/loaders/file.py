@@ -1,11 +1,11 @@
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 
 from stela.stela_file_reader import StelaFileReader
 from stela.utils import find_pyproject_folder
 
 
-def read_file(options: "StelaOptions") -> Dict[Any, Any]:
+def read_file(options: "StelaOptions") -> Tuple[str, Dict[Any, Any]]:
     """Stela File Loader.
 
     :param options: StelaOptions instance
@@ -16,9 +16,11 @@ def read_file(options: "StelaOptions") -> Dict[Any, Any]:
     path = find_pyproject_folder() or Path().cwd()
     reader = StelaFileReader(options)
     settings_data = {}
+    file_name = ""
     for filename in options.filenames:
         filepath = path.joinpath(options.config_file_path, filename)
-        logger.debug(f"Looking for file {filepath}...")
         if filepath.exists():
+            logger.info(f"Reading file {filepath}...")
             settings_data = reader.load_from_file(filepath)
-    return settings_data
+            file_name = "multiple-files" if len(options.filenames) > 1 else filename
+    return file_name, settings_data

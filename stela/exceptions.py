@@ -11,3 +11,9 @@ class StelaFileTypeError(Exception):
     """File Type Error."""
 
     pass
+
+
+class StelaTooManyLoadersError(Exception):
+    """Too Many Loaders Error."""
+
+    pass

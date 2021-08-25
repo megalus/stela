@@ -3,25 +3,16 @@ import pytest
 from stela.utils import stela_reload
 
 
-def test_get_from_ini_file():
-    settings = stela_reload()
-
-    assert settings.to_dict == {
-        "DEFAULT": {},
-        "app": {"use_scalpl": "true", "secret": "foo", "number_of_cats": "1"},
-    }
-    assert settings["app.number_of_cats"] == "1"
-
-
 def test_evaluated_value_from_ini_file(monkeypatch):
+    # Arrange
     monkeypatch.setenv("APP_NUMBER_OF_CATS", 10)
     monkeypatch.setenv("STELA_EVALUATE_DATA", True)
+
+    # Act
     settings = stela_reload()
 
+    # Assert
     assert settings["app.number_of_cats"] == 10
-    monkeypatch.delenv("APP_NUMBER_OF_CATS")
-    monkeypatch.delenv("STELA_EVALUATE_DATA")
-    stela_reload()
 
 
 @pytest.mark.parametrize(
@@ -34,9 +25,8 @@ def test_evaluated_value_from_ini_file(monkeypatch):
     ids=["From JSON file", "From YAML file", "From TOML file"],
 )
 def test_get_from_config_file(settings):
-    assert settings.to_dict == {
-        "cats": {"number": 3, "names": ["garfield", "tabby", "goose"]}
-    }
+    # Assert
+    assert settings["cats"] == {"number": 3, "names": ["garfield", "tabby", "goose"]}
     assert settings["cats.names[0]"] == "garfield"
 
 
@@ -50,21 +40,25 @@ def test_get_from_config_file(settings):
     ids=["From JSON file", "From YAML file", "From TOML file"],
 )
 def test_evaluated_value_from_environment(settings, monkeypatch):
+    # Arrange
     monkeypatch.setenv("STELA_EVALUATE_DATA", True)
     monkeypatch.setenv("CAT_NAMES", "['Mr. Bigglesworth','Grumpy Cat']")
+
+    # Act
     settings = stela_reload()
+
+    # Assert
     assert settings["cat.names"] == ["Mr. Bigglesworth", "Grumpy Cat"]
     assert settings.get("cat.names") == ["Mr. Bigglesworth", "Grumpy Cat"]
-    monkeypatch.delenv("STELA_EVALUATE_DATA")
-    monkeypatch.delenv("CAT_NAMES")
-    stela_reload()
 
 
 def test_do_not_read_from_environment(monkeypatch):
+    # Arrange
     monkeypatch.setenv("STELA_DO_NOT_READ_ENVIRONMENT", True)
     monkeypatch.setenv("NUMBER_OF_CATS", "10")
+
+    # Act
     settings = stela_reload()
-    assert settings["app.number_of_cats"] == "1"
-    monkeypatch.delenv("STELA_DO_NOT_READ_ENVIRONMENT")
-    monkeypatch.delenv("NUMBER_OF_CATS")
-    stela_reload()
+
+    # Assert
+    assert settings["project.number_of_cats"] == "1"

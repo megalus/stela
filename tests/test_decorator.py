@@ -1,37 +1,25 @@
-from stela import Stela, __version__
+import pytest
+
+from stela.decorators import custom_load, post_load, pre_load
+from stela.utils import stela_reload
 
 
-def test_run_pre_load(stela_default_settings, options_with_pre_loader):
+@pytest.mark.parametrize(
+    "decorator, value",
+    [(pre_load, "pre_value"), (custom_load, "custom_value"), (post_load, "post_value")],
+)
+def test_decorators(decorator, value, prepare_decorators):
     # Arrange
-    stela = Stela(options=options_with_pre_loader)
+    @decorator
+    def decorator_for_unit_test(*args, **kwargs):
+        return {
+            f"{pre_load.__name__}": value,
+        }
+
+    stela_reload()
 
     # Act
-    stela.run_preload()
-
-    # Assert
-    assert stela.settings == {
-        "environment_name": stela.options.environment_variable_name,
-        "pre_attribute": True,
-    }
-
-
-def test_run_custom_load(stela_default_settings, options_with_custom_loader):
-    # Arrange
-    stela = Stela(options=options_with_custom_loader)
-
-    # Act
-    stela.run_custom_loader()
-
-    # Assert
-    assert stela.settings == {
-        "evaluate_data": stela.options.evaluate_data,
-        "attribute": True,
-    }
-
-
-def test_run_post_load():
-    # Arrange
     from stela import settings
 
     # Assert
-    assert settings["stela_version"] == __version__
+    assert settings[f"{pre_load.__name__}"] == value

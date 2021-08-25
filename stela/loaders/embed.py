@@ -29,7 +29,7 @@ def read_embed(options: "StelaOptions") -> Dict[Any, Any]:
     pattern = fr"(?<=\[{table}\.)\w+"
     environment_list = re.findall(pattern, raw_data)
 
-    logger.debug(f"Looking for table [{table}] inside pyproject.toml...")
+    logger.info(f"Looking for table [{table}] inside pyproject.toml...")
     proxy = Cut(toml_data)
     table_data = proxy.get(options.env_table, {})
     first_level_data = deepcopy(table_data)
@@ -41,8 +41,10 @@ def read_embed(options: "StelaOptions") -> Dict[Any, Any]:
             del first_level_data[key]
 
     if options.use_environment_layers:
-        sub_table = f"{table}.{options.current_environment}"
-        logger.debug(f"Looking for sub-table [{sub_table}] inside pyproject.toml...")
-        sub_table = proxy.get(sub_table, {})
+        sub_table_name = f"{table}.{options.current_environment}"
+        logger.info(
+            f"Looking for sub-table [{sub_table_name}] inside pyproject.toml..."
+        )
+        sub_table = proxy.get(sub_table_name, {})
         merge_dicts(source_dict=sub_table, target_dict=first_level_data)
     return first_level_data

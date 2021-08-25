@@ -1,7 +1,3 @@
-from stela import Stela
-from stela.utils import stela_reload
-
-
 def test_default_lifecycle(full_lifecycle, monkeypatch):
     """Test Stela Full Lifecycle.
 
@@ -12,24 +8,34 @@ def test_default_lifecycle(full_lifecycle, monkeypatch):
         4. From custom loader:  "custom_load_secret" (@custom_load function)
         5. From post_load:      "post_load_secret" (@post_load function)
     """
-    test_stela = Stela(options=full_lifecycle)
-    test_settings = test_stela.get_project_settings()
 
-    assert test_stela._pre_loader_data["secret"] == "pre_load_secret"
-    assert test_stela._embed_data["project"]["secret"] == "embed_secret"
-    assert test_stela._file_loader_data["app"]["secret"] == "foo"
-    assert test_stela._custom_loader_data["secret"] == "custom_load_secret"
-    assert test_stela._post_loader_data["secret"] == "post_load_secret"
-
-    # From dotenv file
-    assert test_settings["secret"] == "dotenv_secret"
-
-    stela_reload()
     from stela import settings
 
-    assert settings["secret"] == "dotenv_secret"
-
-    monkeypatch.setenv("SECRET", "my_super_secret")
-    assert settings["secret"] == "my_super_secret"
     monkeypatch.delenv("SECRET")
-    stela_reload()
+    assert settings["project.secret"] == "post_load_secret"
+
+    assert settings.stela_loader.pre_data["project"]["secret"] == "pre_load_secret"
+    assert settings.stela_loader.embed_data["project"]["secret"] == "embed_secret"
+    assert settings.stela_loader.file_data["project"]["secret"] == "foo"
+    assert (
+        settings.stela_loader.custom_data["project"]["secret"] == "custom_load_secret"
+    )
+    assert settings.stela_loader.post_data["project"]["secret"] == "post_load_secret"
+
+    assert settings.to_dict == {
+        "DEFAULT": {},
+        "api_timeout": 60,
+        "custom_key": 2,
+        "post_key": 3,
+        "pre_key": 1,
+        "project": {
+            "number_of_cats": "1",
+            "secret": "post_load_secret",
+            "shared_attribute": "foo.bar",
+            "use_scalpl": "true",
+        },
+        "stele": "merneptah",
+    }
+
+    monkeypatch.setenv("PROJECT_SECRET", "good_dog")
+    assert settings["project.secret"] == "good_dog"

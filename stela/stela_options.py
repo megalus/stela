@@ -30,7 +30,8 @@ class StelaOptions:
     evaluate_data: bool = False
     config_file_path: str = "."
     filenames: List[str] = field(default_factory=list)
-    show_logs: bool = True
+    show_logs: bool = False
+    log_filtered_value: bool = True
     do_not_read_environment: bool = False
     do_not_read_dotenv: bool = False
     env_file: str = ".env"
@@ -99,6 +100,11 @@ class StelaOptions:
             ),
             "show_logs": cls.get_from_env_or_settings(
                 "show_logs", file_settings, cls.show_logs
+            ),
+            "log_filtered_value": cls.get_from_env_or_settings(
+                "log_filtered_value",
+                file_settings,
+                cls.log_filtered_value,
             ),
             "do_not_read_environment": cls.get_from_env_or_settings(
                 "do_not_read_environment",

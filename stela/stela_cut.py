@@ -10,6 +10,8 @@ from typing import Any, Dict, Optional, Tuple
 from scalpl import Cut
 from scalpl.scalpl import index_error, key_error, split_path, traverse, type_error
 
+from stela.utils import show_value
+
 
 class FakeNone:
     """Fake None for Stela Cut.
@@ -34,6 +36,16 @@ class StelaCut(Cut):  # type: ignore
     def stela_options(self, options: "StelaOptions"):  # type: ignore
         """Save Stela Options in instance."""
         self._options = options
+
+    @property
+    def stela_loader(self) -> "StelaLoader":  # type: ignore
+        """Return Stela Loader."""
+        return self._loader
+
+    @stela_loader.setter
+    def stela_loader(self, loader: "StelaLoader"):  # type: ignore
+        """Save Stela Loader in instance."""
+        self._loader = loader
 
     @property
     def to_dict(self) -> Dict[Any, Any]:
@@ -126,7 +138,10 @@ class StelaCut(Cut):  # type: ignore
 
         value = os.getenv(environment_variable)
         if value:
-            logger.debug(f"Using value from memory for: {environment_variable}")
+            logger.debug(
+                f"Using environment value: {environment_variable}="
+                f"{show_value(value, self.stela_options.log_filtered_value)}"
+            )
         return value
 
     def get_environment_variable_name(self, path):

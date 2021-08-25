@@ -28,8 +28,10 @@ environment variables.
 11. [When Stela read the data?](#when-stela-read-the-data)
 12. [Refreshing Stela settings](#refreshing-stela-settings)
 13. [How Stela read the dictionary values?](#how-stela-read-the-dictionary-values)
-14. [All Stela Configuration Options](#all-stela-configuration-options)
-15. [Migrate from version 1.x](#migrate-from-version-1x)
+14. [Logging Data](#logging-data)
+15. [All Stela Configuration Options](#all-stela-configuration-options)
+16. [Migrating from version 2.x](#migrating-from-version-2x)
+17. [Migrating from version 1.x](#migrating-from-version-1x)
 
 
 ## Install
@@ -571,7 +573,7 @@ load_order = ["embed", "file", "custom"]            # Default order for Loaders 
 show_logs = false                                   # As per loguru settings.
 log_filtered_value = true                           # When logging data, filter values from dict/env.
 use_environment_layers = false                      # Use environment layers
-dotenv_overwrites_memory = true                     # If True, will not overwrite keys from dotenv file if they exists on environ
+dotenv_overwrites_memory = true                     # If True, values from os.environ will be override with dotenv values. If False, order is os.environ -> dotenv values -> files
 ```
 
 ### Migrating from version 2.x

@@ -40,7 +40,7 @@ class Stela:
                 data=self.settings, options=self.options
             )
             merge_dicts(loader.custom_data, self.settings)
-        return loader.custom_load_function.__name__
+            return loader.custom_load_function.__name__
 
     def get_project_settings(self) -> "StelaCut":
         """Get project settings running Stela Lifecycle.
@@ -55,7 +55,7 @@ class Stela:
         if self.loader.pre_load_function:
             self.loader.pre_data = self.loader.pre_load_function(options=self.options)
             merge_dicts(self.loader.pre_data, self.settings)
-        self.log_current_data(origin=self.loader.pre_load_function.__name__)
+            self.log_current_data(origin=self.loader.pre_load_function.__name__)
 
         # Load Phase
         logger.info(
@@ -73,7 +73,7 @@ class Stela:
                 data=self.settings, options=self.options
             )
             merge_dicts(self.loader.post_data, self.settings)
-        self.log_current_data(origin=self.loader.post_load_function.__name__)
+            self.log_current_data(origin=self.loader.post_load_function.__name__)
 
         proxy = StelaCut(self.settings)
         proxy.stela_options = self.options

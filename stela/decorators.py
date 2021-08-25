@@ -20,7 +20,7 @@ def pre_load(f):
     from stela.stela_loader import StelaLoader
 
     loader = StelaLoader()
-    loader.pre_load_function = f
+    loader.add_pre_loader(f)
 
     return wrapper
 
@@ -42,7 +42,7 @@ def custom_load(f):
     from stela.stela_loader import StelaLoader
 
     loader = StelaLoader()
-    loader.custom_load_function = f
+    loader.add_custom_loader(f)
 
     return wrapper
 
@@ -65,7 +65,7 @@ def post_load(f):
     from stela.stela_loader import StelaLoader
 
     loader = StelaLoader()
-    loader.post_load_function = f
+    loader.add_post_loader(f)
 
     return wrapper
 

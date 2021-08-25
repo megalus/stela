@@ -1,5 +1,7 @@
 from typing import Any, Callable, Dict, Optional
 
+from stela.exceptions import StelaTooManyLoadersError
+
 
 class SingletonMeta(type):
     """
@@ -23,7 +25,6 @@ class SingletonMeta(type):
 
 class StelaLoader(metaclass=SingletonMeta):
     def __init__(self):
-        self.pre_load_function = None
         self.pre_load_function: Optional[Callable] = None
         self.custom_load_function: Optional[Callable] = None
         self.post_load_function: Optional[Callable] = None
@@ -33,3 +34,30 @@ class StelaLoader(metaclass=SingletonMeta):
         self.file_data: Optional[Dict[Any, Any]] = None
         self.custom_data: Optional[Dict[Any, Any]] = None
         self.post_data: Optional[Dict[Any, Any]] = None
+
+    def add_pre_loader(self, function: Callable):
+        if not self.pre_load_function:
+            self.pre_load_function = function
+        else:
+            raise StelaTooManyLoadersError(
+                f"A previous pre-load function was "
+                f"added: {self.pre_load_function.__name__}."
+            )
+
+    def add_custom_loader(self, function: Callable):
+        if not self.custom_load_function:
+            self.custom_load_function = function
+        else:
+            raise StelaTooManyLoadersError(
+                f"A previous custom-load was "
+                f"added {self.custom_load_function.__name__}."
+            )
+
+    def add_post_loader(self, function: Callable):
+        if not self.post_load_function:
+            self.post_load_function = function
+        else:
+            raise StelaTooManyLoadersError(
+                f"A previous post-load was "
+                f"added {self.post_load_function.__name__}."
+            )

@@ -48,7 +48,7 @@ under the table `environment` add the key/values you need:
 [environment]
 my_file_path = "/foo/bar"
 my_api_url = "https://foo.bar"
-my_database_url = "user@password:db"
+db.url = "user@password:db"
 ```
 
 In Python you will access these settings importing stela like this:
@@ -66,25 +66,38 @@ Stela will check first, for the requested key, his SCREAMING_SNAKE_CASE
 format in environment memory or `.env` file. If no data is found, Stela
 will return the value from `pyproject.toml` tables.
 
-For example, for `my_database_url` Stela will look for
-`MY_DATABASE_URL` in the following order:
+Some examples:
+
+| Variable in toml   | Environment Variable Name    |
+|:-------------------|:-----------------------------|
+| debug              | DEBUG                        |
+| 3rd_party_api_url  | 3_RD_PARTY_API_URL           |
+| db.password        | DB_PASSWORD
+
+For example, for `db.url` Stela will look for
+`DB_URL` in the following order:
 
 1. Import `.env` data, if exists, in python environment,
 using [python-dotenv](https://github.com/theskumar/python-dotenv) library.
-2. Check for `MY_DATABASE_URL` in `os.environ`
-3. Fallback to `my_database_url` in `pyproject.toml`
+2. Check for `DB_URL` in `os.environ`
+3. Fallback to `db.url` in `pyproject.toml`
 
 If data does not exist, Stela will raise a `KeyError`, like a dictionary.
 
+```toml
+# pyproject.toml
+db.url = "fake@credentials"
+```
+
 ```dotenv
 # .env file
-MY_DATABASE_URL=real@credentials
+DB_URL=real@credentials  # will override info from pyproject.toml
 ```
 
 ```python
 from stela import settings
 
-DATABASE_URL = settings["my_database_url"]
+DATABASE_URL = settings["db.url"]
 # DATABASE_URL = "real@credentials"
 ```
 
@@ -301,13 +314,22 @@ do_not_read_dotenv = true
 
 ### How Stela handle more complex cases?
 
-Stela uses this lifecycle to handle the settings load:
+Stela uses this lifecycle to handle the settings load, using the `pre_load`, `custom_load` and `post_load` decorators
+to modified data received from files and pyproject.toml, before importing settings.
+
+To use this:
+
+1. The decorated function **must** return a valid python dictionary.
+2. Just one decorated function per phase.
+3. Import the decorated functions before import stela settings for the first time. If you create the file
+`conf_stela.py` at project root, decorated functions in there will be imported automatically.
+
 
 #### The Pre-Load Phase (optional)
 
 If defined, will always be the first step. To setup, create a
 `conf_stela.py` file on project root and use the `pre_load` decorator
-for your code. This function must return a valid python dictionary.
+for your code.
 
 Pre-Load Example:
 
@@ -489,7 +511,7 @@ show_logs = true
 show_filtered_value = true
 ```
 
-Also, you can use decorators for fine-tuning logging:
+Also, you can use decorators for fine-tuning logging (you can use these decorations multiple times):
 
 ```python
 from stela import settings

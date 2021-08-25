@@ -124,6 +124,13 @@ def prepare_decorators():
     old_custom_data = loader.custom_data
     old_post_data = loader.post_data
 
+    loader.pre_load_function = None
+    loader.custom_load_function = None
+    loader.post_load_function = None
+    loader.pre_data = None
+    loader.custom_data = None
+    loader.post_data = None
+
     yield
 
     loader.pre_load_function = old_pre_loader

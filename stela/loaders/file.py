@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Any, Dict, Tuple
 
 from stela.stela_file_reader import StelaFileReader
-from stela.utils import find_pyproject_folder
+from stela.utils import find_file_folder
 
 
 def read_file(options: "StelaOptions") -> Tuple[str, Dict[Any, Any]]:
@@ -13,7 +13,7 @@ def read_file(options: "StelaOptions") -> Tuple[str, Dict[Any, Any]]:
     """
     from loguru import logger
 
-    path = find_pyproject_folder() or Path().cwd()
+    path = find_file_folder("pyproject.toml") or Path().cwd()
     reader = StelaFileReader(options)
     settings_data = {}
     file_name = ""

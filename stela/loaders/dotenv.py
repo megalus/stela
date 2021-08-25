@@ -3,7 +3,7 @@ from typing import Any, Dict
 
 from dotenv import dotenv_values, find_dotenv, load_dotenv
 
-from stela.utils import find_pyproject_folder
+from stela.utils import find_file_folder
 
 
 def read_dotenv(
@@ -18,7 +18,7 @@ def read_dotenv(
     """
     from loguru import logger
 
-    path = find_pyproject_folder() or Path().cwd()
+    path = find_file_folder("pyproject.toml") or Path().cwd()
     filepath = path.joinpath(config_file_path, env_file)
     dotenv_path = find_dotenv(str(filepath))
     if dotenv_path:

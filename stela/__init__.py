@@ -13,14 +13,16 @@ from stela.stela_options import StelaOptions
 
 __version__ = "3.0.1"
 
+from stela.utils import find_file_folder
+
 
 def get_stela() -> Stela:
     stela_config = StelaOptions.get_config()
 
-    try:
+    conf_path = find_file_folder("conf_stela.py")
+    if conf_path:
+        logger.debug(f"Found conf_stela.py at: {conf_path} - Importing data...")
         import conf_stela  # noqa
-    except ImportError:
-        pass
 
     if stela_config.show_logs:
         logger.enable("stela")

@@ -29,8 +29,10 @@ def stela_reload() -> "StelaCut":  # type: ignore
     return stela.settings
 
 
-def find_pyproject_folder() -> Optional[Path]:
-    """Find pyproject.toml file.
+def find_file_folder(file_name: str) -> Optional[Path]:
+    """Find base folder for named file.
+
+    For pyproject.toml and conf_stela.py files.
 
     Look for:
         1. Current working directory up to root
@@ -41,9 +43,9 @@ def find_pyproject_folder() -> Optional[Path]:
     """
 
     def look_for_file(current_path: Path) -> Optional[Path]:
-        if current_path.joinpath("pyproject.toml").exists():
+        if current_path.joinpath(file_name).exists():
             return current_path
-        if str(current_path) in ["/", "\\"]:
+        if str(current_path) in ["/", "\\"] or current_path.parent == current_path:
             return None
         return look_for_file(current_path.parent)
 

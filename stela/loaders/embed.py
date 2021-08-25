@@ -6,7 +6,7 @@ from typing import Any, Dict
 import toml
 from scalpl import Cut
 
-from stela.utils import find_pyproject_folder, merge_dicts
+from stela.utils import find_file_folder, merge_dicts
 
 
 def read_embed(options: "StelaOptions") -> Dict[Any, Any]:
@@ -18,7 +18,7 @@ def read_embed(options: "StelaOptions") -> Dict[Any, Any]:
     from loguru import logger
 
     # Get toml data
-    path = find_pyproject_folder() or Path().cwd()
+    path = find_file_folder("pyproject.toml") or Path().cwd()
     filepath = path.joinpath("pyproject.toml")
     toml_data = toml.load(filepath)
     table = options.env_table

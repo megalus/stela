@@ -8,7 +8,7 @@ from loguru import logger
 
 from stela.exceptions import StelaEnvironmentNotFoundError, StelaFileTypeError
 from stela.loaders.dotenv import read_dotenv
-from stela.utils import StelaFileType, find_pyproject_folder
+from stela.utils import StelaFileType, find_file_folder
 
 DEFAULT_ORDER = ["embed", "file", "custom"]
 
@@ -66,7 +66,7 @@ class StelaOptions:
         """Get config from pyproject.toml."""
 
         file_settings = {}
-        path = find_pyproject_folder()
+        path = find_file_folder("pyproject.toml")
         if path:
             filepath = path.joinpath("pyproject.toml")
             toml_settings = toml.load(filepath)

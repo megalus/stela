@@ -64,7 +64,8 @@ class Stela:
         )
         for loader_name in self.options.load_order:
             origin = getattr(self, f"run_{loader_name}_loader")()
-            self.log_current_data(origin=origin)
+            if origin:
+                self.log_current_data(origin=origin)
 
         # Post-Load Phase
         logger.info("Starting Stela Post-Load Phase...")
@@ -99,8 +100,8 @@ class Stela:
                     parents + [dict_key] if dict_key not in parents else parents
                 )
                 logger.debug(
-                    f"[{origin}] '{'.'.join(parents_key)} = "
-                    f"{show_value(dict_value, self.options.log_filtered_value)}'"
+                    f"[{origin}] {'.'.join(parents_key)} = "
+                    f"{show_value(dict_value, self.options.log_filtered_value)}"
                 )
 
         for key, value in self.settings.items():

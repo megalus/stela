@@ -18,4 +18,6 @@ def test_logs_decorator(caplog, monkeypatch, decorator, expected_log):
 
     # Act
     get_secret()
+
+    # Assert
     assert expected_log in caplog.text

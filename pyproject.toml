@@ -69,10 +69,13 @@ python-dotenv = "*"
 
 [env]
 project.shared_attribute = "foo.bar"
+api_timeout = 60
 
 [env.test]
 project.secret = "embed_secret"
 
+[env.production]
+api_timeout = 10
 
 [tool.poetry.dev-dependencies]
 black = {version = "*", allow-prereleases = true}

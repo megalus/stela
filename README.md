@@ -40,101 +40,128 @@ $ pip install stela
 
 ## Basic Use
 
-For your *project settings*, you can create a `pyproject.toml` file, and
-under the table `environment` add the key/values:
+For your *project settings*, you need to create a `pyproject.toml` file, and
+under the table `environment` add the key/values you need:
 
 ```toml
 # pyproject.toml
 [environment]
 my_file_path = "/foo/bar"
-my_database_credentials = "user@password:db" # faked data
+my_api_url = "https://foo.bar"
+my_database_url = "user@password:db"
 ```
 
-On Python you can access this settings like this:
+In Python you will access these settings importing stela like this:
 
 ```python
 from stela import settings
 
-db_conf = settings["my_database_credentials"]
-# db_conf = "user@password:db"
+API_URL = settings["my_api_url"]
+# API_URL = "https://foo.bar"
 ```
 
 ### Environment Variables from Shell
 
 Stela will check first, for the requested key, his SCREAMING_SNAKE_CASE
 format in environment memory or `.env` file. If no data is found, Stela
-will return the `pyproject.toml` value.
+will return the value from `pyproject.toml` tables.
 
-For example, for `my_database_credentials` Stela will look for
-`MY_DATABASE_CREDENTIALS` in the following order:
+For example, for `my_database_url` Stela will look for
+`MY_DATABASE_URL` in the following order:
 
-1. Add `.env` data in python environment, overwriting original data
-   if exists.
-2. Check for `MY_DATABASE_CREDENTIALS` in `os.environ`
-3. Check for `my_database_credentials` in `pyproject.toml`
+1. Import `.env` data, if exists, in python environment,
+using [python-dotenv](https://github.com/theskumar/python-dotenv) library.
+2. Check for `MY_DATABASE_URL` in `os.environ`
+3. Fallback to `my_database_url` in `pyproject.toml`
+
+If data does not exist, Stela will raise a `KeyError`, like a dictionary.
+
+```dotenv
+# .env file
+MY_DATABASE_URL=real@credentials
+```
+
+```python
+from stela import settings
+
+DATABASE_URL = settings["my_database_url"]
+# DATABASE_URL = "real@credentials"
+```
 
 ### Using layered environments
 
 For now, Stela are looking only for the `environment` table in your
-`pyproject.toml`. But for layered environments you maybe need to define
+`pyproject.toml`. But you may need to define
 your settings *per environment layer* (i.e. development, tests, staging,
 production, etc.)
 
-To achieve this, first define `environment` sub-tables in
+First add `use_environment_layers` in Stela options:
+
+```toml
+# pyproject.toml
+[tool.stela]
+use_environment_layers = true
+```
+
+Then define `environment` sub-tables in
 `pyproject.toml`:
 
 ```toml
 # pyproject.toml
-
-[environment]  # now is a shared data between environments
-my_database_credentials = "user@password:db"  # faked data
-
-[environment.local]
-my_file_path = "/local/foo/bar"
-
-[environment.production]
-my_file_path = "/server/foo/bar"
-```
-
-Then add `use_environment_layers` in Stela options:
-
-```toml
-# pyproject.toml
-
 [tool.stela]
 use_environment_layers = true
 
 [environment]  # now is a shared data between environments
-my_database_credentials = "user@password:db"  # faked data
+my_api_timeout = 30
 
 [environment.local]
-my_file_path = "/local/foo/bar"
+my_api_url = "http://localhost:8000"
 
 [environment.production]
-my_file_path = "/server/foo/bar"
+my_api_url = "https://foo.bar"
 ```
 
 When you add `use_environment_layers = true` in config, Stela will now
 always try to find the current environment looking for the `ENVIRONMENT`
 variable. If this variable is not defined, Stela will use the default
 environment, if available. If not, will raise a
-`StelaEnvironmentNotFoundError`. To add a default environment:
+`StelaEnvironmentNotFoundError`.
+
+To add a default environment, use the `default_environment` option:
 
 ```toml
 # pyproject.toml
-
 [tool.stela]
 use_environment_layers = true
 default_environment = "local"
 
 [environment]  # now is a shared data between environments
-my_database_credentials = "user@password:db"  # faked data
+my_api_timeout = 30
 
 [environment.local]
-my_file_path = "/local/foo/bar"
+my_api_url = "http://localhost:8000"
 
 [environment.production]
-my_file_path = "/server/foo/bar"
+my_api_url = "https://foo.bar"
+```
+
+To use different environment variable, use the `environment_variable_name` option:
+
+```toml
+# pyproject.toml
+[tool.stela]
+use_environment_layers = true
+default_environment = "local"
+environment_variable_name = "ENV"
+
+[environment]  # now is a shared data between environments
+my_api_timeout = 30
+
+[environment.local]
+my_api_url = "http://localhost:8000"
+
+[environment.production]
+my_api_url = "https://foo.bar"
 ```
 
 ### Customize Stela
@@ -143,7 +170,7 @@ Use the following variables to customize Stela behavior:
 
 ```toml
 # You can also set these as environment variables too using STELA_ prefix.
-# For example, environment_variable_name turns STELA_ENVIRONMENT_VARIABLE_NAME
+# For example, environment_variable_name can be override from STELA_ENVIRONMENT_VARIABLE_NAME
 
 [tool.stela]
 environment_variable_name = "ENVIRONMENT"   # The Environment variable
@@ -152,8 +179,10 @@ env_table = "environment"                   # The main environment table in pypr
 use_environment_layers = false              # Use environment layers
 env_file = ".env"                           # dotenv file name
 config_file_path = "."                      # relative path for configuration files
-do_not_read_dotenv = False                  # If True, will load dotenv file in os.environ
-dotenv_overwrites_memory = True             # If True, will not overwrite keys from dotenv file if they exists on environ
+do_not_read_dotenv = false                  # If True, will load dotenv file in os.environ
+dotenv_overwrites_memory = true             # If True, will not overwrite keys from dotenv file if they exists on environ
+show_logs = false                           # Show Stela Logs
+show_filtered_value = true                  # Show Value from Stela settings in logs filtered. Use with caution.
 ```
 
 Example:
@@ -186,8 +215,8 @@ DEBUG = settings["project.debug"]  # False from pyproject.toml or from PROJECT_D
 
 ## Advanced Use
 
-For very large projects, you can use separate config files per
-environment (like `development.ini`, `staging.ini`, etc.)
+For very large projects, you can use separate environment layer per config files
+(like `development.ini`, `staging.ini`, etc.)
 
 Also, you can use `.yaml`, `.ini`, `.json` and `.toml` files.
 
@@ -243,7 +272,7 @@ config_file_path = "."                      # relative path from project root fo
 
 We know Stela will try to find an environment variable using his
 SCREAMING_SNAKE_CASE version. In this case, when the key is `foo.bar`,
-Stela will search for an env called `FOO_BAR` in memory and dotenv
+Stela will search for an env called `FOO_BAR` in `os.environ`
 files, before returning his dict value. Also, you can add a
 prefix/suffix in this name (ex.: `MYPROJECT_FOO_BAR`). To do this,
 define them in `pyproject.toml`:
@@ -254,15 +283,11 @@ environment_prefix = "MYPROJECT_"
 environment_suffix = ""
 ```
 
-In above case, Stela will look for the `MYPROJECT_FOO_BAR` env:
-
 ```python
-# FOO_BAR = "hello_world" or
-# MYPROJECT_FOO_BAR = "hello world" if you define environment_prefix
 from stela import settings
 
 my_conf = settings["foo.bar"]
-# my_conf = "hello world"
+# my_conf = "hello world" from MYPROJECT_FOO_BAR
 ```
 
 Also, you can define Stela to never get values from shell and/or dotenv,
@@ -322,7 +347,7 @@ Each step updates data received from the previous step. You can change
 this order, modifying the `load_order` in config:
 
 ```toml
-# Or STELA_LOAD_ORDER
+# Or STELA_LOAD_ORDER env
 [tool.stela]
 # Default value is ["embed", "file", "custom"]
 load_order = ["custom"]
@@ -419,7 +444,7 @@ from flask import Flask
 
 app = Flask(__name__)
 app.config.update(
-    SECRET_KEY=settings["my_app_secret"] # will read from dict or MY_APP_SECRET value
+    SECRET_KEY=settings["my_app_secret"] # will read from dict or MY_APP_SECRET value, after run all lifecycle
 )
 
 @app.route("/")
@@ -429,20 +454,9 @@ def hello():
 
 ### Refreshing Stela settings
 
-If you need to reload settings, use the `stela.stela_reload` function:
+If you need to reload settings, use the `stela.stela_reload` function.
+Check the [unit tests](/tests/test_environments.py) for additional input.
 
-```python
-from stela.utils import stela_reload
-
-def test_different_environments(monkeypatch):
-    from stela import settings
-    assert settings.stela_options.current_environment == "test"
-
-    monkeypatch.setenv("ENVIRONMENT", "production")
-    settings = stela_reload()
-    assert settings.stela_options.current_environment == "production"
-    monkeypatch.delenv("ENVIRONMENT")
-```
 
 ### How Stela read the dictionary values?
 
@@ -461,6 +475,27 @@ rules. To do this, add in `pyproject.toml`:
 [tool.stela]
 evaluate_data = true
 ```
+
+### Logging data
+Stela use the [loguru](https://github.com/Delgan/loguru) package for logging, using `INFO` for general messages and `DEBUG` for values
+retrieved in toml, environment keys, decorators, etc... You can use the logs to debug data during Stela lifecycle
+
+By default, log are disabled. You can modify this behavior with the following configurations:
+
+```toml
+[tool.stela]
+show_logs = true
+show_filtered_value = true
+```
+
+#### Example
+```shell
+2021-08-24 22:05:56.969 | INFO     | stela.stela:get_project_settings:61 - Starting Stela Load Phase. Order is: [embed, file, custom] ...
+2021-08-24 22:05:56.970 | INFO     | stela.loaders.embed:read_embed:32 - Looking for table [environment] inside pyproject.toml...
+2021-08-24 22:05:56.971 | DEBUG    | stela.stela:log_dict:101 - [pyproject.toml] 'stele = ro***ta'
+```
+
+The log level can be defined using the `LOGURU_LOG_LEVEL` as per loguru documentation.
 
 ### All Stela Configuration Options
 
@@ -485,7 +520,8 @@ environment_suffix = ""                             # ex.: settings["foo.bar"] l
 environment_variable_name = "ENVIRONMENT"           # The Environment variable
 evaluate_data = false                               # Evaluate data received from config files
 load_order = ["embed", "file", "custom"]            # Default order for Loaders in Load Phase
-show_logs = true                                    # As per loguru settings.
+show_logs = false                                   # As per loguru settings.
+show_filtered_value = true                          # When logging data, filter values from dict/env.
 use_environment_layers = false                      # Use environment layers
 dotenv_overwrites_memory = true                     # If True, will not overwrite keys from dotenv file if they exists on environ
 ```

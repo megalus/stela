@@ -3,9 +3,8 @@ from importlib import reload
 import pytest
 
 import stela
-from stela import StelaOptions
 from stela.stela_options import DEFAULT_ORDER
-from stela.utils import StelaFileType
+from stela.utils import StelaFileType, stela_reload
 
 
 @pytest.fixture
@@ -21,7 +20,8 @@ def stela_default_settings():
         "environment_prefix": "",
         "environment_suffix": "",
         "evaluate_data": False,
-        "show_logs": True,
+        "show_logs": False,
+        "log_filtered_value": True,
         "do_not_read_environment": False,
         "do_not_read_dotenv": False,
         "env_file": ".env",
@@ -40,8 +40,6 @@ def json_settings(monkeypatch):
     monkeypatch.setenv("STELA_CONFIG_FILE_EXTENSION", "JSON")
     reload(stela)
     yield stela.settings
-    monkeypatch.delenv("STELA_CONFIG_FILE_EXTENSION")
-    reload(stela)
 
 
 @pytest.fixture()
@@ -51,8 +49,6 @@ def yaml_settings(monkeypatch):
     monkeypatch.setenv("STELA_CONFIG_FILE_EXTENSION", "YAML")
     reload(stela)
     yield stela.settings
-    monkeypatch.delenv("STELA_CONFIG_FILE_EXTENSION")
-    reload(stela)
 
 
 @pytest.fixture()
@@ -61,9 +57,7 @@ def dotenv_settings(monkeypatch):
 
     monkeypatch.setenv("STELA_ENV_FILE", ".env.test")
     reload(stela)
-    yield stela.settings
-    monkeypatch.delenv("STELA_ENV_FILE")
-    reload(stela)
+    yield
 
 
 @pytest.fixture()
@@ -73,8 +67,6 @@ def dotenv2_settings(monkeypatch):
     monkeypatch.setenv("STELA_ENV_FILE", ".env.test2")
     reload(stela)
     yield stela.settings
-    monkeypatch.delenv("STELA_ENV_FILE")
-    reload(stela)
 
 
 @pytest.fixture()
@@ -86,10 +78,16 @@ def embed_settings(monkeypatch):
     monkeypatch.setenv("STELA_DO_NOT_READ_DOTENV", True)
     reload(stela)
     yield stela.settings
-    monkeypatch.delenv("STELA_ENV_TABLE")
-    monkeypatch.delenv("STELA_USE_ENVIRONMENT_LAYERS")
-    monkeypatch.delenv("STELA_DO_NOT_READ_DOTENV")
+
+
+@pytest.fixture()
+def env_settings(monkeypatch):
+    import stela
+
+    monkeypatch.setenv("STELA_ENV_TABLE", "env")
+    monkeypatch.setenv("STELA_USE_ENVIRONMENT_LAYERS", True)
     reload(stela)
+    yield stela.settings
 
 
 @pytest.fixture()
@@ -98,33 +96,6 @@ def toml_settings(monkeypatch):
     monkeypatch.setenv("STELA_CONFIG_FILE_EXTENSION", "TOML")
     reload(stela)
     yield stela.settings
-    monkeypatch.delenv("STELA_CONFIG_FILE_EXTENSION")
-    reload(stela)
-
-
-@pytest.fixture()
-def options_with_pre_loader(stela_default_settings) -> StelaOptions:
-    def pre_load_test(options: StelaOptions):
-        return {
-            "environment_name": options.environment_variable_name,
-            "pre_attribute": True,
-        }
-
-    stela_options = StelaOptions(**stela_default_settings)
-    setattr(stela_options, "pre_load", pre_load_test)
-
-    yield stela_options
-
-
-@pytest.fixture()
-def options_with_custom_loader(stela_default_settings):
-    def custom_load_test(data: dict, options: StelaOptions):
-        return {"evaluate_data": options.evaluate_data, "attribute": True}
-
-    stela_options = StelaOptions(**stela_default_settings)
-    setattr(stela_options, "load", custom_load_test)
-
-    yield stela_options
 
 
 @pytest.fixture()
@@ -132,30 +103,29 @@ def full_lifecycle(monkeypatch, stela_default_settings):
     monkeypatch.setenv("STELA_USE_ENVIRONMENT_LAYERS", "True")
     monkeypatch.setenv("STELA_ENV_TABLE", "env")
     monkeypatch.setenv("STELA_ENV_FILE", ".env.test")
+    monkeypatch.setenv("STELA_SHOW_LOGS", "true")
+    monkeypatch.setenv("STELA_LOG_FILTERED_VALUE", "False")
+    stela_reload()
+    yield
 
-    def pre_load_test(options: StelaOptions):
-        return {
-            "secret": "pre_load_secret",
-        }
 
-    def custom_load_test(data: dict, options: StelaOptions):
-        return {
-            "secret": "custom_load_secret",
-        }
+@pytest.fixture()
+def prepare_decorators():
+    from stela.stela_loader import StelaLoader
 
-    def post_load_test(data: dict, options: StelaOptions):
-        return {
-            "secret": "post_load_secret",
-        }
+    loader = StelaLoader()
+    old_pre_loader = loader.pre_load_function
+    old_custom_loader = loader.custom_load_function
+    old_post_loader = loader.post_load_function
+    old_pre_data = loader.pre_data
+    old_custom_data = loader.custom_data
+    old_post_data = loader.post_data
 
-    stela_options = StelaOptions().get_config()
-    setattr(stela_options, "pre_load", pre_load_test)
-    setattr(stela_options, "load", custom_load_test)
-    setattr(stela_options, "post_load", post_load_test)
+    yield
 
-    yield stela_options
-
-    monkeypatch.delenv("STELA_ENV_TABLE")
-    monkeypatch.delenv("STELA_ENV_FILE")
-    monkeypatch.delenv("STELA_USE_ENVIRONMENT_LAYERS")
-    reload(stela)
+    loader.pre_load_function = old_pre_loader
+    loader.custom_load_function = old_custom_loader
+    loader.post_load_function = old_post_loader
+    loader.pre_data = old_pre_data
+    loader.custom_data = old_custom_data
+    loader.post_data = old_post_data

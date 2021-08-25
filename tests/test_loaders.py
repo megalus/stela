@@ -1,18 +1,19 @@
 from copy import deepcopy
 
-from stela import Stela, StelaOptions
+from stela import StelaOptions
+from stela.loaders.embed import read_embed
+from stela.loaders.file import read_file
 
 
 def test_dotenv_loader(dotenv_settings):
+    from stela import settings
+
     # Assert
-    assert dotenv_settings.to_dict == {
-        "DEFAULT": {},
-        "app": {"number_of_cats": "1", "secret": "foo", "use_scalpl": "true"},
-    }
-    assert dotenv_settings["secret"] == "dotenv_secret"
+    assert settings["secret"] == "dotenv_secret"
 
 
-def test_embed_loader(stela_default_settings):
+def test_embed_loader(stela_default_settings, prepare_decorators):
+    # Arrange
     options = deepcopy(stela_default_settings)
     options.update(
         {
@@ -22,14 +23,13 @@ def test_embed_loader(stela_default_settings):
             "current_environment": "test",
         }
     )
-    # Arrange
     test_config = StelaOptions(**options)
 
     # Act
-    test_settings = Stela(options=test_config).get_project_settings()
+    test_data = read_embed(test_config)
 
     # Arrange
-    assert test_settings["project.secret"] == "embed_secret"
+    assert test_data["project"]["secret"] == "embed_secret"
 
 
 def test_file_loader(stela_default_settings):
@@ -37,10 +37,8 @@ def test_file_loader(stela_default_settings):
     test_config = StelaOptions(**stela_default_settings).get_config()
 
     # Act
-    test_settings = Stela(options=test_config).get_project_settings()
+    file_name, test_data = read_file(test_config)
 
     # Assert
-    assert test_settings.to_dict == {
-        "DEFAULT": {},
-        "app": {"number_of_cats": "1", "secret": "foo", "use_scalpl": "true"},
-    }
+    assert file_name == "test.ini"
+    assert test_data["project"]["secret"] == "foo"

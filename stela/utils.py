@@ -55,10 +55,7 @@ def find_pyproject_folder() -> Optional[Path]:
     return found_path
 
 
-def merge_dicts(
-    source_dict: Dict[Any, Any],
-    target_dict: Dict[Any, Any],
-) -> None:
+def merge_dicts(source_dict: Dict[Any, Any], target_dict: Dict[Any, Any]) -> None:
     """Merge source dictionary into target.
 
     Example:
@@ -106,3 +103,19 @@ def merge_dicts(
 
     for key in source_dict.keys():
         _merge_dicts(source_dict, target_dict, key)
+
+
+def show_value(value: str, filter_values: bool) -> str:
+    """Shows dictionary value as plain text or filtered.
+
+    For filtered values with less than 3 characters
+    *** will be printed.
+
+    """
+    value = str(value)
+    if filter_values:
+        if len(value) < 4:
+            return "***"
+        visible_chars = min(int(len(value) / 3), 3)
+        value = f"{value[:visible_chars]}***{value[-visible_chars:]}"
+    return value

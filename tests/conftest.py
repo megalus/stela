@@ -1,6 +1,9 @@
+import logging
 from importlib import reload
 
 import pytest
+from _pytest.logging import caplog as _caplog  # noqa
+from loguru import logger
 
 import stela
 from stela.stela_options import DEFAULT_ORDER
@@ -129,3 +132,13 @@ def prepare_decorators():
     loader.pre_data = old_pre_data
     loader.custom_data = old_custom_data
     loader.post_data = old_post_data
+
+
+@pytest.fixture
+def caplog(_caplog):  # noqa
+    class PropogateHandler(logging.Handler):
+        def emit(self, record):
+            logging.getLogger(record.name).handle(record)
+
+    logger.add(PropogateHandler(), format="{message}")
+    yield _caplog

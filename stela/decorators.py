@@ -68,3 +68,32 @@ def post_load(f):
     loader.post_load_function = f
 
     return wrapper
+
+
+def stela_enable_logs(f):
+    from loguru import logger
+
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        logger.enable("stela")
+        ret = f(*args, **kwargs)
+        logger.disable("stela")
+        return ret
+
+    return wrapper
+
+
+def stela_disable_logs(f):
+    from loguru import logger
+
+    from stela import settings
+
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        logger.disable("stela")
+        ret = f(*args, **kwargs)
+        if settings.stela_options.show_logs:
+            logger.enable("stela")
+        return ret
+
+    return wrapper

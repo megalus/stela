@@ -477,15 +477,31 @@ evaluate_data = true
 ```
 
 ### Logging data
-Stela use the [loguru](https://github.com/Delgan/loguru) package for logging, using `INFO` for general messages and `DEBUG` for values
-retrieved in toml, environment keys, decorators, etc... You can use the logs to debug data during Stela lifecycle
+Stela use the [loguru](https://github.com/Delgan/loguru) package for logging, using `INFO` for general messages
+and `DEBUG` for key/values retrieved in toml, environment keys, decorators, etc...
+You can use the logs to debug data during Stela lifecycle.
 
-By default, log are disabled. You can modify this behavior with the following configurations:
+By default, log are disabled. You can modify this behavior globally with the following configurations:
 
 ```toml
 [tool.stela]
 show_logs = true
 show_filtered_value = true
+```
+
+Also, you can use decorators for fine-tuning logging:
+
+```python
+from stela import settings
+from stela.decorators import stela_enable_logs, stela_disable_logs
+
+@stela_enable_logs
+def my_bugged_code():
+    return settings["my_api_url"]
+
+@stela_disable_logs
+def my_sensible_code():
+    return settings["my_credentials"]
 ```
 
 #### Example

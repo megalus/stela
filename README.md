@@ -195,7 +195,7 @@ config_file_path = "."                      # relative path for configuration fi
 do_not_read_dotenv = false                  # If True, will load dotenv file in os.environ
 dotenv_overwrites_memory = true             # If True, will not overwrite keys from dotenv file if they exists on environ
 show_logs = false                           # Show Stela Logs
-show_filtered_value = true                  # Show Value from Stela settings in logs filtered. Use with caution.
+log_filtered_value = true                  # Show Value from Stela settings in logs filtered. Use with caution.
 ```
 
 Example:
@@ -430,6 +430,12 @@ def add_ssm_parameters(data: dict, options: StelaOptions) -> Dict[Any, Any]:
 
 ### Full Lifecycle example
 
+```toml
+# pyproject.toml
+[environment]
+test = true
+```
+
 ```python
 # conf_stela.py at project root
 from stela.decorators import pre_load, custom_load, post_load
@@ -451,8 +457,13 @@ def load(data: dict, options: StelaOptions) -> Dict[Any, Any]:
 def post_load(data: dict, options: StelaOptions) -> Dict[Any, Any]:
     # data value is: {"foo": "bar", "has_dogs": True, "test": True}
     return {"number_of_dogs": 1}
+```
 
-# Final data is {"foo": "bar", "has_dogs": True, "number_of_dogs": 1}
+```python
+from stela import settings
+
+print(settings)
+# {"foo": "bar", "has_dogs": True, "number_of_dogs": 1, "test": True}
 ```
 
 ### When Stela read the data?
@@ -478,7 +489,6 @@ def hello():
 
 If you need to reload settings, use the `stela.stela_reload` function.
 Check the [unit tests](/tests/test_environments.py) for additional input.
-
 
 ### How Stela read the dictionary values?
 
@@ -508,7 +518,7 @@ By default, log are disabled. You can modify this behavior globally with the fol
 ```toml
 [tool.stela]
 show_logs = true
-show_filtered_value = true
+log_filtered_value = true
 ```
 
 Also, you can use decorators for fine-tuning logging (you can use these decorations multiple times):
@@ -559,10 +569,21 @@ environment_variable_name = "ENVIRONMENT"           # The Environment variable
 evaluate_data = false                               # Evaluate data received from config files
 load_order = ["embed", "file", "custom"]            # Default order for Loaders in Load Phase
 show_logs = false                                   # As per loguru settings.
-show_filtered_value = true                          # When logging data, filter values from dict/env.
+log_filtered_value = true                           # When logging data, filter values from dict/env.
 use_environment_layers = false                      # Use environment layers
 dotenv_overwrites_memory = true                     # If True, will not overwrite keys from dotenv file if they exists on environ
 ```
+
+### Migrating from version 2.x
+
+* Logs are now disabled, by default. Too re-enable Stela logs:
+
+```toml
+[tool.stela]
+show_logs = true
+```
+
+Or set `STELA_SHOW_LOGS=true` environment variable.
 
 ### Migrating from version 1.x
 

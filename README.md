@@ -523,7 +523,7 @@ show_logs = true
 log_filtered_value = true
 ```
 
-Also, you can use decorators for fine-tuning logging (you can use these decorations multiple times):
+Also, you can use decorators for fine-tuning logging:
 
 ```python
 from stela import settings
@@ -536,13 +536,6 @@ def my_bugged_code():
 @stela_disable_logs
 def my_sensible_code():
     return settings["my_credentials"]
-```
-
-#### Example
-```shell
-2021-08-24 22:05:56.969 | INFO     | stela.stela:get_project_settings:61 - Starting Stela Load Phase. Order is: [embed, file, custom] ...
-2021-08-24 22:05:56.970 | INFO     | stela.loaders.embed:read_embed:32 - Looking for table [environment] inside pyproject.toml...
-2021-08-24 22:05:56.971 | DEBUG    | stela.stela:log_dict:101 - [pyproject.toml] 'stele = ro***ta'
 ```
 
 The log level can be defined using the `LOGURU_LOG_LEVEL` as per loguru documentation.

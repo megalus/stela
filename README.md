@@ -72,11 +72,11 @@ will return the value from `pyproject.toml` tables.
 
 Some examples:
 
-| Variable in toml   | Environment Variable Name    |
-|:-------------------|:-----------------------------|
-| debug              | DEBUG                        |
-| 3rd_party_api_url  | 3_RD_PARTY_API_URL           |
-| db.password        | DB_PASSWORD
+| Variable in toml   | Environment Variable Name |
+|:-------------------|:--------------------------|
+| debug              | DEBUG                     |
+| 3rd_party_api_url  | 3_RD_PARTY_API_URL        |
+| db.password        | DB_PASSWORD               |
 
 For example, for `db.url` Stela will look for
 `DB_URL` in the following order:

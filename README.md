@@ -306,7 +306,7 @@ class Settings(BaseSettings):
         # If you need to debug stela dictionary,
         # you can use this option to log stela settings dictionary
         log_stela_settings = True
-        
+
         # If Stela dictionary has extra fields,
         # you can use this option to ignore them
         extra = Extra.ignore

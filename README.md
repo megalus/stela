@@ -21,17 +21,19 @@ environment variables.
 4. [Using layered environments](#using-layered-environments)
 5. [Customize Stela](#customize-stela)
 6. [Advanced Use](#advanced-use)
-7. [How Stela find the configuration files?](#how-stela-find-the-configuration-files)
-8. [How Stela find the Environment Variables?](#how-stela-find-the-environment-variables)
-9. [How Stela handle more complex cases?](#how-stela-handle-more-complex-cases)
-10. [Full Lifecycle example](#full-lifecycle-example)
-11. [When Stela read the data?](#when-stela-read-the-data)
-12. [Refreshing Stela settings](#refreshing-stela-settings)
-13. [How Stela read the dictionary values?](#how-stela-read-the-dictionary-values)
-14. [Logging Data](#logging-data)
-15. [All Stela Configuration Options](#all-stela-configuration-options)
-16. [Migrating from version 2.x](#migrating-from-version-2x)
-17. [Migrating from version 1.x](#migrating-from-version-1x)
+7. [Using with Pydantic](#using-with-pydantic)
+8. [How Stela find the configuration files?](#how-stela-find-the-configuration-files)
+9. [How Stela find the Environment Variables?](#how-stela-find-the-environment-variables)
+10. [How Stela handle more complex cases?](#how-stela-handle-more-complex-cases)
+11. [Full Lifecycle example](#full-lifecycle-example)
+12. [When Stela read the data?](#when-stela-read-the-data)
+13. [Refreshing Stela settings](#refreshing-stela-settings)
+14. [How Stela read the dictionary values?](#how-stela-read-the-dictionary-values)
+15. [Logging Data](#logging-data)
+16. [All Stela Configuration Options](#all-stela-configuration-options)
+17. [Migrating from version 3.x](#migrating-from-version-3x)
+18. [Migrating from version 2.x](#migrating-from-version-2x)
+19. [Migrating from version 1.x](#migrating-from-version-1x)
 
 
 ## Install
@@ -263,6 +265,73 @@ my_conf = settings["foo.bar"]  # my_conf = "value"
 
 This is possible because Stela uses under the hood the
 [Scalpl](https://github.com/ducdetronquito/scalpl) library.
+
+### Using with Pydantic
+[Pydantic](https://pydantic-docs.helpmanual.io/) is a very popular library for data validation and settings management.
+Stela can enhance pydantic experience, by being a additional settings for it. You can import stela settings as a dictionary
+and import in pydantic settings, as per [Customize settings sources](https://pydantic-docs.helpmanual.io/usage/settings/#customise-settings-sources) documentation:
+
+```toml
+# pyproject.toml
+[tool.stela]
+use_environment_layers = true
+default_environment = "local"
+environment_variable_name = "ENV"
+
+[environment]  # Shared data between environments
+my_api_timeout = 30
+db.host = "localhost"
+
+[environment.local]
+my_api_url = "http://localhost:8000"
+
+[environment.production]
+my_api_url = "https://foo.bar"
+```
+
+```python
+from pydantic import BaseSettings, Extra
+from stela.pydantic import stela_settings
+
+class DbSettings(BaseSettings):
+    host: str
+    port: int = 5432
+
+class Settings(BaseSettings):
+    my_api_url: str
+    my_api_timeout: int
+    db: DbSettings
+
+    class Config:
+        # If you need to debug stela dictionary,
+        # you can use this option to log stela settings dictionary
+        log_stela_settings = True
+        
+        # If Stela dictionary has extra fields,
+        # you can use this option to ignore them
+        extra = Extra.ignore
+
+        @classmethod
+        def customise_sources(
+            cls,
+            init_settings,
+            env_settings,
+            file_secret_settings,
+        ):
+            return (
+                init_settings,
+                stela_settings,  # Add stela settings before env_settings
+                env_settings,
+                file_secret_settings,
+            )
+
+print(Settings())  # for ENV=local
+#> my_api_url='http://localhost:8000', my_api_timeout=30, db=DbSettings(host='localhost', port=5432)
+```
+
+Both config options (`log_stela_settings` and `extra`) are optional.
+
+Please check file `test_pydantic.py` in tests folder for additional info.
 
 ### How Stela find the configuration files?
 
@@ -568,6 +637,9 @@ log_filtered_value = true                           # When logging data, filter 
 use_environment_layers = false                      # Use environment layers
 dotenv_overwrites_memory = true                     # If True, values from os.environ will be override with dotenv values. If False, order is os.environ -> dotenv values -> files
 ```
+
+### Migrating from version 3.x
+* Support for Python 3.7 was dropped
 
 ### Migrating from version 2.x
 

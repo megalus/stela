@@ -80,6 +80,7 @@ api_timeout = 10
 [tool.poetry.dev-dependencies]
 black = {version = "*", allow-prereleases = true}
 coverage = "*"
+mypy = "*"
 pytest = "*"
 pytest-black = "*"
 pytest-cov = "*"

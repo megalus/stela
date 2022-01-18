@@ -60,7 +60,7 @@ keywords = ["settings", "configuration", "parser"]
 license = "GPL-3.0"
 
 [tool.poetry.dependencies]
-python = ">=3.0, !=3.1, !=3.2, !=3.3, !=3.4, !=3.5, !=3.6, ^3.7, <4"
+python = ">=3.8, <4"
 loguru = "*"
 pyyaml = "*"
 scalpl = "*"
@@ -79,6 +79,8 @@ api_timeout = 10
 
 [tool.poetry.dev-dependencies]
 black = {version = "*", allow-prereleases = true}
+coverage = "*"
+mypy = "*"
 pytest = "*"
 pytest-black = "*"
 pytest-cov = "*"
@@ -94,6 +96,7 @@ bandit = "*"
 pre-commit = "*"
 flake8 = "*"
 twine = "*"
+pydantic = "*"
 
 [build-system]
 requires = ["poetry>=0.12"]

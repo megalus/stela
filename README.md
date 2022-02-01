@@ -611,7 +611,7 @@ The log level can be defined using the `LOGURU_LOG_LEVEL` as per loguru document
 
 ### All Stela Configuration Options
 
-All configuration files can be override using a environment variable,
+All configuration files can be overridden using an environment variable,
 using the `STELA_` prefix. For example, `default_environment` turns
 `STELA_DEFAULT_ENVIRONMENT`.
 
@@ -669,5 +669,20 @@ load_order = ["file"] # or ["custom"] with @custom_load decorator
 
 ### Not working?
 
-Dont panic. Get a towel and, please, open a
+Don't panic. Get a towel and, please, open an
 [issue](https://github.com/chrismaille/stela/issues).
+
+Copyright (c) the respective contributors, as shown by the AUTHORS file.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.

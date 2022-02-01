@@ -11,7 +11,7 @@ from stela.stela import Stela
 from stela.stela_cut import StelaCut
 from stela.stela_options import StelaOptions
 
-__version__ = "4.0.0"
+__version__ = "4.0.1"
 
 from stela.utils import find_file_folder
 

@@ -13,29 +13,6 @@ configurations, from *json*, *yaml*, *ini* or *toml* files in a single
 Python dictionary, which values can be easily be overridden by
 environment variables.
 
-### Index
-
-1. [Install](#install)
-2. [Basic Use](#basic-use)
-3. [Environment Variables from Shell](#environment-variables-from-shell)
-4. [Using layered environments](#using-layered-environments)
-5. [Customize Stela](#customize-stela)
-6. [Advanced Use](#advanced-use)
-7. [Using with Pydantic](#using-with-pydantic)
-8. [How Stela find the configuration files?](#how-stela-find-the-configuration-files)
-9. [How Stela find the Environment Variables?](#how-stela-find-the-environment-variables)
-10. [How Stela handle more complex cases?](#how-stela-handle-more-complex-cases)
-11. [Full Lifecycle example](#full-lifecycle-example)
-12. [When Stela read the data?](#when-stela-read-the-data)
-13. [Refreshing Stela settings](#refreshing-stela-settings)
-14. [How Stela read the dictionary values?](#how-stela-read-the-dictionary-values)
-15. [Logging Data](#logging-data)
-16. [All Stela Configuration Options](#all-stela-configuration-options)
-17. [Migrating from version 3.x](#migrating-from-version-3x)
-18. [Migrating from version 2.x](#migrating-from-version-2x)
-19. [Migrating from version 1.x](#migrating-from-version-1x)
-
-
 ## Install
 
 ```shell
@@ -277,6 +254,7 @@ and import in pydantic settings, as per [Customize settings sources](https://pyd
 use_environment_layers = true
 default_environment = "local"
 environment_variable_name = "ENV"
+do_not_read_dotenv = true  # stela will not read .env, pydantic will do this.
 
 [environment]  # Shared data between environments
 my_api_timeout = 30
@@ -320,8 +298,8 @@ class Settings(BaseSettings):
         ):
             return (
                 init_settings,
-                stela_settings,  # Add stela settings before env_settings
                 env_settings,
+                stela_settings,  # Add stela settings after env_settings
                 file_secret_settings,
             )
 

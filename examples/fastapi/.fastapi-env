@@ -1,0 +1,2 @@
+# Add here your settings and fake secrets. You can commit this file.
+MY_SECRET="my fast secret"

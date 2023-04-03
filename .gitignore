@@ -102,7 +102,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+!.env  # Modified by Stela.
 .venv
 env/
 venv/
@@ -110,6 +110,11 @@ venv*/
 ENV/
 env.bak/
 venv.bak/
+
+# Stela
+*.stela.bak
+.env.local
+.env.*.local
 
 # Spyder project settings
 .spyderproject
@@ -133,3 +138,6 @@ requirements.txt
 poetry.lock
 .idea
 .vscode
+.ipynb_checkpoints/
+
+stela/__init__.pyi

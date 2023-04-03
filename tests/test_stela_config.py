@@ -1,11 +1,11 @@
-from stela.stela_options import StelaOptions
+from stela.config.cut import StelaCutOptions
 from stela.utils import stela_reload
 
 
 def test_get_default_config(stela_default_settings, monkeypatch):
     monkeypatch.delenv("STELA_CONFIG_FILE_EXTENSION", raising=False)
     stela_reload()
-    stela_config = StelaOptions.get_config()
+    stela_config = StelaCutOptions.get_config()
     assert (
         stela_config.environment_variable_name
         == stela_default_settings["environment_variable_name"]

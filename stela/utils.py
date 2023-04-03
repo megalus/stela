@@ -29,6 +29,19 @@ def stela_reload() -> "StelaCut":  # type: ignore
     return stela.settings
 
 
+def read_env() -> "StelaDot":  # type: ignore
+    """Reload Stela configuration.
+
+    This helper will import again stela module
+    to update settings.
+
+    """
+    import stela
+
+    reload(stela)
+    return stela.env
+
+
 def find_file_folder(file_name: str) -> Optional[Path]:
     """Find base folder for named file.
 
@@ -121,3 +134,89 @@ def show_value(value: str, filter_values: bool) -> str:
         visible_chars = min(int(len(value) / 3), 3)
         value = f"{value[:visible_chars]}***{value[-visible_chars:]}"
     return value
+
+
+def get_base_path():
+    path = find_file_folder(".stela")
+    if not path:
+        path = find_file_folder("pyproject.toml")
+    if not path:
+        path = Path().cwd()
+    return path
+
+
+def get_stela_config():
+    """Return Stela Options instance.
+
+    :return StelaOptions:
+    """
+    from stela.config import StelaOptions
+
+    config = StelaOptions.get_config()
+    return config
+
+
+def read_env_files() -> Dict[str, Any]:
+    """Return data parsed from env files.
+
+    :return Dict[str, Any]:
+    """
+    from stela.main.dot import StelaDotMain
+
+    config = get_stela_config()
+    data = StelaDotMain(config)
+    data.read_env_files()
+    return data.settings
+
+
+def flatten_dict(d, parent_key="", sep="_"):
+    """Flatten dict.
+
+    :param d: Dict[Any, Any]
+    :param parent_key: str
+    :param sep: str
+    :returns: Dict[str, Any]
+    """
+    items = []
+    for k, v in d.items():
+        new_key = f"{parent_key}{sep}{k}" if parent_key else k
+        if isinstance(v, dict):
+            items.extend(flatten_dict(v, new_key, sep=sep).items())
+        else:
+            items.append((new_key.upper(), v))
+    return dict(items)
+
+
+def merge_env(
+    target: dict, env_data=dict[str, Any], separator: str = "_"
+) -> dict[str, Any]:
+    """Merge Env Data in target dict.
+
+    Target dict can be a nested dictionary, with lower case keys.
+
+    Example::
+        {
+          "project": {
+             "debug": False
+          },
+        }
+
+    Env data is always a flatten dict, with upper case keys.
+
+    Example::
+        {
+          "PROJECT_DEBUG": True,
+        }
+
+    We need to flatten target dict merging keys using informed separator.
+    After that, we will update target dict using the Env data.
+
+    :param target: Dict[Any, Any]: dict to be merged
+    :param env_data: Dict[Str, Any]: dict with env data
+    :param separator: str: separator to flatten dict keys
+    :returns: Dict[str, Any]
+    """
+    flat_dict = flatten_dict(target, sep=separator)
+    flat_dict.update(env_data)
+
+    return flat_dict

@@ -8,7 +8,7 @@ from stela.utils import stela_reload
 def test_no_environment_found(mocker, monkeypatch):
     monkeypatch.delenv("ENVIRONMENT", raising=False)
     monkeypatch.setenv("STELA_USE_ENVIRONMENT_LAYERS", True)
-    mocker.patch.object(stela.stela_options.toml, "load", return_value={})
+    mocker.patch.object(stela.config.cut.toml, "load", return_value={})
     with pytest.raises(StelaEnvironmentNotFoundError):
         stela_reload()
     monkeypatch.delenv("STELA_USE_ENVIRONMENT_LAYERS")

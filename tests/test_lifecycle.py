@@ -1,3 +1,6 @@
+from stela.utils import stela_reload
+
+
 def test_default_lifecycle(full_lifecycle, monkeypatch):
     """Test Stela Full Lifecycle.
 
@@ -9,11 +12,15 @@ def test_default_lifecycle(full_lifecycle, monkeypatch):
         5. From post_load:      "post_load_secret" (@post_load function)
     """
 
-    from stela import settings
-
+    # Arrange
     monkeypatch.delenv("SECRET")
-    assert settings["project.secret"] == "post_load_secret"
+    monkeypatch.setenv("STELA_DO_NOT_READ_ENVIRONMENT", True)
 
+    # Act
+    settings = stela_reload()
+
+    # Assert
+    assert settings["project.secret"] == "post_load_secret"
     assert settings.stela_loader.pre_data["project"]["secret"] == "pre_load_secret"
     assert settings.stela_loader.embed_data["project"]["secret"] == "embed_secret"
     assert settings.stela_loader.file_data["project"]["secret"] == "foo"
@@ -21,7 +28,6 @@ def test_default_lifecycle(full_lifecycle, monkeypatch):
         settings.stela_loader.custom_data["project"]["secret"] == "custom_load_secret"
     )
     assert settings.stela_loader.post_data["project"]["secret"] == "post_load_secret"
-
     assert settings.to_dict == {
         "DEFAULT": {},
         "api_timeout": 60,
@@ -37,5 +43,12 @@ def test_default_lifecycle(full_lifecycle, monkeypatch):
         "stele": "merneptah",
     }
 
+    # Arrange
     monkeypatch.setenv("PROJECT_SECRET", "good_dog")
+    monkeypatch.delenv("STELA_DO_NOT_READ_ENVIRONMENT")
+
+    # Act
+    settings = stela_reload()
+
+    # Assert
     assert settings["project.secret"] == "good_dog"

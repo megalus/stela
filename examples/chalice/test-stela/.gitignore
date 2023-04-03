@@ -1,0 +1,7 @@
+.chalice/deployments/
+.chalice/venv/
+
+# Stela
+*.stela.back
+.chalice-env.local
+.chalice-env.*.local

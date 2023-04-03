@@ -1,0 +1,4 @@
+# Add here your settings and fake secrets. You can commit this file.
+PROJECT_SECRET="django-insecure-0xkfa9n&g29#t3aer#%mm%18@!udn6_1lel)l7!mh#vfnn85v9"
+DEBUG=True
+MY_SECRET="foo"

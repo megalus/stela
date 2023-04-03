@@ -82,11 +82,11 @@ API_URL = env.API_URL  # http://localhost:8000
 DATABASE_URL_CONNECTION = env.DB_URL  # db://real_user:real_password@real_db:0000/name
 ```
 
-That's it! Just check our [Documentation](https://megalus.github.io/megalus/) for tons of customization and advice.
+That's it! Just check our [Documentation](https://megalus.github.io/stela/) for tons of customization and advice.
 
 ### Migrating from version 4.x
 * Stela 5.0 is a major rework. The old format still works, but we strongly advise updating your code as soon as possible.
-Please check [this document](https://megalus.github.io/megalus/update) to understand how to update your existing project.
+Please check [this document](https://megalus.github.io/stela/update) to understand how to update your existing project.
 * Drop support to Python 3.8
 
 ### Not working?

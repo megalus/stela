@@ -20,7 +20,7 @@ def test_embed_loader(stela_default_settings, prepare_decorators):
             "do_not_read_dotenv": True,
             "env_table": "env",
             "use_environment_layers": True,
-            "_current_environment": "test",
+            "current_environment": "test",
         }
     )
     test_config = StelaCutOptions(**options)

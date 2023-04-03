@@ -50,27 +50,27 @@ class StelaBaseOptions:
     @classmethod
     def _get_current_environment(cls, settings):
         # Get from Memory
-        settings["_current_environment"] = os.getenv(
+        settings["current_environment"] = os.getenv(
             settings["environment_variable_name"]
         )
 
         # Get from .env if available
-        if not settings["_current_environment"]:
-            settings["_current_environment"] = settings["_dotenv_data"].get(
+        if not settings["current_environment"]:
+            settings["current_environment"] = settings["_dotenv_data"].get(
                 settings["environment_variable_name"]
             )
 
         # Get from Default
-        if not settings["_current_environment"]:
-            settings["_current_environment"] = settings["default_environment"]
+        if not settings["current_environment"]:
+            settings["current_environment"] = settings["default_environment"]
 
         # No environment found.
-        if not settings["_current_environment"] and settings.get(
+        if not settings["current_environment"] and settings.get(
             "use_environment_layers"
         ):
             raise StelaEnvironmentNotFoundError("Environment not found.")
 
-        if not settings["_current_environment"] and not settings.get(
+        if not settings["current_environment"] and not settings.get(
             "use_environment_layers"
         ):
             logger.debug(
@@ -117,7 +117,7 @@ class StelaBaseOptions:
         cls._get_dotenv_data(settings, update_environs=False)
         cls._get_current_environment(settings)
         settings["_filenames"] = [
-            f"{settings.get('config_file_prefix','')}{settings['_current_environment']}{extension}"
+            f"{settings.get('config_file_prefix','')}{settings['current_environment']}{extension}"
             for extension in settings["config_file_extension"].value
         ]
         return cls(**settings)

@@ -15,7 +15,7 @@ def stela_default_settings():
     return {
         "environment_variable_name": "ENVIRONMENT",
         "default_environment": "test",
-        "_current_environment": "test",
+        "current_environment": "test",
         "config_file_extension": StelaFileType.INI,
         "config_file_prefix": "",
         "config_file_suffix": "",

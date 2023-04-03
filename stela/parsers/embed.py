@@ -1,16 +1,18 @@
+import os.path
 import re
 from copy import deepcopy
-from pathlib import Path
 from typing import Any, Dict
 
 import toml
 from scalpl import Cut
 
-from stela.utils import find_file_folder, merge_dicts
+from stela.utils import get_base_path, merge_dicts
 
 
 def read_embed(options: "StelaOptions") -> Dict[Any, Any]:
     """Stela Embed Loader.
+
+    Will be removed on 6.0
 
     :param options: StelaOptions instance
     :return: Dict
@@ -18,15 +20,17 @@ def read_embed(options: "StelaOptions") -> Dict[Any, Any]:
     from loguru import logger
 
     # Get toml data
-    path = find_file_folder("pyproject.toml") or Path().cwd()
+    path = get_base_path()
     filepath = path.joinpath("pyproject.toml")
+    if not os.path.exists(filepath):
+        return {}
     toml_data = toml.load(filepath)
     table = options.env_table
 
     # Get environment layers
     with open(filepath, "r") as file:
         raw_data = file.read()
-    pattern = fr"(?<=\[{table}\.)\w+"
+    pattern = rf"(?<=\[{table}\.)\w+"
     environment_list = re.findall(pattern, raw_data)
 
     logger.info(f"Looking for table [{table}] inside pyproject.toml...")

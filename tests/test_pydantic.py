@@ -5,7 +5,7 @@ import pytest
 from pydantic import BaseSettings, Extra
 from pydantic.env_settings import SettingsSourceCallable
 
-from stela.pydantic import stela_settings
+from stela.helpers.pydantic import stela_settings
 
 
 def test_pydantic_helper(mocker):

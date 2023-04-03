@@ -1,8 +1,8 @@
 from copy import deepcopy
 
-from stela import StelaOptions
-from stela.loaders.embed import read_embed
-from stela.loaders.file import read_file
+from stela import StelaCutOptions
+from stela.parsers.embed import read_embed
+from stela.parsers.other_files import read_file
 
 
 def test_dotenv_loader(dotenv_settings):
@@ -20,10 +20,10 @@ def test_embed_loader(stela_default_settings, prepare_decorators):
             "do_not_read_dotenv": True,
             "env_table": "env",
             "use_environment_layers": True,
-            "current_environment": "test",
+            "_current_environment": "test",
         }
     )
-    test_config = StelaOptions(**options)
+    test_config = StelaCutOptions(**options)
 
     # Act
     test_data = read_embed(test_config)
@@ -34,7 +34,7 @@ def test_embed_loader(stela_default_settings, prepare_decorators):
 
 def test_file_loader(stela_default_settings):
     # Arrange
-    test_config = StelaOptions(**stela_default_settings).get_config()
+    test_config = StelaCutOptions(**stela_default_settings).get_config()
 
     # Act
     file_name, test_data = read_file(test_config)

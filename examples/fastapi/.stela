@@ -1,0 +1,9 @@
+[stela]
+environment_variable_name = STELA_ENV
+default_environment = test
+evaluate_data = True
+show_logs = True
+log_filtered_value = True
+dotenv_overwrites_memory = False
+env_file = .fastapi-env
+config_file_path = .

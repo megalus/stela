@@ -1,0 +1,5 @@
+
+# Stela
+*.stela.back
+.fastapi-env.local
+.fastapi-env.*.local

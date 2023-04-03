@@ -6,7 +6,7 @@ from _pytest.logging import caplog as _caplog  # noqa
 from loguru import logger
 
 import stela
-from stela.stela_options import DEFAULT_ORDER
+from stela.config import DEFAULT_ORDER
 from stela.utils import StelaFileType, stela_reload
 
 
@@ -15,7 +15,7 @@ def stela_default_settings():
     return {
         "environment_variable_name": "ENVIRONMENT",
         "default_environment": "test",
-        "current_environment": "test",
+        "_current_environment": "test",
         "config_file_extension": StelaFileType.INI,
         "config_file_prefix": "",
         "config_file_suffix": "",
@@ -30,7 +30,7 @@ def stela_default_settings():
         "env_file": ".env",
         "load_order": DEFAULT_ORDER,
         "env_table": "environment",
-        "filenames": ["test.ini"],
+        "_filenames": ["test.ini"],
         "use_environment_layers": True,
         "dotenv_overwrites_memory": True,
     }
@@ -95,7 +95,6 @@ def env_settings(monkeypatch):
 
 @pytest.fixture()
 def toml_settings(monkeypatch):
-
     monkeypatch.setenv("STELA_CONFIG_FILE_EXTENSION", "TOML")
     reload(stela)
     yield stela.settings
@@ -114,9 +113,9 @@ def full_lifecycle(monkeypatch, stela_default_settings):
 
 @pytest.fixture()
 def prepare_decorators():
-    from stela.stela_loader import StelaLoader
+    from stela.loaders.cut import StelaCutLoader
 
-    loader = StelaLoader()
+    loader = StelaCutLoader()
     old_pre_loader = loader.pre_load_function
     old_custom_loader = loader.custom_load_function
     old_post_loader = loader.post_load_function

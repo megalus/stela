@@ -1,0 +1,9 @@
+
+# Stela
+*.stela.back
+.jupyter-env.local
+.jupyter-env.*.local
+
+
+# Jupyter Notebook
+.ipynb_checkpoints

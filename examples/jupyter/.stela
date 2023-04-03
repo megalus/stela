@@ -1,0 +1,8 @@
+[stela]
+environment_variable_name = STELA_ENV
+evaluate_data = True
+show_logs = False
+log_filtered_value = True
+dotenv_overwrites_memory = True
+env_file = .jupyter-env
+config_file_path = .

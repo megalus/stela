@@ -1,0 +1,2 @@
+# Add here your settings for the default environment. You can commit this file.
+MY_SECRET="remote secret"

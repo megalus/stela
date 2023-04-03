@@ -1,0 +1,5 @@
+
+# Stela
+*.stela.back
+.django-env.local
+.django-env.*.local

@@ -1,0 +1,2 @@
+# Add here your settings and fake secrets. You can commit this file.
+SECRET_KEY="key"

@@ -1,0 +1,5 @@
+
+# Stela
+*.stela.back
+.env.local
+.env.*.local

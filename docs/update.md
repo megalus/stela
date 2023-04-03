@@ -159,7 +159,7 @@ def legacy_pyproject_loader(
 
     """
     from stela.loaders.cut import StelaCutLoader  #  will be removed in Stela 6.0
-    from stela.utils import merge_env
+    from stela.utils import merge_env, merge_dicts
 
     filepath = "pyproject.toml"
 
@@ -179,11 +179,11 @@ def legacy_pyproject_loader(
     # The logic will run here
     old_loader = StelaCutLoader()
     if old_loader.pre_load_function:
-        global_env.update(old_loader.pre_load_function())
+        merge_dicts(old_loader.pre_load_function(), global_env)
     if old_loader.custom_load_function:
-        global_env.update(old_loader.custom_load_function())
+        merge_dicts(old_loader.custom_load_function(), global_env)
     if old_loader.custom_load_function:
-        global_env.update(old_loader.post_load_function())
+        merge_dicts(old_loader.post_load_function(), global_env)
 
     # Finally, we override global_env with data from dotenv files:
     project_settings = merge_env(global_env, env_data)

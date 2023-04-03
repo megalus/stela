@@ -88,10 +88,8 @@ then call `read_env` function to retrieve the Environment Variables:
 from stela.utils import read_env
 
 ### You can change Stela behavior here
-%set_env
-STELA_ENV = remote
-%set_env
-STELA_SHOW_LOGS = False
+%set_env STELA_ENV = remote
+%set_env STELA_SHOW_LOGS = False
 
 ### And use the `read_env` helper to reload environment variables
 env = read_env()

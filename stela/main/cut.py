@@ -1,16 +1,19 @@
-"""Stela Cut subclass.
-
-Based on Scalpl project: https://github.com/ducdetronquito/scalpl
-
-"""
+"""Stela Class."""
 import os
 from ast import literal_eval
+from dataclasses import dataclass
 from typing import Any, Dict, Optional, Tuple
 
+from _warnings import warn
+from loguru import logger
 from scalpl import Cut
 from scalpl.scalpl import index_error, key_error, split_path, traverse, type_error
 
-from stela.utils import show_value
+from stela.loaders.cut import StelaCutLoader
+from stela.main import StelaBaseMain
+from stela.parsers.embed import read_embed
+from stela.parsers.other_files import read_file
+from stela.utils import merge_dicts, show_value
 
 
 class FakeNone:
@@ -21,11 +24,14 @@ class FakeNone:
     See: https://github.com/ducdetronquito/scalpl/issues/16
     """
 
-    pass
-
 
 class StelaCut(Cut):  # type: ignore
     """StelaCut subclass."""
+
+    def __init__(self, data: Optional[dict] = None, sep: str = "."):
+        super().__init__(data, sep)
+        self._options = None
+        self._loader = None
 
     @property
     def stela_options(self) -> "StelaOptions":  # type: ignore
@@ -46,6 +52,11 @@ class StelaCut(Cut):  # type: ignore
     def stela_loader(self, loader: "StelaLoader"):  # type: ignore
         """Save Stela Loader in instance."""
         self._loader = loader
+
+    @property
+    def stela_current_environment(self) -> str:
+        """Return Current Environment."""
+        return self._options.current_environment
 
     @property
     def to_dict(self) -> Dict[Any, Any]:
@@ -98,6 +109,13 @@ class StelaCut(Cut):  # type: ignore
         :param kwargs: python keyword arguments
         :return: Any
         """
+
+        warn(
+            "Using Stela as Dictionary is deprecated and will be removed in 6.0",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
         if "[" not in path:
             environment_variable = self.get_environment_variable_name(path)
             value = self.get_value_from_memory(environment_variable)
@@ -109,8 +127,7 @@ class StelaCut(Cut):  # type: ignore
                         from loguru import logger
 
                         logger.debug(
-                            f"Error when evaluating value: "
-                            f"{environment_variable}={value[:3]}***"
+                            f"Error when evaluating value: {environment_variable}={value[:3]}***"
                         )
                 return value
 
@@ -151,3 +168,70 @@ class StelaCut(Cut):  # type: ignore
             f"{self.stela_options.environment_suffix}".upper().strip()
         )
         return environment_variable
+
+
+@dataclass
+class StelaCutMain(StelaBaseMain):
+    """Stela Cut Main Class.
+
+    Will be removed on 6.0
+    """
+
+    def run_embed_loader(self):
+        self.loader.embed_data = read_embed(self.options)
+        merge_dicts(self.loader.embed_data, self.settings)
+        return "pyproject.toml"
+
+    def run_file_loader(self):
+        origin, self.loader.file_data = read_file(self.options)
+        merge_dicts(self.loader.file_data, self.settings)
+        return origin
+
+    def run_custom_loader(self):
+        from stela.loaders.cut import StelaCutLoader
+
+        loader = StelaCutLoader()
+        if loader.custom_load_function:
+            loader.custom_data = loader.custom_load_function(
+                data=self.settings, options=self.options
+            )
+            merge_dicts(loader.custom_data, self.settings)
+            return loader.custom_load_function.__name__
+
+    def get_project_settings(self) -> StelaCut:
+        """Get project settings running Stela Lifecycle.
+
+        :return: Dict
+        """
+
+        self.loader = StelaCutLoader()
+
+        # Pre-Load Phase
+        logger.info("Starting Stela Pre-Load Phase...")
+        if self.loader.pre_load_function:
+            self.loader.pre_data = self.loader.pre_load_function(options=self.options)
+            merge_dicts(self.loader.pre_data, self.settings)
+            self.log_current_data(origin=self.loader.pre_load_function.__name__)
+
+        # Load Phase
+        logger.info(
+            f"Starting Stela Load Phase. Order is: [{', '.join(self.options.load_order)}] ..."
+        )
+        for loader_name in self.options.load_order:
+            origin = getattr(self, f"run_{loader_name}_loader")()
+            if origin:
+                self.log_current_data(origin=origin)
+
+        # Post-Load Phase
+        logger.info("Starting Stela Post-Load Phase...")
+        if self.loader.post_load_function:
+            self.loader.post_data = self.loader.post_load_function(
+                data=self.settings, options=self.options
+            )
+            merge_dicts(self.loader.post_data, self.settings)
+            self.log_current_data(origin=self.loader.post_load_function.__name__)
+
+        proxy = StelaCut(self.settings)
+        proxy.stela_options = self.options
+        proxy.stela_loader = self.loader
+        return proxy

@@ -146,10 +146,10 @@ def legacy_pyproject_loader(
     Toml::
 
         [environment]
-        foo = "bar"
+        project.secret = "bar"
 
         [environment.development]
-        foo = "baz"
+        project.secret = "baz"
 
     Code::
 

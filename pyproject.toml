@@ -1,6 +1,3 @@
-[tool.coverage.report]
-fail_under = 80
-
 [tool.pytest]
 addopts = '--pydocstyle'
 

@@ -26,7 +26,10 @@ def _get_stela_cut() -> StelaCutMain:
 
     conf_path = find_file_folder("conf_stela.py")
     if conf_path:
-        import conf_stela  # noqa
+        try:
+            import conf_stela  # noqa
+        except ImportError:
+            pass
 
     if stela_config.show_logs:
         logger.enable("stela")

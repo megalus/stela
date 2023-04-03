@@ -64,6 +64,7 @@ scalpl = "*"
 toml = "*"
 python-dotenv = "*"
 click = "*"
+tomlkit = "*"
 
 
 [env]

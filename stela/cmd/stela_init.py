@@ -22,7 +22,7 @@ from pathlib import Path
 from typing import Optional
 
 import click
-import toml
+import tomlkit
 
 from stela.cmd.stela_converter import StelaConverter
 from stela.config import StelaOptions
@@ -68,11 +68,13 @@ class StelaInit:
 
         reader = StelaFileReader()
         stela_config = {}
-        pyproject_content = None
+        pyproject_doc = None
         if os.path.exists(STELA_INI_FILE):
             stela_config = reader.load_ini(STELA_INI_FILE)
         if not stela_config and os.path.exists(PYPROJECT_TOML):
-            pyproject_content = toml.load(PYPROJECT_TOML)
+            with open("pyproject.toml", "r") as f:
+                pyproject_content = f.read()
+            pyproject_doc = tomlkit.parse(pyproject_content)
             toml_settings = reader.load_toml(PYPROJECT_TOML)
             stela_config = toml_settings.get("tool", {}).get("stela", {})
 
@@ -136,7 +138,7 @@ class StelaInit:
             )
             new_stela_config["config_file_path"] = self.dotenv_file_path
 
-        if use_default:
+        if not use_default:
             use_toml = (
                 click.confirm("Save stela config in pyproject.toml file?", default=True)
                 if pyproject_content
@@ -146,8 +148,9 @@ class StelaInit:
             use_toml = False
 
         if use_toml:
-            pyproject_content["tool"]["stela"] = new_stela_config
-            toml.dump(pyproject_content, open(PYPROJECT_TOML, "w"))
+            pyproject_doc["tool"]["stela"] = new_stela_config
+            with open("pyproject.toml", "w") as f:
+                f.write(tomlkit.dumps(pyproject_doc))
             if os.path.exists(STELA_INI_FILE):
                 os.remove(STELA_INI_FILE)
         else:
@@ -156,8 +159,9 @@ class StelaInit:
                 for k, v in new_stela_config.items():
                     f.write(f"{k} = {v}\n")
             if pyproject_content and "stela" in pyproject_content.get("tool"):
-                del pyproject_content["tool"]["stela"]
-                toml.dump(pyproject_content, open(PYPROJECT_TOML, "w"))
+                del pyproject_doc["tool"]["stela"]
+                with open("pyproject.toml", "w") as f:
+                    f.write(tomlkit.dumps(pyproject_doc))
 
     @staticmethod
     def check_for_old_format() -> bool:

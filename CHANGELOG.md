@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v5.0.2 (2023-04-04)
+### Fix
+* Stela error when no .env file exists ([`c38715e`](https://github.com/megalus/stela/commit/c38715e4ece0060fea93ff55d5cef0a3d87f93b6))
+
 ## v5.0.1 (2023-04-03)
 ### Fix
 * Fix stela init toml parse and save data. ([`96a7a9a`](https://github.com/megalus/stela/commit/96a7a9afdfb58c7d5980c99e7b429a869b2e50b1))

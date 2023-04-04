@@ -4,12 +4,12 @@ from pathlib import Path
 from loguru import logger
 
 STUB_TEMPLATE = """from typing import Any
-from .config.dot import StelaDotOptions
+from .config import StelaOptions
 from .main.dot import StelaDotMain
 from .main.cut import StelaCut
 
 class Stela:
-    _stela_options: StelaDotOptions
+    _stela_options: StelaOptions
     _stela_data: StelaDotMain
 
     current_environment: str

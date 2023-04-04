@@ -53,7 +53,11 @@ def _get_stela() -> "Stela":
     stela_data.get_project_settings()
 
     class Stela:
-        __slots__ = [k for k in stela_data.settings.keys()]
+        __slots__ = (
+            [str(k) for k in stela_data.settings.keys()]
+            if stela_data.settings.keys()
+            else ["_NO_ENV_FOUND_"]
+        )
         _stela_options: StelaOptions = stela_config
         _stela_data: StelaDotMain = stela_data
 
@@ -62,7 +66,7 @@ def _get_stela() -> "Stela":
                 if isinstance(value, dict):
 
                     class StelaNestedObj:
-                        __slots__ = value.keys()
+                        __slots__ = [str(k) for k in value.keys()]
 
                     nested_obj = StelaNestedObj()
                     self._get_attributes(current_obj=nested_obj, data_dict=value)

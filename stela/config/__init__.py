@@ -3,8 +3,6 @@ from abc import abstractmethod
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
-from loguru import logger
-
 from stela.exceptions import StelaEnvironmentNotFoundError, StelaFileTypeError
 from stela.parsers.dotenv import read_dotenv
 from stela.parsers.other_files import StelaFileReader
@@ -69,14 +67,6 @@ class StelaBaseOptions:
             "use_environment_layers"
         ):
             raise StelaEnvironmentNotFoundError("Environment not found.")
-
-        if not settings["current_environment"] and not settings.get(
-            "use_environment_layers"
-        ):
-            logger.debug(
-                f"No Environment found. Stela will lookup only in table "
-                f"[{settings.get('env_table', 'env')}] in pyproject.toml"
-            )
 
     @classmethod
     def _get_dotenv_data(cls, settings, update_environs: bool):

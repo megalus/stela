@@ -48,7 +48,7 @@ build_command = "python -m pip install -U twine poetry && poetry build"
 
 [tool.poetry]
 name = "stela"
-version = "5.0.3"
+version = "5.0.4"
 description = "Find and read your project configuration files easily"
 authors = ["Chris Maillefaud <chrismaillefaud@gmail.com>"]
 readme = "README.md"

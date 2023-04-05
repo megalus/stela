@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v5.0.4 (2023-04-05)
+### Fix
+* Reduce logger messages from old settings ([`de565ef`](https://github.com/megalus/stela/commit/de565efdefd5191552a927cef926c6209b0796bd))
+
 ## v5.0.3 (2023-04-05)
 ### Fix
 * Move the default value from missing env to another function. ([`e69f680`](https://github.com/megalus/stela/commit/e69f6803e4be90097499a255aae2923b92551634))

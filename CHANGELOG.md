@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v5.0.3 (2023-04-05)
+### Fix
+* Move the default value from missing env to another function. ([`e69f680`](https://github.com/megalus/stela/commit/e69f6803e4be90097499a255aae2923b92551634))
+
 ## v5.0.2 (2023-04-04)
 ### Fix
 * Stela error when no .env file exists ([`c38715e`](https://github.com/megalus/stela/commit/c38715e4ece0060fea93ff55d5cef0a3d87f93b6))

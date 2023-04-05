@@ -124,9 +124,7 @@ def _get_stela() -> "Stela":
                 raise StelaValueError(f"Attribute {key} is ready-only.")
             super().__setattr__(key, value)
 
-        def get(
-            self, var_name: str, raise_on_missing: bool = True, default: Any = None
-        ):
+        def get(self, var_name: str, raise_on_missing: bool = True):
             if raise_on_missing:
                 try:
                     return getattr(self, var_name)
@@ -134,6 +132,9 @@ def _get_stela() -> "Stela":
                     raise StelaValueError(
                         f"Stela did not found value for {var_name}."
                     ) from exc
+            return getattr(self, var_name, None)
+
+        def get_or_default(self, var_name: str, default: Any):
             return getattr(self, var_name, default)
 
         def list(self) -> List[str]:

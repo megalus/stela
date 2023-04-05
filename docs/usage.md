@@ -14,17 +14,28 @@ If you want to get the environment variable programmatically, use the `get` func
 from stela import env
 
 var = "MY_VAR"
-env = env.get(var)
+value = env.get(var)
 ```
 
 If the variable did not exist, Stela will raise a `StelaValueError`. You can change this using the `raise_on_missing`
-parameter. You can also add a default value if you want, using the `default` parameter too:
+parameter:
 
 ```python
 from stela import env
 
-var = "MY_VAR"
-env = env.get(var, raise_on_missing=False, default="foo")
+var = "THIS_VAR_DOES_NOT_EXIST"
+value = env.get(var, raise_on_missing=False)
+#> None
+```
+
+If you want to return a default value if the variable does not exist, use the `get_or_default` function:
+
+```python
+from stela import env
+
+var = "THIS_VAR_DOES_NOT_EXIST"
+value = env.get_or_default(var, default="default_value")
+#> "default_value"
 ```
 
 You can also list all environment variables:

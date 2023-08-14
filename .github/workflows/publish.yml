@@ -17,15 +17,10 @@ jobs:
       - name: Setup Poetry
         uses: abatilo/actions-poetry@v2
       - name: Python Semantic Release
-        id: release
-        uses: python-semantic-release/python-semantic-release@master
+        uses: python-semantic-release/python-semantic-release@v7.33.5
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Publish package distributions to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          user: __token__
-          password: ${{ secrets.POETRY_PYPI_TOKEN_PYPI }}
-        if: steps.release.outputs.released == 'true'
+          repository_username: __token__
+          repository_password: ${{ secrets.POETRY_PYPI_TOKEN_PYPI }}
       - run: pip install mkdocs-material
       - run: mkdocs gh-deploy --force

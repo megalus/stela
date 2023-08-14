@@ -2,6 +2,17 @@
 
 
 
+## v5.1.1 (2023-08-14)
+
+### Fix
+
+* fix: add missing configuration in github actions ([`c75d97b`](https://github.com/megalus/stela/commit/c75d97b2e33bd866f7897b96f67284f4b52dbcc1))
+
+* fix: add missing configuration in github actions ([`280e1eb`](https://github.com/megalus/stela/commit/280e1ebc9c6e9bfedf1e7165f5088c40e0ad8dbf))
+
+* fix: fix github actions with new distribution packages ([`2889dd8`](https://github.com/megalus/stela/commit/2889dd841e91c063d02504103b85c215bdbfcd48))
+
+
 ## v5.1.0 (2023-08-14)
 
 ### Feature

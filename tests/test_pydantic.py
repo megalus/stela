@@ -1,14 +1,18 @@
-from typing import List, Tuple
+from typing import List, Tuple, Type
 from unittest.mock import MagicMock
 
 import pytest
-from pydantic import BaseSettings, Extra
-from pydantic.env_settings import SettingsSourceCallable
+from pydantic_settings import (
+    BaseSettings,
+    PydanticBaseSettingsSource,
+    SettingsConfigDict,
+)
 
-from stela.helpers.pydantic import stela_settings
+import stela
+from stela.helpers.pydantic import StelaConfigSettingsSource, stela_settings
 
 
-def test_pydantic_helper(mocker):
+def test_pydantic_helper():
     # Arrange
     settings_mock = MagicMock(__config__=MagicMock())
 
@@ -30,48 +34,42 @@ def test_pydantic_helper(mocker):
     }
 
 
-def test_pydantic_helper_with_ini_files():
+def test_pydantic_helper_with_dotenv():
+    """Test Pydantic read from dotenv.
+
+    Configuration: in pyproject.toml file on [tool.stela] section.
+    Dotenv file: /tests/fixtures/.env-test
+
+    """
     # Arrange
-    class ProjectSettings(BaseSettings):
-        number_of_cats: int
-        secret: str
-        use_scalpl: bool
 
     class TestfromIniSettings(BaseSettings):
-        custom_key: int
-        pre_key: int
-        post_key: int
-        project: ProjectSettings
-        stele: str
+        model_config = SettingsConfigDict(extra="ignore")
 
-        class Config:
-            extra = Extra.ignore
+        foo: str
+        secret: str
 
-            @classmethod
-            def customise_sources(
-                cls,
-                init_settings: SettingsSourceCallable,
-                env_settings: SettingsSourceCallable,
-                file_secret_settings: SettingsSourceCallable,
-            ) -> Tuple[SettingsSourceCallable, ...]:
-                return (
-                    init_settings,
-                    stela_settings,
-                    env_settings,
-                    file_secret_settings,
-                )
+        @classmethod
+        def settings_customise_sources(
+            cls,
+            settings_cls: Type[BaseSettings],
+            init_settings: PydanticBaseSettingsSource,
+            env_settings: PydanticBaseSettingsSource,
+            dotenv_settings: PydanticBaseSettingsSource,
+            file_secret_settings: PydanticBaseSettingsSource,
+        ) -> Tuple[PydanticBaseSettingsSource, ...]:
+            return (
+                init_settings,
+                StelaConfigSettingsSource(settings_cls),
+                file_secret_settings,
+            )
 
     # Act
     settings = TestfromIniSettings()
 
     # Assert
-    assert settings.custom_key == 2
-    assert settings.pre_key == 1
-    assert settings.post_key == 3
-    assert settings.project.number_of_cats == 1
-    assert settings.project.secret == "post_load_secret"
-    assert settings.project.use_scalpl is True
-    assert settings.stele == "merneptah"
+    assert settings.foo == "BAR"
+    assert settings.secret == "dotenv_secret"
 
 
 @pytest.mark.parametrize(
@@ -83,8 +81,12 @@ def test_pydantic_helper_with_ini_files():
     ],
     ids=["From JSON file", "From YAML file", "From TOML file"],
 )
-def test_pydantic_helper_from_files(test_settings):
+def test_pydantic_helper_from_files(test_settings, mocker):
     # Arrange
+    mocker.patch.object(
+        stela.helpers.pydantic, "stela_env_settings", return_value=test_settings
+    )
+
     class ProjectSettings(BaseSettings):
         secret: str
 
@@ -93,6 +95,8 @@ def test_pydantic_helper_from_files(test_settings):
         names: List[str]
 
     class TestfromFileSettings(BaseSettings):
+        model_config = SettingsConfigDict(extra="ignore", log_stela_settings=True)
+
         custom_key: int
         pre_key: int
         post_key: int
@@ -100,20 +104,20 @@ def test_pydantic_helper_from_files(test_settings):
         stele: str
         cats: CatSettings
 
-        class Config:
-            @classmethod
-            def customise_sources(
-                cls,
-                init_settings: SettingsSourceCallable,
-                env_settings: SettingsSourceCallable,
-                file_secret_settings: SettingsSourceCallable,
-            ) -> Tuple[SettingsSourceCallable, ...]:
-                return (
-                    init_settings,
-                    stela_settings,
-                    env_settings,
-                    file_secret_settings,
-                )
+        @classmethod
+        def settings_customise_sources(
+            cls,
+            settings_cls: Type[BaseSettings],
+            init_settings: PydanticBaseSettingsSource,
+            env_settings: PydanticBaseSettingsSource,
+            dotenv_settings: PydanticBaseSettingsSource,
+            file_secret_settings: PydanticBaseSettingsSource,
+        ) -> Tuple[PydanticBaseSettingsSource, ...]:
+            return (
+                init_settings,
+                StelaConfigSettingsSource(settings_cls),
+                file_secret_settings,
+            )
 
     # Act
     settings = TestfromFileSettings()

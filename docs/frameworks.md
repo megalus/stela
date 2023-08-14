@@ -23,9 +23,15 @@ DEBUG = env.DEBUG
 
 ### Pydantic
 
-Pydantic uses the [BaseSettings](https://docs.pydantic.dev/usage/settings/) logic to handle environment
+Pydantic uses the [BaseSettings](https://docs.pydantic.dev/latest/usage/pydantic_settings/) logic to handle environment
 variables. If you want to use Pydantic Settings with Stela dotenv file combinations (`.env`, `.env.local`, etc..) you
-can use the helper `stela_env_settings` to **replace** the original `env_settings` in your Settings class:
+can use:
+
+#### Version 1.x
+
+!!! warning "Support for Pydantic v1 is deprecated and will be removed on 6.0."
+
+Use helper `stela_env_settings` to **replace** the original `env_settings` in your Settings class:
 
 ```ini
 # .env.local
@@ -66,6 +72,49 @@ class Settings(BaseSettings):
 
 print(Settings().foo.bar)
 # > 123
+```
+
+#### Version 2.x
+Use class `StelaConfigSettingsSource` to **replace** the original `env_settings` in your Settings class:
+
+```python
+from typing import Tuple, Type
+from pydantic_settings import (
+    BaseSettings,
+    PydanticBaseSettingsSource,
+    SettingsConfigDict,
+)
+from stela.helpers.pydantic import StelaConfigSettingsSource
+
+
+class FooSettings(BaseSettings):
+    bar: str
+
+
+class Settings(BaseSettings):
+
+    model_config = SettingsConfigDict(extra="ignore", env_nested_delimiter="__", log_stela_settings=True)
+
+    foo: FooSettings
+
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls: Type[BaseSettings],
+        init_settings: PydanticBaseSettingsSource,
+        env_settings: PydanticBaseSettingsSource,
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
+    ) -> Tuple[PydanticBaseSettingsSource, ...]:
+        return (
+            init_settings,
+            StelaConfigSettingsSource(settings_cls),
+            file_secret_settings,
+        )
+
+
+print(Settings().foo.bar)
+# > 1
 ```
 
 ### FastAPI

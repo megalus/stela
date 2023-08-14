@@ -52,7 +52,7 @@ source you need.
 Run Stela initialization command. This command will create `.env`, `.env.local` and `.gitignore` files.
 
 ```bash
-$ stela init --use-default
+$ stela init --default
 ```
 
 ```dotenv

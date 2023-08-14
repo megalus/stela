@@ -158,7 +158,7 @@ class StelaInit:
                 f.write("[stela]\n")
                 for k, v in new_stela_config.items():
                     f.write(f"{k} = {v}\n")
-            if pyproject_content and "stela" in pyproject_content.get("tool"):
+            if pyproject_content and "[tool.stela]" in pyproject_content:
                 del pyproject_doc["tool"]["stela"]
                 with open("pyproject.toml", "w") as f:
                     f.write(tomlkit.dumps(pyproject_doc))

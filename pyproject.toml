@@ -50,9 +50,9 @@ build_command = "python -m pip install -U twine poetry && poetry build"
 name = "stela"
 version = "5.0.4"
 description = "Find and read your project configuration files easily"
-authors = ["Chris Maillefaud <chrismaillefaud@gmail.com>"]
+authors = ["Chris Maillefaud <chrismaille@users.noreply.github.com>"]
 readme = "README.md"
-repository = "https://github.com/chrismaille/stela"
+repository = "https://github.com/megalus/stela"
 keywords = ["settings", "configuration", "parser"]
 license = "MIT"
 
@@ -96,18 +96,18 @@ bandit = "*"
 pre-commit = "*"
 flake8 = "*"
 twine = "*"
-pydantic = "*"
+pydantic-settings = "*"
 mkdocs-material = "*"
 pytest-asyncio = "*"
 
 # Frameworks for example directory
-django = "*"
-flask = "*"
+#django = "*"
+#flask = "*"
 fastapi = "*"
-starlite = "*"
-jupyterlab = "*"
-chalice = "*"
-uvicorn = "*"
+#starlite = "*"
+#jupyterlab = "*"
+#chalice = "*"
+#uvicorn = "*"
 
 [build-system]
 requires = ["poetry>=0.12"]

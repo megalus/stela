@@ -22,7 +22,7 @@ def cli(ctx):
 
 
 @cli.command()
-@click.option("--use-default", is_flag=True, help="Use Default Values.")
+@click.option("--default", is_flag=True, help="Use Default Values.")
 @click.option("--convert", is_flag=True, help="Convert Stela old data if found.")
 def init(use_default, convert):
     """Initialize Stela for your project."""

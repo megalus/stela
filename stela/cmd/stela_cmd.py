@@ -24,14 +24,14 @@ def cli(ctx):
 @cli.command()
 @click.option("--default", is_flag=True, help="Use Default Values.")
 @click.option("--convert", is_flag=True, help="Convert Stela old data if found.")
-def init(use_default, convert):
+def init(default, convert):
     """Initialize Stela for your project."""
     print_title("Initializing Stela")
     click.pause(
         "This command will configure stela for your project.\nPress a key to continue."
     )
     initializer = stela_init.StelaInit(".")
-    initializer.run(use_default, convert)
+    initializer.run(default, convert)
 
 
 @cli.command()

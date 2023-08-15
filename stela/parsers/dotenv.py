@@ -28,20 +28,21 @@ def read_dotenv(
     """
     from loguru import logger
 
-    def look_for_file(current_path: Path) -> Optional[Path]:
-        if current_path.exists():
-            return current_path
+    def look_for_file(current_path: Path, file_name: str) -> Optional[Path]:
+        test_path = current_path.joinpath(file_name)
+        logger.debug(f"Looking for file '{env_file}' in '{current_path}'")
+        if test_path.exists():
+            return test_path
         if str(current_path) in ["/", "\\"] or current_path.parent == current_path:
             return None
-        return look_for_file(current_path.parent)
+        return look_for_file(current_path.parent, file_name)
 
-    path = Path.cwd()
-    filepath = path.joinpath(config_file_path, env_file)
-    env_path = look_for_file(filepath)
+    path = Path.cwd().joinpath(config_file_path)
+    env_path = look_for_file(path, env_file)
     if not env_path:
-        logger.debug(f"File {env_file} not found starting at path {filepath}.")
+        logger.debug(f"File {env_file} not found starting at path {path}.")
         return {}
-    logger.info(f"Reading file {env_path}...")
+    logger.info(f"Reading file: {env_path}")
     dotenv_path = find_dotenv(str(env_path), usecwd=True)
     if not dotenv_path:
         return {}

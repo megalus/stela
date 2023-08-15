@@ -146,7 +146,7 @@ class StelaOptions(StelaBaseOptions):
     @classmethod
     def get_settings(cls):
         file_settings = {}
-        toml_path = Path(".").joinpath("pyproject.toml")
+        toml_path = Path.cwd().joinpath("pyproject.toml")
         reader = StelaFileReader()
         pyproject_path = cls.recurse_find_file(toml_path)
         if pyproject_path:
@@ -155,7 +155,7 @@ class StelaOptions(StelaBaseOptions):
             if file_settings:
                 logger.info("Using pyproject.toml for stela settings.")
         if not file_settings:
-            ini_path = Path(".").joinpath(".stela")
+            ini_path = Path.cwd().joinpath(".stela")
             stela_path = cls.recurse_find_file(ini_path)
             if stela_path:
                 ini_settings = reader.load_ini(stela_path)

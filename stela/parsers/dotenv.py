@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from dotenv import dotenv_values, find_dotenv, load_dotenv
 
@@ -28,10 +28,21 @@ def read_dotenv(
     """
     from loguru import logger
 
+    def look_for_file(current_path: Path) -> Optional[Path]:
+        if current_path.exists():
+            return current_path
+        if str(current_path) in ["/", "\\"] or current_path.parent == current_path:
+            return None
+        return look_for_file(current_path.parent)
+
     path = Path.cwd()
     filepath = path.joinpath(config_file_path, env_file)
-    logger.debug(f"Looking for {env_file} file starting at path: {filepath}")
-    dotenv_path = find_dotenv(str(filepath), usecwd=True)
+    env_path = look_for_file(filepath)
+    if not env_path:
+        logger.debug(f"File {env_file} not found starting at path {filepath}.")
+        return {}
+    logger.info(f"Reading file {env_path}...")
+    dotenv_path = find_dotenv(str(env_path), usecwd=True)
     if not dotenv_path:
         return {}
 

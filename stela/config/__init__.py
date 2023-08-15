@@ -1,7 +1,6 @@
 import os
 from abc import abstractmethod
 from dataclasses import dataclass, field
-from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from loguru import logger
@@ -9,7 +8,7 @@ from loguru import logger
 from stela.exceptions import StelaEnvironmentNotFoundError, StelaFileTypeError
 from stela.parsers.dotenv import read_dotenv
 from stela.parsers.other_files import StelaFileReader
-from stela.utils import StelaFileType
+from stela.utils import StelaFileType, find_file_folder
 
 DEFAULT_ORDER = ["embed", "file", "custom"]
 
@@ -133,32 +132,19 @@ class StelaOptions(StelaBaseOptions):
     default_environment: Optional[str] = None
 
     @classmethod
-    def recurse_find_file(cls, path: Path) -> Optional[str]:
-        """Find file in path."""
-        if path.exists():
-            return str(path)
-        else:
-            parent_path = path.parent
-            if parent_path == path:
-                return None
-            return cls.recurse_find_file(parent_path)
-
-    @classmethod
     def get_settings(cls):
         file_settings = {}
-        toml_path = Path.cwd().joinpath("pyproject.toml")
         reader = StelaFileReader()
-        pyproject_path = cls.recurse_find_file(toml_path)
-        if pyproject_path:
-            toml_settings = reader.load_toml(pyproject_path)
+        toml_path = find_file_folder("pyproject.toml")
+        if toml_path:
+            toml_settings = reader.load_toml(toml_path.joinpath("pyproject.toml"))
             file_settings = toml_settings.get("tool", {}).get("stela", {})
             if file_settings:
                 logger.info("Using pyproject.toml for stela settings.")
         if not file_settings:
-            ini_path = Path.cwd().joinpath(".stela")
-            stela_path = cls.recurse_find_file(ini_path)
-            if stela_path:
-                ini_settings = reader.load_ini(stela_path)
+            ini_path = find_file_folder(".stela")
+            if ini_path:
+                ini_settings = reader.load_ini(ini_path.joinpath(".stela"))
                 file_settings = ini_settings.get("stela", {})
                 if file_settings:
                     logger.info("Using .stela for stela settings.")

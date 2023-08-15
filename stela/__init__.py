@@ -18,7 +18,7 @@ from stela.main.cut import StelaCut, StelaCutMain
 from stela.main.dot import StelaDotMain
 from stela.utils import find_file_folder, show_value
 
-__version__ = "5.1.7"
+__version__ = "5.1.8"
 
 
 def _get_stela_cut() -> StelaCutMain:

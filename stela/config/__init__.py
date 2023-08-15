@@ -3,6 +3,8 @@ from abc import abstractmethod
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
+from loguru import logger
+
 from stela.exceptions import StelaEnvironmentNotFoundError, StelaFileTypeError
 from stela.parsers.dotenv import read_dotenv
 from stela.parsers.other_files import StelaFileReader
@@ -137,11 +139,19 @@ class StelaOptions(StelaBaseOptions):
         if os.path.exists(toml_path):
             toml_settings = reader.load_toml(toml_path)
             file_settings = toml_settings.get("tool", {}).get("stela", {})
+            if file_settings:
+                logger.info("Using pyproject.toml for stela settings.")
         else:
             ini_path = ".stela"
             if os.path.exists(ini_path):
                 ini_settings = reader.load_ini(ini_path)
                 file_settings = ini_settings.get("stela", {})
+                if file_settings:
+                    logger.info("Using .stela for stela settings.")
+        if not file_settings:
+            logger.info(
+                "No stela file configuration found. Using default stela settings."
+            )
         settings = {
             "environment_variable_name": cls.get_from_env_or_settings(
                 "environment_variable_name",

@@ -1,6 +1,7 @@
 import os
 from abc import abstractmethod
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from loguru import logger
@@ -132,19 +133,32 @@ class StelaOptions(StelaBaseOptions):
     default_environment: Optional[str] = None
 
     @classmethod
+    def recurse_find_file(cls, path: Path) -> Optional[str]:
+        """Find file in path."""
+        if path.exists():
+            return str(path)
+        else:
+            parent_path = path.parent
+            if parent_path == path:
+                return None
+            return cls.recurse_find_file(parent_path)
+
+    @classmethod
     def get_settings(cls):
         file_settings = {}
-        toml_path = "pyproject.toml"
+        toml_path = Path(".").joinpath("pyproject.toml")
         reader = StelaFileReader()
-        if os.path.exists(toml_path):
-            toml_settings = reader.load_toml(toml_path)
+        pyproject_path = cls.recurse_find_file(toml_path)
+        if pyproject_path:
+            toml_settings = reader.load_toml(pyproject_path)
             file_settings = toml_settings.get("tool", {}).get("stela", {})
             if file_settings:
                 logger.info("Using pyproject.toml for stela settings.")
-        else:
-            ini_path = ".stela"
-            if os.path.exists(ini_path):
-                ini_settings = reader.load_ini(ini_path)
+        if not file_settings:
+            ini_path = Path(".").joinpath(".stela")
+            stela_path = cls.recurse_find_file(ini_path)
+            if stela_path:
+                ini_settings = reader.load_ini(stela_path)
                 file_settings = ini_settings.get("stela", {})
                 if file_settings:
                     logger.info("Using .stela for stela settings.")

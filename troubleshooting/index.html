@@ -559,6 +559,13 @@
 If you have a question which this guideline didn't resolve, please open an
 <a href="https://github.com/megalus/stela/issues">issue</a>.</p>
 </details>
+<details class="question">
+<summary>Got Error: <em>Stela did not found value for <MY_VARIABLE></em>, but MY_VARIABLE exists in .env file.</summary>
+<p>Please check if the root project folder is the same as the stela configuration file. If is correct, and your
+.env file is in another folder, you can use the <code>env_path</code> parameter to set the path to the .env file. You can also
+turn on Stela logs (<code>export STELA_SHOW_LOGS=true</code>) to see if the .env file and stela configuration file are being
+loaded correctly.</p>
+</details>
 <h3 id="example-apps">Example Apps<a class="headerlink" href="#example-apps" title="Permanent link">&para;</a></h3>
 <p>To see how this library works check the <code>Example Folder</code> provided <a href="https://github.com/megalus/stela/tree/main/examples">here</a>.</p>
 <h3 id="not-working">Not working?<a class="headerlink" href="#not-working" title="Permanent link">&para;</a></h3>

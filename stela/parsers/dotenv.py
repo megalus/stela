@@ -17,6 +17,7 @@ def read_dotenv(
 ) -> Dict[Any, Any]:
     """Stela DotEnv Loader.
 
+    :param filter_logs: Filter variable value in logs
     :param config_file_path: relative path for config files
     :param env_file: dotenv file name
     :param overwrites_memory: dotenv data overwrites os.environ
@@ -29,7 +30,8 @@ def read_dotenv(
 
     path = Path.cwd()
     filepath = path.joinpath(config_file_path, env_file)
-    dotenv_path = find_dotenv(str(filepath))
+    logger.debug(f"Looking for {env_file} file starting at path: {filepath}")
+    dotenv_path = find_dotenv(str(filepath), usecwd=True)
     if not dotenv_path:
         return {}
 

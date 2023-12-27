@@ -49,7 +49,7 @@ source you need.
 
 ### Quick Start
 
-Run Stela initialization command. This command will create `.env`, `.env.local` and `.gitignore` files.
+Run Stela initialization command. This command will create `.env`, `.env.local`, `.stela` and `.gitignore` files.
 
 ```bash
 $ stela init --default

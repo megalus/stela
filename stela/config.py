@@ -1,5 +1,4 @@
 import os
-from abc import abstractmethod
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
@@ -7,28 +6,29 @@ from loguru import logger
 
 from stela.exceptions import StelaEnvironmentNotFoundError, StelaFileTypeError
 from stela.parsers.dotenv import read_dotenv
-from stela.parsers.other_files import StelaFileReader
+from stela.parsers.reader import StelaFileReader
 from stela.utils import StelaFileType, find_file_folder
-
-DEFAULT_ORDER = ["embed", "file", "custom"]
 
 
 @dataclass
-class StelaBaseOptions:
+class StelaOptions:
     config_file_extension: StelaFileType = StelaFileType.INI
     env_file: str = ".env"
-    dotenv_overwrites_memory: bool = False
     log_filtered_value: bool = True
     show_logs: bool = False
     config_file_path: str = "."
-    evaluate_data: bool = False
-    default_environment: Optional[str] = None
     warn_if_env_is_missing: bool = False
     dotenv_encoding: str = "utf-8"
     _dotenv_data: Optional[Dict[Any, Any]] = None
     current_environment: Optional[str] = None
     env_table: str = "environment"
     _filenames: List[str] = field(default_factory=list)
+    environment_variable_name: str = "STELA_ENV"
+    final_loader: str = "stela.main.default_loader"
+    raise_on_missing_variable: bool = True
+    evaluate_data: bool = True
+    dotenv_overwrites_memory: bool = True
+    default_environment: Optional[str] = None
 
     @classmethod
     def get_from_env_or_settings(
@@ -91,7 +91,7 @@ class StelaBaseOptions:
         return self.config_file_extension.value  # type: ignore
 
     @classmethod
-    def get_config(cls) -> "StelaBaseOptions":
+    def get_config(cls) -> "StelaOptions":
         """Get config from pyproject.toml."""
 
         file_settings, settings = cls.get_settings()
@@ -113,23 +113,6 @@ class StelaBaseOptions:
             for extension in settings["config_file_extension"].value
         ]
         return cls(**settings)
-
-    @classmethod
-    @abstractmethod
-    def get_settings(cls):
-        raise NotImplementedError()
-
-
-@dataclass
-class StelaOptions(StelaBaseOptions):
-    """Stela Options data class for Dot class."""
-
-    environment_variable_name: str = "STELA_ENV"
-    final_loader: str = "stela.main.loader.default_loader"
-    raise_on_missing_variable: bool = True
-    evaluate_data: bool = True
-    dotenv_overwrites_memory: bool = True
-    default_environment: Optional[str] = None
 
     @classmethod
     def get_settings(cls):

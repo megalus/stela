@@ -142,7 +142,7 @@ $ python manage.py test
 # settings.py
 from stela import env
 
-ENV = env.current_environment  # "GLOBAL" from STELA_ENV default value
+ENV = env.current_environment  # "GLOBAL" because no environment was declared
 DEBUG = env.DEBUG  # True from .env.local
 DATABASES = {
     'default': {

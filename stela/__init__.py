@@ -11,34 +11,12 @@ from typing import Any, List
 from loguru import logger
 
 from stela.config import StelaOptions
-from stela.config.cut import StelaCutOptions
-from stela.config.stub import create_stela_stub
 from stela.exceptions import StelaValueError
-from stela.main.cut import StelaCut, StelaCutMain
-from stela.main.dot import StelaDotMain
-from stela.utils import find_file_folder, show_value
+from stela.helpers.stub import create_stela_stub
+from stela.main import StelaMain
+from stela.utils import show_value
 
 __version__ = "5.2.0"
-
-
-def _get_stela_cut() -> StelaCutMain:
-    stela_config = StelaCutOptions.get_config()
-
-    conf_path = find_file_folder("conf_stela.py")
-    if conf_path:
-        try:
-            import conf_stela  # noqa
-        except ImportError:
-            pass
-
-    if stela_config.show_logs:
-        logger.enable("stela")
-    else:
-        logger.disable("stela")
-
-    stela = StelaCutMain(options=stela_config)
-
-    return stela
 
 
 def _get_stela() -> "Stela":
@@ -49,7 +27,7 @@ def _get_stela() -> "Stela":
     else:
         logger.disable("stela")
 
-    stela_data = StelaDotMain(options=stela_config)
+    stela_data = StelaMain(options=stela_config)
     stela_data.get_project_settings()
 
     class Stela:
@@ -59,7 +37,7 @@ def _get_stela() -> "Stela":
             else ["_NO_ENV_FOUND_"]
         )
         _stela_options: StelaOptions = stela_config
-        _stela_data: StelaDotMain = stela_data
+        _stela_data: StelaMain = stela_data
 
         def _get_attributes(self, current_obj: object, data_dict: dict):
             for attr, value in data_dict.items():
@@ -144,7 +122,5 @@ def _get_stela() -> "Stela":
 
     return Stela()
 
-
-settings: StelaCut = _get_stela_cut().get_project_settings()  # Will be removed on 6.0
 
 env = _get_stela()

@@ -37,7 +37,7 @@ There are a lot of good libraries to work with project settings:
   [Dynaconf](https://github.com/dynaconf/dynaconf) and [Plaster](https://github.com/Pylons/plaster) were the main
   inspirations for this project until version 5.x
 * [Pydantic](https://github.com/pydantic/pydantic) - A very powerful solution for data validation, they provide a
-  [Settings Management](https://docs.pydantic.dev/usage/settings/) tool, which is an exceptional solution too.
+  [Settings Management](https://docs.pydantic.dev/usage/settings/) tool, which is an good solution for that environment.
 
 ### Why use Stela?
 
@@ -62,4 +62,4 @@ pip install stela
 ```
 
 !!! info "Currently this project supports:"
-    * Python 3.9, 3.10 and 3.11
+    * Python 3.10, 3.11 and 3.12

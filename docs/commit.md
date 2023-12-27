@@ -5,15 +5,15 @@ projects. So, you need special attention when porting an existing project to Ste
 
 ## Changes on .gitignore
 
-By default, Stela will add your `.env.local` and `.env.*.local` files to project's `.gitignore` and will replace
+By default, Stela will add your `.env.local` and `.env.*.local` files to project's `.gitignore` and will comment
 the `.env` entry if exists. This is because you shouldn't commit your secret values, even if you want to use them in
-your local machine. But, some settings aren't secrets, and you may want commit these values. That's why you combine
+your local machine. But some values in this file aren't secrets, and you may want to commit these values. That's why you combine
 both `.env` and `.env.local` files.
 
 For example, you may want to commit the `API_URL` and a fake value, but not the real one for the `API_TOKEN`:
 
 ```ini
-# .env - can be commited
+# .env - can be committed
 # the value for API_TOKEN here can be used in your CI/CD
 # for running tests, for example
 API_URL=https://foo.bar
@@ -31,7 +31,8 @@ The standard python `.gitignore` need to be updated to reflect this:
 
 ```bash
 # .gitignore
-!.env  # Change this line or remove it
+
+# .env  # Comment or remove this line
 .env.local  # Add this
 .env.*.local  # Add this
 ```
@@ -49,7 +50,7 @@ The standard python `.gitignore` need to be updated to reflect this:
 ## I'm not comfortable changing these settings. Can I use Stela?
 
 Sure, just don't run the `stela init` file and create manually the `.stela` file, renaming the dotenv file to be used
-(can we suggest: `.environs`?), like this:
+(we suggest: `.environs`), like this:
 
 ```ini
 # A very conservative configuration.
@@ -68,6 +69,8 @@ In your `.gitignore` just add:
 .environs.local
 .environs.*.local
 ```
+
+Stela will read the original `.env` file, and will overwrite the values using the `.environs` files.
 
 ---
 

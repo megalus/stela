@@ -2,7 +2,7 @@
 addopts = '--pydocstyle'
 
 [tool.black]
-target-version = ['py39']
+target-version = ['py310']
 include = '\.pyi?$'
 exclude = '''
 (
@@ -49,7 +49,7 @@ build_command = "python -m pip install -U twine poetry && poetry build"
 [tool.poetry]
 name = "stela"
 version = "5.2.0"
-description = "Find and read your project configuration files easily"
+description = "Organize your project settings and secrets with ease"
 authors = ["Chris Maillefaud <chrismaille@users.noreply.github.com>"]
 readme = "README.md"
 repository = "https://github.com/megalus/stela"
@@ -57,25 +57,13 @@ keywords = ["settings", "configuration", "parser"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = ">=3.9, <4"
+python = ">=3.10, <4"
 loguru = "*"
-pyyaml = "*"
-scalpl = "*"
 toml = "*"
 python-dotenv = "*"
 click = "*"
 tomlkit = "*"
 
-
-[env]
-project.shared_attribute = "foo.bar"
-api_timeout = 60
-
-[env.test]
-project.secret = "embed_secret"
-
-[env.production]
-api_timeout = 10
 
 [tool.poetry.dev-dependencies]
 black = {version = "*", allow-prereleases = true}

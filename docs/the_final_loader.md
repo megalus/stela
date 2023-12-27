@@ -1,6 +1,12 @@
 ## The Stela Final Loader
 
-Stela Final Loader is a function which receives two arguments:
+Stela always loads the data from the dotenv files, we call it the First Loader.
+
+After that, Stela calls the Final Loader function, which just return the data received from the First Loader.
+
+You can configure Stela to use your own Final Loader function, or use the default one.
+
+Stela Final Loader is a function that receives two arguments:
 
 * The [Stela Options](settings.md) object: `options`
 * The dictionary content the data from _dotenvs_ read based on current stela options: `env_data`

@@ -30,23 +30,3 @@ $ export STELA_FINAL_LOADER="foo.bar"
     def my_custom_loader(options: StelaOptions, env_data: dict) -> dict:
         dotenv_encoding = options.dotenv_encoding
     ```
-
-
-## Stela deprecated options
-
-The options below work only for the `settings` object, not the `env` object.
-
-They are marked as deprecated and will be removed in the next major version:
-
-```ini
-# All keys and default values available in pyproject.toml or .stela
-# Works only for the settings object - from stela import settings
-config_file_extension = "INI"                       # or YAML, TOML, JSON
-config_file_prefix = ""                             # You can add a prefix before name - ex.: env_development.ini
-config_file_suffix = ""                             # You can add a suffix after name - ex.: development_v1.ini
-do_not_read_environment = false                     # Do not read environment variables from shell
-do_not_read_dotenv = false                          # Do not read dotenv file
-environment_prefix = ""                             # ex.: settings["foo.bar"] looks for MY_PREFIX_FOO_BAR
-environment_suffix = ""                             # ex.: settings["foo.bar"] looks for FOO_BAR_MY_SUFFIX
-use_environment_layers = false                      # Use environment layers
-```

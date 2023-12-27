@@ -5,12 +5,11 @@ from loguru import logger
 
 STUB_TEMPLATE = """from typing import Any
 from .config import StelaOptions
-from .main.dot import StelaDotMain
-from .main.cut import StelaCut
+from .main import StelaMain
 
 class Stela:
     _stela_options: StelaOptions
-    _stela_data: StelaDotMain
+    _stela_data: StelaMain
 
     current_environment: str
     default_environment: str
@@ -24,8 +23,6 @@ class Stela:
 
 env: Stela
 
-# Deprecated Attribute - will be removed on Stela 6.0
-settings: StelaCut
 """
 
 STUB_MODULE = "__init__.pyi"

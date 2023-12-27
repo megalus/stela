@@ -9,9 +9,5 @@ class StelaFileTypeError(Exception):
     """File Type Error."""
 
 
-class StelaTooManyLoadersError(Exception):
-    """Too Many Loaders Error."""
-
-
 class StelaValueError(AttributeError):
     """Stela Value Error."""

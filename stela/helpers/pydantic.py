@@ -1,57 +1,19 @@
 from typing import Any, Dict, Tuple
-from warnings import warn
 
 from loguru import logger
 from pydantic.fields import FieldInfo
-from pydantic_settings import PydanticBaseSettingsSource
+from pydantic_settings import BaseSettings, PydanticBaseSettingsSource
 
 from stela.utils import read_env
 
 
-def stela_settings(settings: "BaseSettings") -> Dict[str, Any]:
-    """Read Stela data for use in Pydantic Settings.
-
-    Will return stela settings as a python dictionary.
-    """
-    from stela import settings as stela_settings_data
-
-    data = stela_settings_data.to_dict
-
-    try:
-        # Pydantic v1
-        log_settings = getattr(settings.__config__, "log_stela_settings", False)
-        warn(
-            "Support for Pydantic v1 is deprecated and will be removed on 6.0.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-    except AttributeError:
-        # Pydantic v2
-        log_settings = settings.config.get("env_nested_delimiter") or False
-
-    if log_settings:
-        logger.debug(f"Stela settings dict are: {data}")
-
-    return data
-
-
-def stela_env_settings(settings: "BaseSettings") -> dict[str, Any]:
+def stela_env_settings(settings: BaseSettings) -> dict[str, Any]:
     """
     Read Stela Data from many dotenv files.
     """
-    try:
-        # Pydantic v1
-        delimiter = getattr(settings.__config__, "env_nested_delimiter", "")
-        log_settings = getattr(settings.__config__, "log_stela_settings", False)
-        warn(
-            "Support for Pydantic v1 is deprecated and will be removed on 6.0.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-    except AttributeError:
-        # Pydantic v2
-        delimiter = settings.config.get("env_nested_delimiter") or ""
-        log_settings = settings.config.get("env_nested_delimiter") or False
+
+    delimiter = settings.config.get("env_nested_delimiter") or ""
+    log_settings = settings.config.get("env_nested_delimiter") or False
 
     # Ask Stela to read envs as per his configuration
     env = read_env()

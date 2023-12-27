@@ -6,7 +6,9 @@ I really hope this project can make your life a little easier.
 
 Please feel free to check our other projects:
 
-* [django-google-sso](https://github.com/megalus/django-google-sso): Easily add Google Authentication in your Django projects.
+* [django-google-sso](https://github.com/megalus/django-google-sso): Add Google Authentication in your Django projects with ease.
+* [django-microsoft-sso](https://github.com/megalus/django-microsoft-sso): Add Microsoft 365 Authentication in your Django projects with ease.
+* [django-github-sso](https://github.com/megalus/django-github-sso): Add GitHub Authentication in your Django projects with ease.
 
 ## Donating
 

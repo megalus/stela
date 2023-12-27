@@ -21,60 +21,16 @@ from stela import env
 DEBUG = env.DEBUG
 ```
 
-### Pydantic
+### Pydantic 2.x
 
 Pydantic uses the [BaseSettings](https://docs.pydantic.dev/latest/usage/pydantic_settings/) logic to handle environment
 variables. If you want to use Pydantic Settings with Stela dotenv file combinations (`.env`, `.env.local`, etc..) you
 can use:
 
-#### Version 1.x
-
-!!! warning "Support for Pydantic v1 is deprecated and will be removed on 6.0."
-
-Use helper `stela_env_settings` to **replace** the original `env_settings` in your Settings class:
-
 ```ini
 # .env.local
 FOO__BAR=123
 ```
-
-```python
-from pydantic import BaseSettings
-from stela.helpers.pydantic import stela_env_settings
-
-
-class FooSettings(BaseSettings):
-    bar: str
-
-
-class Settings(BaseSettings):
-    foo: FooSettings
-
-    class Config:
-        env_nested_delimiter = '__'
-        log_stela_settings = True  # Use to see Stela logs here
-
-        @classmethod
-        def customise_sources(
-                cls,
-                init_settings,
-                env_settings,
-                file_secret_settings,
-        ):
-            # Do not include original env_settings here
-            # Replace it with stela_env_settings
-            return (
-                init_settings,
-                stela_env_settings,
-                file_secret_settings,
-            )
-
-
-print(Settings().foo.bar)
-# > 123
-```
-
-#### Version 2.x
 Use class `StelaConfigSettingsSource` to **replace** the original `env_settings` in your Settings class:
 
 ```python
@@ -114,7 +70,7 @@ class Settings(BaseSettings):
 
 
 print(Settings().foo.bar)
-# > 1
+#> 123
 ```
 
 ### FastAPI
@@ -148,31 +104,6 @@ print(f"My Secret: {env.MY_SECRET}")
 # %%
 ```
 
-## Stela and Asynchronous Code
-If you need to (re)load Stela envs inside an asynchronous method, and you have a complex blocking custom loader, which
-needs to run inside the loop, you can use the asynchronous `aread_env` method:
-
-```python
-from my_project import app
-from stela.asyncio import aread_env
-
-
-@app.get("/")
-async def root():
-    env = await aread_env()
-    return {
-        "message": "Hello World",
-        "environment": env.current_environment,
-        "secret": env.MY_SECRET,
-    }
-```
-
-!!! tip "This can be used in any asynchronous frameworks"
-    You can use this helper in projects
-    like [Django-Ninja](https://github.com/vitalik/django-ninja), [Starlite](https://github.com/starlite-api/starlite)
-    or [Sanic](https://github.com/sanic-org/sanic), but only if you have troubles using the default
-    import. Almost all the time the `from stela import env` import works successfully.
-
 ---
 
-For the next step, let's see how to migrate Stela 4.x to Stela 5.0
+For the next step, let's review all Stela options

@@ -24,7 +24,6 @@ from typing import Optional
 import click
 import tomlkit
 
-from stela.cmd.stela_converter import StelaConverter
 from stela.config import StelaOptions
 
 STELA_INI_FILE = ".stela"
@@ -64,11 +63,12 @@ class StelaInit:
                 f.write(new_content)
 
     def add_stela_config(self, use_default):
-        from stela.parsers.other_files import StelaFileReader
+        from stela.parsers.reader import StelaFileReader
 
         reader = StelaFileReader()
         stela_config = {}
         pyproject_doc = None
+        pyproject_content = None
         if os.path.exists(STELA_INI_FILE):
             stela_config = reader.load_ini(STELA_INI_FILE)
         if not stela_config and os.path.exists(PYPROJECT_TOML):
@@ -149,49 +149,35 @@ class StelaInit:
 
         if use_toml:
             pyproject_doc["tool"]["stela"] = new_stela_config
-            with open("pyproject.toml", "w") as f:
+            with open(PYPROJECT_TOML, "w") as f:
                 f.write(tomlkit.dumps(pyproject_doc))
+                click.secho(
+                    f"Updating {PYPROJECT_TOML} file with stela configuration", dim=True
+                )
             if os.path.exists(STELA_INI_FILE):
                 os.remove(STELA_INI_FILE)
+                click.secho(f"Removing file {STELA_INI_FILE}", dim=True)
         else:
             with open(STELA_INI_FILE, "w") as f:
                 f.write("[stela]\n")
                 for k, v in new_stela_config.items():
                     f.write(f"{k} = {v}\n")
+                click.secho(
+                    f"Updating {STELA_INI_FILE} file with stela configuration", dim=True
+                )
             if pyproject_content and "[tool.stela]" in pyproject_content:
                 del pyproject_doc["tool"]["stela"]
-                with open("pyproject.toml", "w") as f:
+                with open(PYPROJECT_TOML, "w") as f:
                     f.write(tomlkit.dumps(pyproject_doc))
+                click.secho(
+                    f"Removing stela configuration from  {PYPROJECT_TOML} file",
+                    dim=True,
+                )
 
-    @staticmethod
-    def check_for_old_format() -> bool:
-        root_dir = "."
-        converter = StelaConverter(root_dir)
-
-        converter.run(check_only=True)
-
-        return converter.files_found > 0
-
-    def run(self, use_default, convert):
+    def run(self, use_default):
         if use_default:
             click.secho("Using default stela config options.", fg="green")
         self.add_stela_config(use_default)
-        if self.check_for_old_format():
-            can_convert = False
-            if convert:
-                can_convert = True
-            if not can_convert and not use_default:
-                can_convert = click.confirm(
-                    "Old stela data format found. Do you want to convert to new format? (Recommended).",
-                    default=True,
-                )
-            if can_convert:
-                converter = StelaConverter(
-                    self.root_dir,
-                    env_file=self.env_file,
-                    config_file_path=self.dotenv_file_path,
-                )
-                converter.run()
         self.upsert_gitignore()
         self.create_env_files()
         click.secho("Stela successfully initialized.", fg="green", bold=True)

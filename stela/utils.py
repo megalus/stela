@@ -16,19 +16,6 @@ class StelaFileType(Enum):
     ENV = [".env"]
 
 
-def stela_reload() -> "StelaCut":  # type: ignore
-    """Reload Stela configuration.
-
-    This helper will import again stela module
-    to update settings.
-
-    """
-    import stela
-
-    reload(stela)
-    return stela.settings
-
-
 def read_env() -> "StelaDot":  # type: ignore
     """Reload Stela configuration.
 
@@ -161,10 +148,10 @@ def read_env_files() -> Dict[str, Any]:
 
     :return Dict[str, Any]:
     """
-    from stela.main.dot import StelaDotMain
+    from stela.main import StelaMain
 
     config = get_stela_config()
-    data = StelaDotMain(config)
+    data = StelaMain(config)
     data.read_env_files()
     return data.settings
 

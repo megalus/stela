@@ -1,17 +1,46 @@
 import importlib
 import os
-from dataclasses import dataclass
-from typing import Any, Dict
+from dataclasses import dataclass, field
 
 from loguru import logger
 
-from stela.main import StelaBaseMain
+from stela.config import StelaOptions
+from stela.exceptions import StelaEnvironmentNotFoundError
 from stela.parsers.dotenv import read_dotenv
 from stela.utils import show_value
 
 
 @dataclass
-class StelaDotMain(StelaBaseMain):
+class StelaMain:
+    options: StelaOptions
+    settings: dict[str, any] = field(default_factory=dict)
+
+    def log_current_data(self, origin: str) -> None:
+        def log_dict(dict_key: str, dict_value: any, parents: list):
+            if isinstance(dict_value, dict):
+                for k, v in dict_value.items():
+                    if dict_key not in parents:
+                        parents.append(dict_key)
+                    log_dict(k, v, parents)
+            else:
+                parents_key = (
+                    parents + [dict_key] if dict_key not in parents else parents
+                )
+                logger.debug(
+                    f"[{origin}] {'.'.join(parents_key)} = "
+                    f"{show_value(dict_value, self.options.log_filtered_value)}"
+                )
+
+        for key, value in self.settings.items():
+            log_dict(key, value, [])
+
+    @property
+    def environment(self) -> str:
+        """Return Current Environment."""
+        if not self.options.current_environment:
+            raise StelaEnvironmentNotFoundError("Environment not found.")
+        return self.options.current_environment
+
     def get_project_settings(self):
         env_data = self.read_env_files()
 
@@ -26,7 +55,7 @@ class StelaDotMain(StelaBaseMain):
             f"{[f'{k}={show_value(v, self.options.log_filtered_value)}' for k, v in self.settings.items()]}"
         )
 
-    def read_env_files(self) -> Dict[str, Any]:
+    def read_env_files(self) -> dict[str, any]:
         settings = {}
         current_environment = self.options.current_environment
         dotenv_files = [
@@ -60,3 +89,18 @@ class StelaDotMain(StelaBaseMain):
             f"{[f'{k}={show_value(v, self.options.log_filtered_value)}' for k, v in settings.items()]}"
         )
         return settings
+
+
+def default_loader(options: StelaOptions, env_data: dict[str, any]) -> dict[str, any]:
+    """Stela Default Loader.
+
+    :param options: Stela Options
+    :param env_data: Dict with environment data
+    :return: Dict
+    """
+    from loguru import logger
+
+    logger.info(
+        f"Using Stela Default Loader. Current environment is: {options.current_environment}"
+    )
+    return env_data

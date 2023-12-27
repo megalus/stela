@@ -16,7 +16,7 @@ from stela.helpers.stub import create_stela_stub
 from stela.main import StelaMain
 from stela.utils import show_value
 
-__version__ = "5.2.0"
+__version__ = "6.0.0"
 
 
 def _get_stela() -> "Stela":

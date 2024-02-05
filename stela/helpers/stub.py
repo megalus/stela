@@ -32,9 +32,16 @@ def create_stela_stub(settings) -> tuple[bool, str]:
     try:
         import stela
 
+        # Get os.environ only for the keys that are in fact environment keys
+        filtered_environ = {
+            k: v for k, v in os.environ.items() if not k.startswith("_") and k.isupper()
+        }
+
+        all_env_info = {**filtered_environ, **settings}
+
         content = STUB_TEMPLATE.format(
             all_envs="\n    ".join(
-                [f"{k}: {type(v).__name__}" for k, v in settings.items()]
+                [f"{k}: {type(v).__name__}" for k, v in all_env_info.items()]
             )
         )
         stela_dir = os.path.dirname(os.path.abspath(stela.__file__))

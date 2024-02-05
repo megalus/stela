@@ -73,7 +73,7 @@ def _get_stela() -> "Stela":
 
         def __getattribute__(self, item):
             # return from os.environ if exists
-            if "item" in os.environ:
+            if item in os.environ:
                 value = os.environ[item]
                 logger.debug(
                     f"Using environment value: {item}={show_value(value, stela_config.log_filtered_value)}"

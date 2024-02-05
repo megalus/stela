@@ -32,7 +32,7 @@ def _get_stela() -> "Stela":
 
     class Stela:
         __slots__ = (
-            [str(k) for k in stela_data.settings.keys()]
+            ["_locked"] + [str(k) for k in stela_data.settings.keys()]
             if stela_data.settings.keys()
             else ["_NO_ENV_FOUND_"]
         )
@@ -67,9 +67,13 @@ def _get_stela() -> "Stela":
             return self._stela_options._default_environment or "GLOBAL"
 
         def __init__(self, *args, **kwargs):
+            self._locked = False
             super().__init__(*args, **kwargs)
 
             self._get_attributes(current_obj=self, data_dict=stela_data.settings)
+
+        def lock(self):
+            self._locked = True
 
         def __getattribute__(self, item):
             # return from os.environ if exists
@@ -96,7 +100,8 @@ def _get_stela() -> "Stela":
 
         def __setattr__(self, key, value):
             if key in self.__slots__ and hasattr(self, key):
-                raise StelaValueError(f"Attribute {key} is ready-only.")
+                if key != "_locked" and self._locked:
+                    raise StelaValueError(f"Attribute {key} is ready-only.")
             super().__setattr__(key, value)
 
         def get(self, var_name: str, raise_on_missing: bool = True):
@@ -117,7 +122,9 @@ def _get_stela() -> "Stela":
 
     create_stela_stub(stela_data.settings)
 
-    return Stela()
+    stela = Stela()
+    stela.lock()
+    return stela
 
 
 env = _get_stela()

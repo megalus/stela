@@ -50,10 +50,7 @@ def _get_stela() -> "Stela":
                     self._get_attributes(current_obj=nested_obj, data_dict=value)
                     setattr(current_obj, attr, nested_obj)
                 else:
-                    if stela_config.dotenv_overwrites_memory:
-                        current_value = value
-                    else:
-                        current_value = os.getenv(attr, value)
+                    current_value = value
                     if stela_config.evaluate_data:
                         try:
                             current_value = literal_eval(current_value)

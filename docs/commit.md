@@ -58,7 +58,6 @@ Sure, just don't run the `stela init` file and create manually the `.stela` file
 environment_variable_name = STELA_ENV
 evaluate_data = False
 show_logs = False
-dotenv_overwrites_memory = False
 env_file = .environs
 config_file_path = .
 ```

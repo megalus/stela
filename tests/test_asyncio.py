@@ -3,7 +3,7 @@ async def test_load_env_async():
     from stela import env
 
     # Assert
-    assert env.list() == ["FOO", "SECRET"]
+    assert env.list() == ["ONE", "FOO", "SECRET"]
 
 
 def test_load_env():
@@ -11,4 +11,4 @@ def test_load_env():
     from stela import env
 
     # Assert
-    assert env.list() == ["FOO", "SECRET"]
+    assert env.list() == ["ONE", "FOO", "SECRET"]

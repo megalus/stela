@@ -12,7 +12,6 @@ $ export STELA_FINAL_LOADER="foo.bar"
 | `config_file_path`          | Relative path for dotenv files. **Default**: `.`                                                                    |
 | `default_environment`       | Default environment value, used if `environment_variable_name` if not informed. **Default**: `None`                 |
 | `dotenv_encoding`           | Use this encoding to read dotenv files. **Default**: `utf-8`                                                        |
-| `dotenv_overwrites_memory`  | Tells Stela if data from dotenv files overwrite data in memory.  **Default**: True                                  |
 | `env_file`                  | Stela "env" file name. **Default**: `.env`                                                                          |
 | `env_table`                 | The table or section to read data in custom files (toml, ini, etc...). **Default**: `env`                           |
 | `environment_variable_name` | Stela environment variable to define project current environment. **Default**: `STELA_ENV`                          |

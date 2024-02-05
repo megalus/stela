@@ -26,23 +26,3 @@ def test_get_current_environment(monkeypatch):
     # Assert
     assert env.current_environment == "test"
     assert env.SECRET == "dotenv_secret"
-
-
-def test_dotenv_overwrite_memory(monkeypatch):
-    # Arrange
-    monkeypatch.setenv("STELA_CONFIG_FILE_PATH", "./tests/fixtures")
-    monkeypatch.setenv("STELA_ENV_FILE", ".test-env")
-
-    # Act
-    env = read_env()
-
-    # Assert
-    assert env.PROJECT_SECRET == "my-super-secret"
-
-    # Act
-    monkeypatch.setenv("STELA_DOTENV_OVERWRITES_MEMORY", False)
-    monkeypatch.setenv("PROJECT_SECRET", "secret_in_memory")
-    env = read_env()
-
-    # Assert
-    assert env.PROJECT_SECRET == "secret_in_memory"

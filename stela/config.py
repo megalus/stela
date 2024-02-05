@@ -27,7 +27,6 @@ class StelaOptions:
     final_loader: str = "stela.main.default_loader"
     raise_on_missing_variable: bool = True
     evaluate_data: bool = True
-    dotenv_overwrites_memory: bool = True
     default_environment: Optional[str] = None
 
     @classmethod
@@ -79,7 +78,7 @@ class StelaOptions:
             settings["_dotenv_data"] = read_dotenv(
                 config_file_path=settings["config_file_path"],
                 env_file=settings["env_file"],
-                overwrites_memory=settings["dotenv_overwrites_memory"],
+                overwrites_memory=True,
                 encoding=settings["dotenv_encoding"],
                 verbose=settings["warn_if_env_is_missing"],
                 update_environs=update_environs,
@@ -169,9 +168,6 @@ class StelaOptions:
             ),
             "final_loader": cls.get_from_env_or_settings(
                 "final_loader", file_settings, cls.final_loader
-            ),
-            "dotenv_overwrites_memory": cls.get_from_env_or_settings(
-                "dotenv_overwrites_memory", file_settings, cls.dotenv_overwrites_memory
             ),
             "raise_on_missing_variable": cls.get_from_env_or_settings(
                 "raise_on_missing_variable",

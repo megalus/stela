@@ -83,7 +83,6 @@ class StelaInit:
                 "environment_variable_name": StelaOptions.environment_variable_name,
                 "evaluate_data": StelaOptions.evaluate_data,
                 "show_logs": StelaOptions.show_logs,
-                "dotenv_overwrites_memory": StelaOptions.dotenv_overwrites_memory,
                 "env_file": StelaOptions.env_file,
                 "config_file_path": StelaOptions.config_file_path,
             }
@@ -119,12 +118,6 @@ class StelaInit:
                         "log_filtered_value", StelaOptions.log_filtered_value
                     ),
                 )
-            new_stela_config["dotenv_overwrites_memory"] = click.confirm(
-                "Dotenv overwrites memory?",
-                default=stela_config.get(
-                    "dotenv_overwrites_memory", StelaOptions.dotenv_overwrites_memory
-                ),
-            )
             self.env_file = click.prompt(
                 "Default env file",
                 default=stela_config.get("env_file", StelaOptions.env_file),

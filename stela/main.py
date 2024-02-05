@@ -50,6 +50,9 @@ class StelaMain:
         self.settings = getattr(module, loader_fn)(
             options=self.options, env_data=env_data
         )
+        for k, v in self.settings.items():
+            if k in os.environ and v is not None:
+                os.environ[k] = v
         logger.debug(
             f"Settings after running loader: "
             f"{[f'{k}={show_value(v, self.options.log_filtered_value)}' for k, v in self.settings.items()]}"
@@ -72,7 +75,7 @@ class StelaMain:
             env_settings = read_dotenv(
                 config_file_path=self.options.config_file_path,
                 env_file=file,
-                overwrites_memory=self.options.dotenv_overwrites_memory,
+                overwrites_memory=True,
                 encoding=self.options.dotenv_encoding,
                 verbose=self.options.warn_if_env_is_missing,
                 filter_logs=self.options.log_filtered_value,
@@ -80,9 +83,7 @@ class StelaMain:
             for k, v in env_settings.items():
                 settings[k] = v
         for k, v in settings.items():
-            if k in os.environ and not self.options.dotenv_overwrites_memory:
-                continue
-            if v is not None:
+            if k in os.environ and v is not None:
                 os.environ[k] = v
         logger.debug(
             f"Settings after load all dotenv files: "

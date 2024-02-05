@@ -32,12 +32,6 @@ If you want to see Stela info in your logs, you can enable this option. By defau
 enable logs, you can filter the values displayed (the default value for this sub-option is
 enabled) (`log_filtered_value`).
 
-#### Dotenv overwrites memory (`dotenv_overwrites_memory`)
-
-If you want to overwrite the values in memory with the values from dotenv files, you can enable this option. By default,
-this is disabled. On standard mode, the values from dotenv files are only used if the value is not already defined in
-memory.
-
 #### Dotenv file name (`env_file`)
 
 If you want to use a different name for your dotenv files, you can change it here. By default, this is `.env`.
@@ -67,7 +61,6 @@ Using default settings
     environment_variable_name = STELA_ENV
     evaluate_data = True
     show_logs = False
-    dotenv_overwrites_memory = True
     env_file = .env
     config_file_path = .
     ```
@@ -78,7 +71,6 @@ Using default settings
     environment_variable_name = "STELA_ENV"
     evaluate_data = true
     show_logs = false
-    dotenv_overwrites_memory = true
     env_file = ".env"
     config_file_path = "."
     ```
@@ -88,7 +80,6 @@ Using default settings
     $ export STELA_ENVIRONMENT_VARIABLE_NAME="STELA_ENV"
     $ export STELA_EVALUATE_DATA=true
     $ export STELA_SHOW_LOGS=false
-    $ export STELA_DOTENV_OVERWRITES_MEMORY=true
     $ export STELA_ENV_FILE=".env"
     $ export STELA_CONFIG_FILE_PATH="."
     ```

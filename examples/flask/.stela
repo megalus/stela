@@ -4,6 +4,5 @@ default_environment = development
 evaluate_data = True
 show_logs = True
 log_filtered_value = True
-dotenv_overwrites_memory = True
 env_file = .flask-env
 config_file_path = .

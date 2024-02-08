@@ -34,7 +34,7 @@ def _get_stela() -> "Stela":
         __slots__ = (
             ["_locked"] + [str(k) for k in stela_data.settings.keys()]
             if stela_data.settings.keys()
-            else ["_NO_ENV_FOUND_"]
+            else ["_locked"]
         )
         _stela_options: StelaOptions = stela_config
         _stela_data: StelaMain = stela_data

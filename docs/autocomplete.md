@@ -11,7 +11,7 @@ other words, in a folder outside your project. To this work, please make sure th
 sufficient privileges to access these external folders.
 
 !!! tip "It works for dynamic variables too"
-    The same is true for values retrieved from other sources than dotenv files (see next section ["The Stela Loader"](the_final_loader)
+    The same is true for values retrieved from other sources than dotenv files (see next section ["The Stela Loader"](the_final_loader.md)
     ). The stub file is always updated after Stela process the loader.
 
 ### Troubleshooting stub creation

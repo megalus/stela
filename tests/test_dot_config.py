@@ -18,11 +18,11 @@ def test_evaluated_value_from_env_file(monkeypatch):
 def test_get_current_environment(monkeypatch):
     # Arrange
     monkeypatch.setenv("STELA_CONFIG_FILE_PATH", "./tests/fixtures")
-    monkeypatch.setenv("STELA_ENV", "test")
+    monkeypatch.setenv("STELA_ENV", "NEW_ENVIRONMENT")
 
     # Act
     env = read_env()
 
     # Assert
-    assert env.current_environment == "test"
-    assert env.SECRET == "dotenv_secret"
+    assert env.current_environment == "NEW_ENVIRONMENT"
+    assert env.SECRET == "NEW_SECRET"

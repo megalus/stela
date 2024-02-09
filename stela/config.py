@@ -40,7 +40,11 @@ class StelaOptions:
         :param default: default value for argument.
         :return: Any
         """
-        environment_name = f"STELA_{key.upper().replace('.', '_')}"
+        normalized_key = key.upper().replace(".", "_")
+        if key.startswith("STELA_"):
+            environment_name = normalized_key
+        else:
+            environment_name = f"STELA_{normalized_key}"
         value = os.getenv(environment_name, file_settings.get(key, default))
         if value and isinstance(value, str) and isinstance(default, bool):
             return value.lower() == "true"
@@ -72,18 +76,36 @@ class StelaOptions:
     @classmethod
     def _get_dotenv_data(cls, settings, update_environs: bool):
         """Get data from dotenv files."""
-        if settings.get("do_not_read_dotenv"):
-            settings["_dotenv_data"] = {}
-        else:
-            settings["_dotenv_data"] = read_dotenv(
-                config_file_path=settings["config_file_path"],
-                env_file=settings["env_file"],
-                overwrites_memory=True,
-                encoding=settings["dotenv_encoding"],
-                verbose=settings["warn_if_env_is_missing"],
-                update_environs=update_environs,
-                filter_logs=settings["log_filtered_value"],
-            )
+        settings["_dotenv_data"] = {}
+        if not settings.get("do_not_read_dotenv"):
+            files = [
+                settings["env_file"],
+                f"{settings['env_file']}.local",
+            ]
+            if (
+                settings.get("default_environment")
+                and settings["default_environment"] != "GLOBAL"
+            ):
+                files += [
+                    f"{settings['env_file']}.{settings['default_environment'].lower()}",
+                    f"{settings['env_file']}.{settings['default_environment'].lower()}.local",
+                ]
+            for file in files:
+                settings["_dotenv_data"] |= read_dotenv(
+                    config_file_path=settings["config_file_path"],
+                    env_file=file,
+                    overwrites_memory=True,
+                    encoding=settings["dotenv_encoding"],
+                    verbose=settings["warn_if_env_is_missing"],
+                    update_environs=update_environs,
+                    filter_logs=settings["log_filtered_value"],
+                )
+            # Filter dict for keys which start with "STELA_"
+            settings["_dotenv_data"] = {
+                k: v
+                for k, v in settings["_dotenv_data"].items()
+                if k.startswith("STELA_")
+            }
 
     def get_extensions(self) -> List[str]:
         """Return file extensions for project configuration files."""

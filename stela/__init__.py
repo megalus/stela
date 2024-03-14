@@ -60,11 +60,17 @@ def _get_stela() -> "Stela":
 
         @property
         def current_environment(self):
-            return self._stela_options.current_environment or "GLOBAL"
+            return (
+                self._stela_options.current_environment
+                or self._stela_options.no_env_name
+            )
 
         @property
         def default_environment(self):
-            return self._stela_options._default_environment or "GLOBAL"
+            return (
+                self._stela_options.default_environment
+                or self._stela_options.no_env_name
+            )
 
         def __init__(self, *args, **kwargs):
             self._locked = False

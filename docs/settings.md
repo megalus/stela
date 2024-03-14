@@ -17,6 +17,7 @@ $ export STELA_FINAL_LOADER="foo.bar"
 | `environment_variable_name` | Stela environment variable to define project current environment. **Default**: `STELA_ENV`                          |
 | `evaluate_data`             | Use `ast.literal_eval` to evaluate variable values. **Default**: `True`                                             |
 | `final_loader`              | Stela Loader function which will be called after read dotenv files. **Default**: `stela.main.loader.default_loader` |
+| `no_env_name`               | Default value when no Environment exists. "Default": `GLOBAL`                                                       |
 | `log_filtered_value`        | When logging data, show values filtered. **Default**: `True`                                                        |
 | `raise_on_missing_variable` | Raise error if ask Stela for a unknown variable. **Default**: `True`                                                |
 | `show_logs`                 | Stela will use loguru to show logs. **Default**: `False`                                                            |

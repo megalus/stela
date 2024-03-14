@@ -80,8 +80,7 @@ class StelaMain:
                 verbose=self.options.warn_if_env_is_missing,
                 filter_logs=self.options.log_filtered_value,
             )
-            for k, v in env_settings.items():
-                settings[k] = v
+            settings |= env_settings
         for k, v in settings.items():
             if k in os.environ and v is not None:
                 os.environ[k] = v

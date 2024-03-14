@@ -28,6 +28,7 @@ class StelaOptions:
     raise_on_missing_variable: bool = True
     evaluate_data: bool = True
     default_environment: Optional[str] = None
+    no_env_name: str = "GLOBAL"
 
     @classmethod
     def get_from_env_or_settings(
@@ -195,6 +196,9 @@ class StelaOptions:
                 "raise_on_missing_variable",
                 file_settings,
                 cls.raise_on_missing_variable,
+            ),
+            "no_env_name": cls.get_from_env_or_settings(
+                "no_env_name", file_settings, cls.no_env_name
             ),
         }
         return file_settings, settings

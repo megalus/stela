@@ -1,4 +1,4 @@
-<p align="center">
+poetry <p align="center">
    <img src="docs/images/stela.png" alt="Stela" />
 </p>
 <p align="center">

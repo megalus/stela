@@ -1,4 +1,5 @@
 """Stela Utils module."""
+
 from enum import Enum, unique
 from importlib import reload
 from pathlib import Path

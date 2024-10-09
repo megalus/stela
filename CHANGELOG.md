@@ -1,10 +1,182 @@
 # CHANGELOG
 
 
+## v8.0.0 (2024-10-09)
+
+### Breaking
+
+* feat!: bump version
+
+BREAKING CHANGE ([`08fbf80`](https://github.com/megalus/stela/commit/08fbf80213001ec73f40e663d0af2ad311db062a))
+
+### Unknown
+
+* Add support to Python 3.13 (#11)
+
+* feat!: Add support to Python 3.13
+
+This is a BREAKING CHANGE commit. Changes:
+
+* Add support to 3.13
+* Remove support to 3.10
+* Update GitHub Actions
+
+* ci: fix pre-commit ([`1277fbc`](https://github.com/megalus/stela/commit/1277fbcd19eee581d344f342adfbd6de58374b35))
+
+
+## v7.1.0 (2024-03-14)
+
+### Features
+
+* feat: add `no_name_env` option.
+
+Default value: GLOBAL
+
+Also fix unit tests with Pytest 8.x ([`d3c235c`](https://github.com/megalus/stela/commit/d3c235c1eca3ce8a63fc124ff254d44f9e9fc593))
+
+
+## v7.0.4 (2024-02-09)
+
+### Fixes
+
+* fix: error when stela did not find STELA_xxx environment variables in dotenv file. ([`df54c1c`](https://github.com/megalus/stela/commit/df54c1c89fd2139f556fa9851ccd111731063ac7))
+
+
+## v7.0.3 (2024-02-08)
+
+### Fixes
+
+* fix: error when stela did not find any dotenv file. ([`8ab3313`](https://github.com/megalus/stela/commit/8ab3313d3127651f1e08cab21d8539cb462766ab))
+
+
+## v7.0.2 (2024-02-05)
+
+### Fixes
+
+* fix: StelaValueError during initialization ([`4c9dfac`](https://github.com/megalus/stela/commit/4c9dfac1227c8f2c019a0d7047be7f0b9a48ce23))
+
+
+## v7.0.1 (2024-02-05)
+
+### Fixes
+
+* fix: fix error when variable exists on memory but not on dotenv files ([`00b65d0`](https://github.com/megalus/stela/commit/00b65d0eb0a35cd1ec06176197e363eba920184a))
+
+
+## v7.0.0 (2024-02-05)
+
+### Breaking
+
+* fix!: remove `dotenv_overwrites_memory`. This option gives a lot of headaches for custom final loaders.
+
+For now on, Stela will always overwrite the `os.environ` values with the ones found in the dotenv files.
+
+This is a BREAKING CHANGE. ([`abcb68c`](https://github.com/megalus/stela/commit/abcb68c0bcd50b6085fda3a55ffd8c3e77e53069))
+
+### Documentation
+
+* docs: Update README.md ([`0213495`](https://github.com/megalus/stela/commit/02134952300979d6c8ab87b13b9d11e07080e231))
+
+
+## v6.0.0 (2023-12-27)
+
+### Breaking
+
+* feat!: New Version 6.0
+
+BREAKING CHANGE: Changes for this commit:
+* Drop Python 3.9 support
+* Add Python 3.12 support
+* Remove `Stela.settings` object and deprecated code. If you're still using the old API, please use version 5.x
+* Update documentation ([`4563314`](https://github.com/megalus/stela/commit/4563314626b17a1918c1d1cde9313ed2956dee2c))
+
+### Chores
+
+* chore: add missing code ([`b290042`](https://github.com/megalus/stela/commit/b290042f33198b0c659668b251a35f4de22fb1cf))
+
+
+## v5.2.0 (2023-08-15)
+
+### Features
+
+* feat: Added recursion to dotenv file search to improve file detection.
+
+In the previous implementation, there was a chance of not finding the .env file if it was nested in the subdirectories. Added a recursive approach to solve this problem: the function `look_for_file` is now called recursively until the .env file is found or till it hits the root directory. This change ensures that the .env file will be accurately detected regardless of its location relative to the directory from which the script is run. Now, users can be more flexible in their directory structure. ([`9b99a80`](https://github.com/megalus/stela/commit/9b99a808a219b6149db4b28b2170d7f7f6bb33e0))
+
+
+## v5.1.9 (2023-08-15)
+
+### Fixes
+
+* fix: Added recursion to dotenv file search to improve file detection.
+
+In the previous implementation, there was a chance of not finding the .env file if it was nested in the subdirectories. Added a recursive approach to solve this problem: the function `look_for_file` is now called recursively until the .env file is found or till it hits the root directory. This change ensures that the .env file will be accurately detected regardless of its location relative to the directory from which the script is run. Now, users can be more flexible in their directory structure. ([`08d0e03`](https://github.com/megalus/stela/commit/08d0e031094947eb8c5f08bb0a263cbd8094ea4f))
+
+
+## v5.1.8 (2023-08-15)
+
+### Fixes
+
+* fix: recursion for search dotenv files ([`d084242`](https://github.com/megalus/stela/commit/d084242260e63b25b22b7a89cf82b7e9b0b39897))
+
+
+## v5.1.7 (2023-08-15)
+
+### Fixes
+
+* fix: Refactor file searching in config by using utility function ([`0a28113`](https://github.com/megalus/stela/commit/0a28113fe241f5123b40265872045fa9ae96cf62))
+
+
+## v5.1.6 (2023-08-15)
+
+### Fixes
+
+* fix: Use absolute path for config file search in stela
+
+The 'get_settings' function in stela config has been updated to use 'Path.cwd()' instead of 'Path(".")' when defining the paths for 'pyproject.toml' and '.stela'. This change shifts the configuration file search from a relative path to the current working directory, thus enhancing the consistency and reliability of the configuration loading process. ([`d2afdbe`](https://github.com/megalus/stela/commit/d2afdbeee6acde3c19d968b46b4e512a24d0ac66))
+
+
+## v5.1.5 (2023-08-15)
+
+### Fixes
+
+* fix: Add recursive file search to stela configuration
+
+Introduced a recursive file search in stela configuration's `get_settings` method. The change added a helper method `recurse_find_file`, which looks up for configuration files from the current directory up to the root one. This change helps to locate the 'pyproject.toml' and '.stela' configuration files, improving application stability and user experience. ([`16d2629`](https://github.com/megalus/stela/commit/16d26296a3af00708d581362249a2fdbe7eaf97b))
+
+
+## v5.1.4 (2023-08-15)
+
+### Fixes
+
+* fix: Add logging for stela settings and update troubleshooting docs
+
+This commit adds logging in the configuration init file to log the stela settings being used and updates the troubleshooting docs to include information on how to handle Errors related to Stela not finding values for variables in the .env file. This was done to provide users with better troubleshooting abilities and improve user experience. ([`302b6bd`](https://github.com/megalus/stela/commit/302b6bd634743ef0a30a45b34c2b986a27a88e2d))
+
+
+## v5.1.3 (2023-08-15)
+
+### Fixes
+
+* fix: error in stela init command ([`2722a3d`](https://github.com/megalus/stela/commit/2722a3d94991c350f112c0eeb338eee541e3f999))
+
+
+## v5.1.2 (2023-08-14)
+
+### Fixes
+
+* fix: fix versions ([`b692461`](https://github.com/megalus/stela/commit/b692461e3712a39b0d21c144f5364a156224c1cf))
+
+* fix: use version 7.34.6 ([`6bbf2bc`](https://github.com/megalus/stela/commit/6bbf2bcda8c16b87efd4dee49f56b07ddfaeeebf))
+
+* fix: use version 7 ([`95db837`](https://github.com/megalus/stela/commit/95db837fd2bfeada324e6e6bbea0f885af2edfe7))
+
+* fix: use version 7.33.5 ([`fe3b081`](https://github.com/megalus/stela/commit/fe3b081fe45680e813355bd9b8286acdd98da64f))
+
 
 ## v5.1.1 (2023-08-14)
 
-### Fix
+### Fixes
 
 * fix: add missing configuration in github actions ([`c75d97b`](https://github.com/megalus/stela/commit/c75d97b2e33bd866f7897b96f67284f4b52dbcc1))
 
@@ -15,24 +187,24 @@
 
 ## v5.1.0 (2023-08-14)
 
-### Feature
+### Features
 
 * feat: Add support to Pydantic v2.x
 
 * Support for Pydantic v1 is now deprecated and will be removed on 6.0.
-* Updated Stela&#39;s initialization flag from `--use-default` to `--default`. ([`5165d3c`](https://github.com/megalus/stela/commit/5165d3cec4ef3a0f8e5f397123569194ff13ccf1))
+* Updated Stela's initialization flag from `--use-default` to `--default`. ([`5165d3c`](https://github.com/megalus/stela/commit/5165d3cec4ef3a0f8e5f397123569194ff13ccf1))
 
 
 ## v5.0.4 (2023-04-05)
 
-### Fix
+### Fixes
 
 * fix: reduce logger messages from old settings ([`de565ef`](https://github.com/megalus/stela/commit/de565efdefd5191552a927cef926c6209b0796bd))
 
 
 ## v5.0.3 (2023-04-05)
 
-### Fix
+### Fixes
 
 * fix: move the default value from missing env to another function.
 
@@ -42,7 +214,7 @@
 
 ## v5.0.2 (2023-04-04)
 
-### Fix
+### Fixes
 
 * fix: stela error when no .env file exists ([`c38715e`](https://github.com/megalus/stela/commit/c38715e4ece0060fea93ff55d5cef0a3d87f93b6))
 
@@ -55,7 +227,7 @@
 
 * docs: Update legacy loader example ([`5d7674b`](https://github.com/megalus/stela/commit/5d7674b10d284fde626d0817b7c30ca2bca54a74))
 
-### Fix
+### Fixes
 
 * fix: Fix stela init toml parse and save data. ([`96a7a9a`](https://github.com/megalus/stela/commit/96a7a9afdfb58c7d5980c99e7b429a869b2e50b1))
 
@@ -68,11 +240,11 @@
 
 This is a BREAKING CHANGE. ([`6838206`](https://github.com/megalus/stela/commit/6838206359d5323da34cd5fe404d91c6ed607059))
 
-### Chore
+### Chores
 
 * chore: remove author file ([`180b136`](https://github.com/megalus/stela/commit/180b136530ce7dd3895ba9a74dc83c4cdc4c2db4))
 
-### Ci
+### Continuous Integration
 
 * ci: fix publish action ([`18d5c76`](https://github.com/megalus/stela/commit/18d5c76f8d92421580f78dc1942267754c316d46))
 
@@ -114,18 +286,18 @@ Resolves ST-2
 
 ## v4.0.2 (2022-02-01)
 
-### Fix
+### Fixes
 
 * fix: change licence to MIT ([`61536f8`](https://github.com/megalus/stela/commit/61536f893260df8235015dd0a836f8c1bfb9c705))
 
 
 ## v4.0.1 (2022-02-01)
 
-### Ci
+### Continuous Integration
 
 * ci: fix github actions yaml files ([`3505fa5`](https://github.com/megalus/stela/commit/3505fa57d37bedc424bbc02c164e21e9a1805014))
 
-### Fix
+### Fixes
 
 * fix: change licence to AGPL-3.0 ([`06c69d4`](https://github.com/megalus/stela/commit/06c69d4bd11214512131d4de02bdbb83068215f4))
 
@@ -161,14 +333,14 @@ BREAKING CHANGE: dropped python 3.7 support ([`b7fcd09`](https://github.com/mega
 
 * docs: Update README.md ([`575ee4a`](https://github.com/megalus/stela/commit/575ee4a9cdd0964b3a56e382a23c46f6d2f5c0e0))
 
-### Fix
+### Fixes
 
 * fix: Make circular import errors explicity with stela.settings ([`2a56b7c`](https://github.com/megalus/stela/commit/2a56b7c4af65470005c4b7b1274ec002dd750cb3))
 
 
 ## v3.0.1 (2021-08-25)
 
-### Fix
+### Fixes
 
 * fix: do not show logs when no loaders exist ([`41da0cf`](https://github.com/megalus/stela/commit/41da0cf49ddcf17c60a44b84d034e03660baf24a))
 
@@ -183,15 +355,15 @@ Stela logs will now show key/values retrieved during his lifecycle. All values w
 
 BREAKING CHANGE: Logs now will be disabled, by default. ([`6886c74`](https://github.com/megalus/stela/commit/6886c749f82af50b00da19b9e750b09eb14cd2e3))
 
-### Chore
+### Chores
 
 * chore: Avoid multiple decorators strange behavior. ([`874ad25`](https://github.com/megalus/stela/commit/874ad255cf19faa84fc6d830b4f33c016767544b))
 
-### Feature
+### Features
 
 * feat: Add log decorators ([`fb5b926`](https://github.com/megalus/stela/commit/fb5b9263add8141cd7ba5ac38a12a5943e98f5a3))
 
-### Test
+### Testing
 
 * test: small typo ([`bffb78c`](https://github.com/megalus/stela/commit/bffb78cb983a2d548eb26b1911d6c52b7a0242b1))
 
@@ -204,79 +376,75 @@ Release 3.0 ([`36b5210`](https://github.com/megalus/stela/commit/36b52103a366413
 
 ## v2.0.9 (2021-05-28)
 
-### Fix
+### Fixes
 
 * fix: Permit access the Environment Variable Name, when use the `do_not_read_environment` option ([`61e4efb`](https://github.com/megalus/stela/commit/61e4efb53c752e355398f0f093981345275e1eae))
 
 
 ## v2.0.8 (2021-03-30)
 
-### Fix
+### Unknown
+
+* Merge remote-tracking branch 'origin/main' ([`8eba440`](https://github.com/megalus/stela/commit/8eba4404d45b632eba76e9aba96796023e23b5d8))
+
+
+## v2.0.7 (2021-03-30)
+
+### Fixes
 
 * fix: merge dicts between phases error ([`8d79bb8`](https://github.com/megalus/stela/commit/8d79bb81962ed255ebcbab7aaaaa42b61f397c7a))
 
 ### Unknown
 
-* Merge remote-tracking branch &#39;origin/main&#39; ([`8eba440`](https://github.com/megalus/stela/commit/8eba4404d45b632eba76e9aba96796023e23b5d8))
+* Merge remote-tracking branch 'origin/main' ([`8201236`](https://github.com/megalus/stela/commit/820123640870c9a9a0ea531467da4c4aa30e74a0))
 
 
-## v2.0.7 (2021-03-30)
+## v2.0.6 (2021-03-30)
 
-### Fix
+### Fixes
 
 * fix: error when subtable overwrites main table ([`7801f6f`](https://github.com/megalus/stela/commit/7801f6f687cb383111e1d0267d8c20c6b70f83df))
 
 ### Unknown
 
-* Merge remote-tracking branch &#39;origin/main&#39; ([`8201236`](https://github.com/megalus/stela/commit/820123640870c9a9a0ea531467da4c4aa30e74a0))
-
-
-## v2.0.6 (2021-03-30)
-
-### Fix
-
-* fix: add sub-dictionaries inside environment tables on pyproject.toml ([`3340bec`](https://github.com/megalus/stela/commit/3340bec762198d0fb69d536ed9134a92e7fca54e))
-
-### Unknown
-
-* Merge remote-tracking branch &#39;origin/main&#39; ([`6af877e`](https://github.com/megalus/stela/commit/6af877e2d732d9e97592281b1dc2dd705e43eae1))
+* Merge remote-tracking branch 'origin/main' ([`6af877e`](https://github.com/megalus/stela/commit/6af877e2d732d9e97592281b1dc2dd705e43eae1))
 
 
 ## v2.0.5 (2021-03-29)
 
-### Fix
+### Fixes
+
+* fix: add sub-dictionaries inside environment tables on pyproject.toml ([`3340bec`](https://github.com/megalus/stela/commit/3340bec762198d0fb69d536ed9134a92e7fca54e))
 
 * fix: dotnet logic ([`fcc14c1`](https://github.com/megalus/stela/commit/fcc14c1c74e8c7ece41c1a01ea87a881f6f7a9b7))
 
 
 ## v2.0.4 (2021-03-27)
 
-### Fix
+### Fixes
 
 * fix: Fix error when function decorated are not called. ([`bd115b3`](https://github.com/megalus/stela/commit/bd115b328fa0c64175ce2de92cc0907c7b077466))
 
 
 ## v2.0.3 (2021-03-27)
 
-### Fix
+### Fixes
 
 * fix: build configuration during publish ([`4e6c6c4`](https://github.com/megalus/stela/commit/4e6c6c48d54df1cc8c4e032518b309259e4f115e))
 
 
 ## v2.0.2 (2021-03-27)
 
-### Fix
-
-* fix: build configuration during publish ([`0c83367`](https://github.com/megalus/stela/commit/0c83367a8522ab7e51e0a91c00f0922eaf8b871e))
-
 ### Unknown
 
-* Merge remote-tracking branch &#39;origin/main&#39; ([`12a89dc`](https://github.com/megalus/stela/commit/12a89dce0a01fb94aa081af51c31e04ef92c04b4))
+* Merge remote-tracking branch 'origin/main' ([`12a89dc`](https://github.com/megalus/stela/commit/12a89dce0a01fb94aa081af51c31e04ef92c04b4))
 
 
 ## v2.0.1 (2021-03-27)
 
-### Fix
+### Fixes
+
+* fix: build configuration during publish ([`0c83367`](https://github.com/megalus/stela/commit/0c83367a8522ab7e51e0a91c00f0922eaf8b871e))
 
 * fix: missing command during publish ([`93602b1`](https://github.com/megalus/stela/commit/93602b12630c9193e07b54112f34f1743e0043f0))
 
@@ -289,7 +457,7 @@ Release 3.0 ([`36b5210`](https://github.com/megalus/stela/commit/36b52103a366413
 
 BREAKING CHANGE: new version ([`fdede7e`](https://github.com/megalus/stela/commit/fdede7e1135077a847130f774fe872cf11c4b662))
 
-### Build
+### Build System
 
 * build: remove rootpath library
 
@@ -353,7 +521,7 @@ https://github.community/t5/GitHub-Actions/Seg-Faults-with-Python-in-Linux-while
 
 * Build issues on regex in windows ([`b811f18`](https://github.com/megalus/stela/commit/b811f1873f9b0067e5b9fd0b64f12d4695e38ec8))
 
-### Ci
+### Continuous Integration
 
 * ci: Fix missing poetry during publish. BREAKING CHANGE: new version ([`2f722b1`](https://github.com/megalus/stela/commit/2f722b16aa5ba40293415c2c50d9fcb2d3a72526))
 
@@ -398,7 +566,9 @@ Changes:
 
 * docs: Update README.md ([`80cf466`](https://github.com/megalus/stela/commit/80cf466a02df094d4d7012ae3521f5cfe68a1e64))
 
-### Feature
+### Features
+
+* feat: Update for scalpl 0.4.0 ([`c59b3c2`](https://github.com/megalus/stela/commit/c59b3c2906b67bd696b6aa5cbca493489ab3cc99))
 
 * feat: Better lifecycle and dotenv support.
 
@@ -406,11 +576,9 @@ This is a BREAKING VERSION
 
 ### Changes
 * Add dotenv support. Stela now will check for `dotenv` files after checking memory, but before return value from dictionary. This can be customized in `[tool.stela]` settings
-* Add more steps in Stela Lifecycle. Now, we have:  `pre_load, embed, file, custom, pre_load` steps. To recreate old behavior define `load_order = [&#34;&#34;pre_load&#34;, &#34;file&#34;, &#34;post_load&#34;]` in `[tool.stela]` settings
+* Add more steps in Stela Lifecycle. Now, we have:  `pre_load, embed, file, custom, pre_load` steps. To recreate old behavior define `load_order = [""pre_load", "file", "post_load"]` in `[tool.stela]` settings
 * Add environment variables direct in `pyproject.toml`. You can use this file directly instead creating one for each environment layer.
 * Update documentation and CI process ([`2a99dfc`](https://github.com/megalus/stela/commit/2a99dfcf805411d3bef85f20ea12800a15f594d0))
-
-* feat: Update for scalpl 0.4.0 ([`c59b3c2`](https://github.com/megalus/stela/commit/c59b3c2906b67bd696b6aa5cbca493489ab3cc99))
 
 * feat: Add `do_not_read_environment` option.
 
@@ -424,7 +592,7 @@ Changes:
 * Add main logic
 * Fixes errors in scalpl get/pop operations ([`27280d7`](https://github.com/megalus/stela/commit/27280d7ba5a8dece51043de352b2494609a5ee38))
 
-### Fix
+### Fixes
 
 * fix: coverage level for new scalpl code ([`01ef4c0`](https://github.com/megalus/stela/commit/01ef4c070bf058e861bafb4bcd3511dbdc4942a8))
 
@@ -442,19 +610,19 @@ Changes:
 
 * fix: fix ci script error in git checkout command ([`082ca19`](https://github.com/megalus/stela/commit/082ca19acac690eca11f2501df61d2b058f5fd91))
 
-### Refactor
+### Refactoring
 
 * refactor: get pyproject.toml folder ([`81f1ab4`](https://github.com/megalus/stela/commit/81f1ab4f13292306e3ea92a09cea5ecf392c1c6b))
 
 ### Unknown
 
-* Merge remote-tracking branch &#39;origin/main&#39; ([`be3a18d`](https://github.com/megalus/stela/commit/be3a18d9202739e0615098f9a7e95f7c5695773b))
+* Merge remote-tracking branch 'origin/main' ([`be3a18d`](https://github.com/megalus/stela/commit/be3a18d9202739e0615098f9a7e95f7c5695773b))
 
 * Merge pull request #7 from chrismaille/develop
 
 feat: Better lifecycle and dotenv support. ([`45a7ab7`](https://github.com/megalus/stela/commit/45a7ab79e97ee7d955fc7eb06ef2ec4ce51fe8fb))
 
-* Merge remote-tracking branch &#39;origin/main&#39; into develop
+* Merge remote-tracking branch 'origin/main' into develop
 
 # Conflicts:
 #	.github/workflows/tests.yml
@@ -532,7 +700,7 @@ Release/1.0.0 ([`8f0f67d`](https://github.com/megalus/stela/commit/8f0f67d2bd659
 
 * [skip-ci] auto-bump version 1.0.0-alpha.9 ([`76cc782`](https://github.com/megalus/stela/commit/76cc78267ba4b698a20d25007906d53d72b6e654))
 
-* Merge remote-tracking branch &#39;origin/release/1.0.0&#39; into release/1.0.0 ([`d4c9d37`](https://github.com/megalus/stela/commit/d4c9d37d833c3abc5d78f2f2db8f2ea9061458a8))
+* Merge remote-tracking branch 'origin/release/1.0.0' into release/1.0.0 ([`d4c9d37`](https://github.com/megalus/stela/commit/d4c9d37d833c3abc5d78f2f2db8f2ea9061458a8))
 
 * [skip-ci] auto-bump version 1.0.0-alpha.8 ([`e2fcc33`](https://github.com/megalus/stela/commit/e2fcc33aea86cfd6ca4d1cda14effd39c78db60e))
 

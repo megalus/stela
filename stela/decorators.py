@@ -1,4 +1,5 @@
 """Stela Decorators."""
+
 from functools import wraps
 
 

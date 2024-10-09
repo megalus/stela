@@ -131,7 +131,7 @@ class StelaOptions:
         cls._get_dotenv_data(settings, update_environs=False)
         cls._get_current_environment(settings)
         settings["_filenames"] = [
-            f"{settings.get('config_file_prefix','')}{settings['current_environment']}{extension}"
+            f"{settings.get('config_file_prefix', '')}{settings['current_environment']}{extension}"
             for extension in settings["config_file_extension"].value
         ]
         return cls(**settings)

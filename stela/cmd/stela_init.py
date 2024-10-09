@@ -15,6 +15,7 @@ First of all, check if project already uses stela.
 3. Ask for default environment, default is development.
 
 """
+
 import os
 from copy import deepcopy
 from dataclasses import dataclass

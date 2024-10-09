@@ -30,7 +30,16 @@ jobs:
         id: release
         uses: python-semantic-release/python-semantic-release@v9.10.0
         with:
+          build: true
+          commit: true
+          push: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish | Build and Publish to PyPI using Poetry
+        if: steps.release.outputs.released == 'true'
+        uses: JRubics/poetry-publish@v2.0
+        with:
+          pypi_token: ${{ secrets.POETRY_PYPI_TOKEN_PYPI }}
 
       - name: Release | Upload to GitHub Release Assets
         uses: python-semantic-release/publish-action@v9.10.0
@@ -52,17 +61,3 @@ jobs:
 
       - name: Docs | Publish Docs
         run: mkdocs gh-deploy --force
-
-  publish:
-    if: needs.release.outputs.released == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup | Checkout Project
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Publish | Build and Publish to PyPI using Poetry
-        if: steps.release.outputs.released == 'true'
-        uses: JRubics/poetry-publish@v2.0
-        with:
-          pypi_token: ${{ secrets.POETRY_PYPI_TOKEN_PYPI }}

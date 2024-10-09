@@ -37,14 +37,14 @@ config_file_path = "./tests/fixtures"
 default_environment = "test"
 
 [tool.semantic_release]
-version_variable = [
+version_variables = [
     "stela/__init__.py:__version__",
     "pyproject.toml:version"
 ]
 branch = "main"
-#upload_to_pypi = true
-#upload_to_release = true
-#build_command = "python -m pip install -U twine poetry && poetry build"
+upload_to_pypi = true
+upload_to_release = true
+build_command = "python -m pip install -U twine poetry && poetry build"
 
 [tool.poetry]
 name = "stela"

@@ -1,6 +1,13 @@
 # CHANGELOG
 
 
+## v8.0.1 (2024-10-09)
+
+### Fixes
+
+* fix: github actions ([`0ef22bd`](https://github.com/megalus/stela/commit/0ef22bd62986a2510d97d8b7e711f83599288814))
+
+
 ## v8.0.0 (2024-10-09)
 
 ### Breaking

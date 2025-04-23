@@ -1,4 +1,4 @@
-poetry <p align="center">
+<p align="center">
    <img src="docs/images/stela.png" alt="Stela" />
 </p>
 <p align="center">
@@ -11,137 +11,190 @@ poetry <p align="center">
 <img alt="Build" src="https://github.com/megalus/stela/workflows/tests/badge.svg"/></a>
 <a href="https://www.python.org" target="_blank">
 <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/stela"/></a>
+<a href="https://github.com/megalus/stela/blob/main/LICENSE" target="_blank">
+<img alt="License" src="https://img.shields.io/github/license/megalus/stela"/></a>
 </p>
 
 ## Welcome to Stela
 
 [Stela](https://en.wikipedia.org/wiki/Stele) were the "information
-files" of ancient times. This library aims to simplify your project
-configurations, proposing an opinionated way to manage your project
-using dotenv files, or using any source you need.
+files" of ancient times. This library helps you manage your project
+settings and secrets with ease, using a simple and consistent approach.
+
+### What is Stela?
+
+Stela is a Python library that simplifies how you handle:
+- **Settings**: Non-sensitive values that can be committed to your repository (API URLs, timeouts, etc.)
+- **Secrets**: Sensitive values that should not be committed (passwords, tokens, etc.)
+- **Environment-specific configurations**: Different values for development, testing, and production
 
 ### Install
 
 ```shell
-$ pip install stela
+pip install stela
 ```
-
----
 
 ### Documentation
 
-* Docs: https://megalus.github.io/stela/
+For detailed documentation, visit: https://megalus.github.io/stela/
 
----
+### Key Features
 
-### Key features:
-
-1. _**Learn once, use everywhere**_. Stela aims to be easily used in any Python project or Framework.
-2. _**Separate settings from secrets from environments**_. Instead of using a single dotenv file to store all your settings,
-   we use multiple dotenv files, one for each environment. This way, you can split secrets from settings, and you can
-   have different values for the same setting in different environments.
-3. _**Easy to implement**_. Use the command `stela init` to initialize your project and configure `.env` and `.gitignore`
-   files.
-4. _**Easy to use**_. To access you configuration just include `from stela import env` in your code. Simple as that.
-5. _**One Interface, Any Source**_. You're not limited to dotenv files. Create your custom logic to import data from any
-source you need.
+1. **Learn once, use everywhere** - Works with any Python project or framework
+2. **Separate settings from secrets** - Use multiple dotenv files to organize your configuration
+3. **Environment-specific settings** - Easily switch between development, testing, and production environments
+4. **Simple API** - Access your settings with `from stela import env`
+5. **Extensible** - Not limited to dotenv files, can load settings from any source (AWS Parameter Store, Vault, etc.)
 
 
-### Quick Start
+## Quick Start Guide
 
-Run Stela initialization command. This command will create `.env`, `.env.local`, `.stela` and `.gitignore` files.
+### Step 1: Initialize Your Project
+
+Run the Stela initialization command to set up your project:
 
 ```bash
-$ stela init --default
+stela init --default
 ```
 
-Create the dotenv files and add your settings and secrets.
+This creates four files:
+- `.env` - Store your default settings (will be committed to git)
+- `.env.local` - Store your secrets (will be ignored by git)
+- `.stela` - Stela configuration file
+- Updates `.gitignore` to exclude sensitive files
 
-```dotenv
-# Add project settings and fake project secrets to .env
-# This file will be commited to your repository
+### Step 2: Configure Your Settings and Secrets
+
+Add your settings to `.env`:
+
+```ini
+# .env - This file WILL be committed to your repository
+# Store default settings and fake credentials here
 API_URL="http://localhost:8000"
 DB_URL="db://fake_user:fake_password@local_db:0000/name"
 ```
 
-```python
-# my_script.py
-from stela import env
+Add your real secrets to `.env.local`:
 
-API_URL = env.API_URL  # http://localhost:8000
-DATABASE_URL_CONNECTION = env.DB_URL  # db://fake_user:fake_password@local_db:0000/name
-```
-
-```dotenv
-# Add real secrets to .env.local
-# This file will be ignored by git
+```ini
+# .env.local - This file will NOT be committed (ignored by git)
+# Store real credentials and secrets here
 DB_URL="db://real_user:real_password@real_db:0000/name"
 ```
 
-A single, simple API to access your settings and secrets:
+### Step 3: Access Your Settings in Code
+
+Use the simple API to access your settings and secrets:
 
 ```python
 # my_script.py
 from stela import env
 
+# Access your settings with dot notation
 API_URL = env.API_URL  # http://localhost:8000
-DATABASE_URL_CONNECTION = env.DB_URL  # db://real_user:real_password@real_db:0000/name
+DATABASE_URL = env.DB_URL  # db://real_user:real_password@real_db:0000/name
 ```
 
-### Custom Sources
+Stela automatically loads values from `.env` first, then overrides them with values from `.env.local`.
 
-Use a custom, optional, final loader function to load your settings from any source you need.
+## Environment-Specific Configuration
+
+Stela makes it easy to manage different environments (development, testing, production):
+
+### Step 1: Create Environment-Specific Files
+
+Create a file for each environment:
+
+```ini
+# .env.development
+API_URL="http://localhost:8000"
+
+# .env.production
+API_URL="https://api.example.com"
+```
+
+### Step 2: Set the Environment
+
+Set the `STELA_ENV` environment variable to specify which environment to use:
+
+```bash
+# For development
+export STELA_ENV=development
+
+# For production
+export STELA_ENV=production
+```
+
+### Step 3: Access Your Settings
+
+Your code remains the same, but Stela will load the appropriate values:
+
+```python
+from stela import env
+
+# Will be "http://localhost:8000" when STELA_ENV=development
+# Will be "https://api.example.com" when STELA_ENV=production
+API_URL = env.API_URL
+```
+
+## Advanced: Custom Data Sources
+
+Stela isn't limited to dotenv files. You can load settings from any source:
+
+### Step 1: Configure a Final Loader
+
+Add a final loader in your `.stela` configuration file:
 
 ```ini
 # .stela
 [stela]
-final_loader = "path.to.my.final_loader"  # Add your final loader to Stela
+final_loader = "path.to.my.final_loader"
 ```
 
-```python
-# Use SSM Parameter Store to load your settings
+### Step 2: Create Your Loader Function
 
+```python
+# my_loaders.py
 import boto3
 from stela.config import StelaOptions
 
 def final_loader(options: StelaOptions, env_data: dict[str, any]) -> dict[str, any]:
-    """Load settings from AWS Parameter Store (SSM) to current Stela data.
+    """Load settings from AWS Parameter Store.
 
-    Data returned must be a Python Dictionary.
-    Dict keys will be converted to env properties.
-    Ex. {'Foo': 'Bar'} will be available as env.Foo
-
-    :param env_data: Data parsed from dotenv file (the first loader)
-    :param options: Stela Options obj
-    :return dict[str, any]
+    :param options: Stela configuration options
+    :param env_data: Data already loaded from dotenv files
+    :return: Updated data dictionary
     """
-    ssm = boto3.client('ssm')
-    environment = options.current_environment  # The value from STELA_ENV variable. Ex. production
+    # Get the current environment (development, production, etc.)
+    environment = options.current_environment
 
-    # Get from SSM
+    # Connect to AWS Parameter Store
+    ssm = boto3.client('ssm')
     response = ssm.get_parameters_by_path(
-        Path=f'/my-project/settings/{environment}',
+        Path=f'/my-project/{environment}',
         WithDecryption=True
     )
-    api_url = response['Parameters']['ApiUrl']  # https://real-api-url.com
-    env_data.update({'API_URL': api_url})
+
+    # Update the environment data with values from Parameter Store
+    for param in response['Parameters']:
+        name = param['Name'].split('/')[-1].upper()
+        env_data[name] = param['Value']
+
     return env_data
 ```
 
-Got your settings and secrets from both dotenv files and SSM Parameter Store:
+### Step 3: Use Your Settings as Usual
 
 ```python
-# my_script.py
 from stela import env
 
-API_URL = env.API_URL  # https://real-api-url.com
-DATABASE_URL_CONNECTION = env.DB_URL  # db://real_user:real_password@real_db:0000/name
+# Values can come from dotenv files or your custom source
+API_URL = env.API_URL
+DB_PASSWORD = env.DB_PASSWORD
 ```
 
+## Need Help?
 
-That's it! Check our [Documentation](https://megalus.github.io/stela/) for tons of customization and advice.
-
-### Not working?
-
-Don't panic. Get a towel and, please, open an
-[issue](https://github.com/megalus/stela/issues).
+- **Documentation**: For detailed guides and examples, visit [the documentation](https://megalus.github.io/stela/)
+- **Issues**: Found a bug? Have a question? [Open an issue](https://github.com/megalus/stela/issues)
+- **Contribute**: Pull requests are welcome!

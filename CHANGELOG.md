@@ -1,6 +1,13 @@
 # CHANGELOG
 
 
+## v8.0.7 (2025-09-02)
+
+### Fixes
+
+* fix: update project configuration and dependencies in pyproject.toml ([`4c01620`](https://github.com/megalus/stela/commit/4c01620ee8d9961bfeac35b043a5c0b2b42fd9e1))
+
+
 ## v8.0.6 (2025-09-02)
 
 ### Documentation

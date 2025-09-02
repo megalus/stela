@@ -50,7 +50,7 @@ build_command = "python -m pip install -U build && python -m build"
 
 [project]
 name = "stela"
-version = "8.0.6"
+version = "8.0.7"
 description = "Organize your project settings and secrets with ease"
 authors = [
     {name = "Chris Maillefaud", email = "chrismaille@users.noreply.github.com"}

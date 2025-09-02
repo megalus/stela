@@ -1,6 +1,13 @@
 # CHANGELOG
 
 
+## v8.0.8 (2025-09-02)
+
+### Fixes
+
+* fix: update Python version requirement to support up to 4.0 ([`9073047`](https://github.com/megalus/stela/commit/90730474ad342de2a00a6954ffe0ccef4d361e40))
+
+
 ## v8.0.7 (2025-09-02)
 
 ### Fixes

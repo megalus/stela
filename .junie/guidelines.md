@@ -1,6 +1,6 @@
 Project runs on a virtualenv inside WSL. Python interpreter can be found using command `poetry env info`.
 
-Test runner is `pytest`. To run can use command `poetry run pytest -v`.
+Test runner is `pytest`. To run can use command `make tests` to run all or `make test <path>::<test>`
 
 Always use type hints in the code. Always use TypeDicts for dictionaries.
 
@@ -10,7 +10,7 @@ Always add docstrings in objects with more than seven lines of code. Use Google 
 
 Use `pre-commit run --all` to check for linter and format errors.
 
-Project python version is 3.11.10.
+Project python version is 3.12.10.
 
 This is a public python library hosted in PyPI. All configuration is inside `pyproject.toml` file.
 
@@ -45,5 +45,3 @@ The ./examples folder contains examples of how to use the library with popular f
 Always use mermaid diagrams on docs.
 
 Always use English on code and docs.
-
-Do not run terminal commands until Jetbrains fixes Junie support to WSL.

@@ -54,12 +54,7 @@ def _get_stela() -> "Stela":
                     self._get_attributes(current_obj=nested_obj, data_dict=value)
                     setattr(current_obj, attr, nested_obj)
                 else:
-                    current_value = value
-                    if stela_config.evaluate_data:
-                        try:
-                            current_value = literal_eval(current_value)
-                        except Exception:
-                            logger.debug(f"Can't eval value for: {attr}")
+                    current_value = self._evaluate_value(attr, value)
                     setattr(current_obj, attr, current_value)
 
         @property
@@ -85,6 +80,20 @@ def _get_stela() -> "Stela":
         def lock(self):
             self._locked = True
 
+        @staticmethod
+        def _evaluate_value(item, value: Any) -> Any:
+            if stela_config.evaluate_data and isinstance(value, str):
+                try:
+                    current_value = literal_eval(value)
+                except Exception:
+                    current_value = value
+                else:
+                    logger.debug(
+                        f"Using evaluated value for: {item}. Type is: {type(current_value).__name__}"
+                    )
+                return current_value
+            return value
+
         def __getattribute__(self, item):
             # return from os.environ if exists
             if item in os.environ:
@@ -92,7 +101,7 @@ def _get_stela() -> "Stela":
                 logger.debug(
                     f"Using environment value: {item}={show_value(value, stela_config.log_filtered_value)}"
                 )
-                return value
+                return self._evaluate_value(item, value)
             try:
                 value = super().__getattribute__(item)
                 if not item.startswith("_"):

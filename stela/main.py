@@ -15,6 +15,18 @@ class StelaMain:
     options: StelaOptions
     settings: dict[str, any] = field(default_factory=dict)
 
+    def __post_init__(self) -> None:
+        """Save original environment keys.
+
+        This is needed to avoid overwriting true system environment variables
+        but to override values that were previously created by dotenv files (like .env)
+        when reading the same variable again, in new dotenv files
+        (like .env.local or .env.production).
+        """
+        original_keys = os.environ.get("_ORIGINAL_ENVIRON_KEYS", "")
+        if not original_keys:
+            os.environ["_ORIGINAL_ENVIRON_KEYS"] = ",".join(sorted(os.environ.keys()))
+
     def log_current_data(self, origin: str) -> None:
         def log_dict(dict_key: str, dict_value: any, parents: list):
             if isinstance(dict_value, dict):
@@ -50,8 +62,12 @@ class StelaMain:
         self.settings = getattr(module, loader_fn)(
             options=self.options, env_data=env_data
         )
+        # Preserve existing system env values; allow loader to override only dotenv-injected keys
+        forbidden_keys = os.getenv("_ORIGINAL_ENVIRON_KEYS", "").split(",")
         for k, v in self.settings.items():
-            if k in os.environ and v is not None:
+            if v is None:
+                continue
+            if k not in forbidden_keys:
                 os.environ[k] = v
         if self.options.show_logs:
             logger.debug(
@@ -77,15 +93,18 @@ class StelaMain:
             env_settings = read_dotenv(
                 config_file_path=self.options.config_file_path,
                 env_file=file,
-                overwrites_memory=True,
                 encoding=self.options.dotenv_encoding,
                 verbose=self.options.warn_if_env_is_missing,
                 show_logs=self.options.show_logs,
                 filter_logs=self.options.log_filtered_value,
             )
             settings |= env_settings
+        # Preserve existing system env values; allow loader to override only dotenv-injected keys
+        forbidden_keys = os.getenv("_ORIGINAL_ENVIRON_KEYS", "").split(",")
         for k, v in settings.items():
-            if k in os.environ and v is not None:
+            if v is None:
+                continue
+            if k not in forbidden_keys:
                 os.environ[k] = v
         if self.options.show_logs:
             logger.debug(

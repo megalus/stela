@@ -8,6 +8,7 @@ install:
 lint:
 	@poetry run pre-commit run --all
 
+.PHONY: tests
 tests:
 	@poetry run pytest -v -x -p no:warnings --cov-report term-missing --cov=.
 

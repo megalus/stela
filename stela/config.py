@@ -75,7 +75,7 @@ class StelaOptions:
             raise StelaEnvironmentNotFoundError("Environment not found.")
 
     @classmethod
-    def _get_dotenv_data(cls, settings, update_environs: bool):
+    def _get_dotenv_data(cls, settings):
         """Get data from dotenv files."""
         settings["_dotenv_data"] = {}
         if not settings.get("do_not_read_dotenv"):
@@ -95,10 +95,8 @@ class StelaOptions:
                 settings["_dotenv_data"] |= read_dotenv(
                     config_file_path=settings["config_file_path"],
                     env_file=file,
-                    overwrites_memory=True,
                     encoding=settings["dotenv_encoding"],
                     verbose=settings["warn_if_env_is_missing"],
-                    update_environs=update_environs,
                     show_logs=settings["show_logs"],
                     filter_logs=settings["log_filtered_value"],
                 )
@@ -129,7 +127,7 @@ class StelaOptions:
             raise StelaFileTypeError(
                 f"Invalid file type: {file_settings.get('config_file_extension')}"
             )
-        cls._get_dotenv_data(settings, update_environs=False)
+        cls._get_dotenv_data(settings)
         cls._get_current_environment(settings)
         settings["_filenames"] = [
             f"{settings.get('config_file_prefix', '')}{settings['current_environment']}{extension}"

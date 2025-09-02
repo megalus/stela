@@ -57,17 +57,17 @@ In the following example, the value for each environment will be:
 
 Stela will return the variable value using this priority order:
 
-1. The value from the system environment, if it did not exist in dotenv file. Ex.: `MY_VAR=1 python my_script.py`
+1. The value from the system environment (always takes precedence when set). Ex.: `MY_VAR=1 python my_script.py`
 2. The value from the `.env.[environment].local` if it exists and Stela can find the current environment.
 3. The value from the `.env.[environment]` if it exists and Stela can find the current environment.
 4. The value from the `.env.local` if it exists.
 5. The value from the `.env` if it exists.
 6. Will raise a `StelaValueError`.
 
-Stela will always raise a `StelaValueError` if you ask for a variable that does not exist in any of the dotenv files or  in memory.
+Stela will always raise a `StelaValueError` if you ask for a variable that does not exist in any of the dotenv files or in memory.
 You can change this behavior using the `raise_on_missing_variable` options as described before.
 
-Also, Stela will always overwrite the `os.environ` values with the values from the dotenv files.
+Stela will not overwrite existing `os.environ` values; dotenv and loaders only fill missing keys.
 
 ### A more concrete Example
 

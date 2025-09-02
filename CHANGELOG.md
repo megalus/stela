@@ -1,6 +1,21 @@
 # CHANGELOG
 
 
+## v8.1.0 (2025-09-02)
+
+### Documentation
+
+* docs: clarify env precedence in dev.to article and README; add in-memory os.environ priority and fix examples ([`139080d`](https://github.com/megalus/stela/commit/139080de3bf6a4c13ff7ead5d834bdadf1b97016))
+
+### Features
+
+* feat: add type inference tests and improve parser to support JSON booleans/objects first with json.loads, fallback to literal_eval ([`b5e7ab0`](https://github.com/megalus/stela/commit/b5e7ab0a52f930b9ea7db0ed350dd25353add5cd))
+
+### Unknown
+
+* tests: enable logging in type inference tests for better debugging ([`b68db7b`](https://github.com/megalus/stela/commit/b68db7beae807d54c8a4cd5810f1947ed27012a6))
+
+
 ## v8.0.10 (2025-09-02)
 
 ### Documentation

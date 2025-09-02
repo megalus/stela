@@ -14,7 +14,7 @@ def test_type_inference_from_dotenv(monkeypatch: Any) -> None:
     # Arrange: point to fixtures and use a dedicated env filename
     monkeypatch.setenv("STELA_CONFIG_FILE_PATH", "./tests/fixtures")
     monkeypatch.setenv("STELA_ENV_FILE", ".types-env")
-    monkeypatch.setenv("STELA_SHOW_LOGS", "False")
+    monkeypatch.setenv("STELA_SHOW_LOGS", "True")
 
     # Act
     env = read_env()

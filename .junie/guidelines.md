@@ -8,7 +8,7 @@ Always use dataclasses for objects.
 
 Always add docstrings in objects with more than seven lines of code. Use Google style.
 
-Use `pre-commit run --all` to check for linter and format errors.
+Use `make lint` to check for linter and format errors.
 
 Project python version is 3.12.10.
 

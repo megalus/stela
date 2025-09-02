@@ -1,6 +1,17 @@
 # CHANGELOG
 
 
+## v8.0.10 (2025-09-02)
+
+### Documentation
+
+* docs: clarify installation and initialization instructions in README ([`fe6b514`](https://github.com/megalus/stela/commit/fe6b5145e7217902a9b918dddcdb97ecdebca378))
+
+### Fixes
+
+* fix: update dotenv handling to prevent overwriting existing environment variables and improve documentation ([`a991485`](https://github.com/megalus/stela/commit/a991485fd1036b5f98c8978860bcc5e8a7f8d8d3))
+
+
 ## v8.0.9 (2025-09-02)
 
 ### Fixes

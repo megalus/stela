@@ -41,7 +41,7 @@ class StelaMain:
             raise StelaEnvironmentNotFoundError("Environment not found.")
         return self.options.current_environment
 
-    def get_project_settings(self):
+    def get_project_settings(self) -> None:
         env_data = self.read_env_files()
 
         module_path = ".".join(self.options.final_loader.split(".")[:-1])
@@ -53,10 +53,11 @@ class StelaMain:
         for k, v in self.settings.items():
             if k in os.environ and v is not None:
                 os.environ[k] = v
-        logger.debug(
-            f"Settings after running loader: "
-            f"{[f'{k}={show_value(v, self.options.log_filtered_value)}' for k, v in self.settings.items()]}"
-        )
+        if self.options.show_logs:
+            logger.debug(
+                f"Settings after running loader: "
+                f"{[f'{k}={show_value(v, self.options.log_filtered_value)}' for k, v in self.settings.items()]}"
+            )
 
     def read_env_files(self) -> dict[str, any]:
         settings = {}
@@ -70,7 +71,8 @@ class StelaMain:
                 f"{self.options.env_file}.{current_environment.lower()}",
                 f"{self.options.env_file}.{current_environment.lower()}.local",
             ]
-        logger.debug(f"Looking for dotenv files: {dotenv_files}")
+        if self.options.show_logs:
+            logger.debug(f"Looking for dotenv files: {dotenv_files}")
         for file in dotenv_files:
             env_settings = read_dotenv(
                 config_file_path=self.options.config_file_path,
@@ -78,16 +80,18 @@ class StelaMain:
                 overwrites_memory=True,
                 encoding=self.options.dotenv_encoding,
                 verbose=self.options.warn_if_env_is_missing,
+                show_logs=self.options.show_logs,
                 filter_logs=self.options.log_filtered_value,
             )
             settings |= env_settings
         for k, v in settings.items():
             if k in os.environ and v is not None:
                 os.environ[k] = v
-        logger.debug(
-            f"Settings after load all dotenv files: "
-            f"{[f'{k}={show_value(v, self.options.log_filtered_value)}' for k, v in settings.items()]}"
-        )
+        if self.options.show_logs:
+            logger.debug(
+                f"Settings after load all dotenv files: "
+                f"{[f'{k}={show_value(v, self.options.log_filtered_value)}' for k, v in settings.items()]}"
+            )
         return settings
 
 

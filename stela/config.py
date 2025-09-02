@@ -99,6 +99,7 @@ class StelaOptions:
                     encoding=settings["dotenv_encoding"],
                     verbose=settings["warn_if_env_is_missing"],
                     update_environs=update_environs,
+                    show_logs=settings["show_logs"],
                     filter_logs=settings["log_filtered_value"],
                 )
             # Filter dict for keys which start with "STELA_"

@@ -13,24 +13,27 @@ def read_dotenv(
     verbose: bool,
     encoding: str,
     update_environs: bool = False,
+    show_logs: bool = False,
     filter_logs: bool = True,
 ) -> Dict[Any, Any]:
     """Stela DotEnv Loader.
 
-    :param filter_logs: Filter variable value in logs
     :param config_file_path: relative path for config files
     :param env_file: dotenv file name
     :param overwrites_memory: dotenv data overwrites os.environ
     :param verbose: warn if dotenv file is not found
     :param encoding: encoding for dotenv file
     :param update_environs: update os.environ with dotenv data
+    :param show_logs: show logs for dotenv file reading
+    :param filter_logs: Filter variable value in logs
     :return: Dict
     """
     from loguru import logger
 
     def look_for_file(current_path: Path, file_name: str) -> Optional[Path]:
         test_path = current_path.joinpath(file_name)
-        logger.debug(f"Looking for file '{env_file}' in '{current_path}'")
+        if show_logs:
+            logger.debug(f"Looking for file '{env_file}' in '{current_path}'")
         if test_path.exists():
             return test_path
         if str(current_path) in ["/", "\\"] or current_path.parent == current_path:
@@ -40,9 +43,10 @@ def read_dotenv(
     path = Path.cwd().joinpath(config_file_path)
     env_path = look_for_file(path, env_file)
     if not env_path:
-        logger.debug(f"File {env_file} not found starting at path {path}.")
+        if show_logs:
+            logger.debug(f"File {env_file} not found starting at path {path}.")
         return {}
-    logger.info(f"Reading file: {env_path}")
+    logger.info(f"Reading file: {env_path}") # always log the file being read
     dotenv_path = find_dotenv(str(env_path), usecwd=True)
     if not dotenv_path:
         return {}
@@ -59,7 +63,7 @@ def read_dotenv(
         verbose=verbose,
         encoding=encoding,
     )
-    if env_data:
+    if env_data and show_logs:
         logger.debug(
             f"Data from {dotenv_path}: {[f'{k}={show_value(v, filter_logs)}' for k, v in env_data.items()]}"
         )

@@ -24,33 +24,33 @@ and `config_file_path` options as described before.
 ```ini
 # .env
 API_URL="http://localhost:8000"
-API_TOKEN="mock_token"
+API_TOKEN="production_fake_token"
 ```
 
 ```ini
 # .env.local
-API_TOKEN="local_token"
+API_TOKEN="production_real_token"
 ```
 
 ```ini
 # env.development
 API_URL="https://develop.api.com"
-API_TOKEN="development_token"
+API_TOKEN="development_fake_token"
 ```
 
 ```ini
 # env.development.local
-API_TOKEN="local_development_token"
+API_TOKEN="development_real_token"
 ```
 
 In the following example, the value for each environment will be:
 
-| Environment         | API_URL                 | API_TOKEN                 |
-|---------------------|-------------------------|---------------------------|
-| Global              | http://localhost:8000   | `mock_token`              |
-| Global (local)      | http://localhost:8000   | `local_token`             |
-| development         | https://develop.api.com | `development_token`       |
-| development (local) | https://develop.api.com | `local_development_token` |
+| Environment         | API_URL                 | API_TOKEN                |
+|---------------------|-------------------------|--------------------------|
+| Global              | http://localhost:8000   | `production_fake_token`  |
+| Global (local)      | http://localhost:8000   | `production_real_token`  |
+| development         | https://develop.api.com | `development_fake_token` |
+| development (local) | https://develop.api.com | `development_real_token` |
 
 
 ### Dotenv Load Priorities

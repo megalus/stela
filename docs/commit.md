@@ -6,7 +6,7 @@ projects. So, you need special attention when porting an existing project to Ste
 ## Changes on .gitignore
 
 By default, Stela will add your `.env.local` and `.env.*.local` files to project's `.gitignore` and will comment
-the `.env` entry if exists. This is because you shouldn't commit your secret values, even if you want to use them in
+the `.env` entry if it exists inside `.gitignore` too. This is because you shouldn't commit your secret values, even if you want to use them in
 your local machine. But some values in this file aren't secrets, and you may want to commit these values. That's why you combine
 both `.env` and `.env.local` files.
 

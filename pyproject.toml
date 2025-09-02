@@ -63,7 +63,7 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.11, <4"
+python = ">=3.11"
 loguru = "*"
 toml = "*"
 python-dotenv = "*"
@@ -71,7 +71,7 @@ click = "*"
 tomlkit = "*"
 
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 black = {version = "*", allow-prereleases = true}
 coverage = "*"
 mypy = "*"

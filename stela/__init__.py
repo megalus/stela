@@ -23,13 +23,16 @@ __version__ = "8.0.5"
 def _get_stela() -> "Stela":
     stela_config = StelaOptions.get_config()
 
+    stela_data = StelaMain(options=stela_config)
+    stela_data.get_project_settings()
+
+    # Enable or disable logs based on configuration
+    # after the data is loaded
     if stela_config.show_logs:
         logger.enable("stela")
     else:
+        logger.info("Disabling Stela logs.")
         logger.disable("stela")
-
-    stela_data = StelaMain(options=stela_config)
-    stela_data.get_project_settings()
 
     class Stela:
         __slots__ = (

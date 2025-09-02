@@ -1,6 +1,17 @@
 # CHANGELOG
 
 
+## v8.0.6 (2025-09-02)
+
+### Documentation
+
+* docs: add coding guidelines and project documentation ([`35b7955`](https://github.com/megalus/stela/commit/35b7955c8a2db9dd82e5ce3da4fec1e960208f6b))
+
+### Fixes
+
+* fix: update dotenv configuration and logging options ([`09f8ddd`](https://github.com/megalus/stela/commit/09f8ddd94ca40b7974209a32bd2c0f576ed1e285))
+
+
 ## v8.0.5 (2024-10-09)
 
 ### Fixes

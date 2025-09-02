@@ -337,6 +337,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#how-it-fits-your-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      How it fits your workflow
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#install" class="md-nav__link">
     <span class="md-ellipsis">
       Install
@@ -655,6 +664,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#how-it-fits-your-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      How it fits your workflow
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#install" class="md-nav__link">
     <span class="md-ellipsis">
       Install
@@ -689,7 +707,7 @@ files" of ancient times. This library aims to simplify your project
 configurations, proposing an opinionated way to manage your project
 using dotenv files, or using any source you need.</p>
 <h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
-<p>Working with <em>environment variables</em> vs project <em><strong>settings</strong></em> and <em><strong>secrets</strong></em> can be <em>hard</em>.</p>
+<p>Working with environment variables vs project settings and secrets can be confusing for newcomers. Stela helps you separate concerns and keep a clear mental model.</p>
 <ul>
 <li>Sometimes we need to define a default value for a <em>secret</em>, like a database url, to run unit tests.</li>
 <li>Sometimes, we need to set different values for a <em>setting</em>, like an API url, for different environments.</li>
@@ -701,11 +719,11 @@ multiple dotenv files, or if you need, from your custom logic to retrieve your p
 another source.</p>
 <div class="admonition note">
 <p class="admonition-title">About settings and secrets</p>
-<p>In this documentation we talk a lot about these two concepts. What we meant:</p>
+<p>In this documentation we talk a lot about these two concepts. We mean:</p>
 <ul>
-<li><code>settings</code>: Any nonsensible value, which can be different between different environments. This data can be safety
-committed in your project. Example: API urls, Timeout values, etc..</li>
-<li><code>secrets</code>: Any sensible value, which you can't commit in you project. Examples: Tokens, Passwords, etc..</li>
+<li><code>settings</code>: Any non-sensitive value, which can differ between environments. This data can be safely
+committed to your project. Examples: API URLs, timeout values, etc.</li>
+<li><code>secrets</code>: Any sensitive value, which you must not commit to your project. Examples: tokens, passwords, etc.</li>
 </ul>
 </div>
 <h2 id="why-another-library">Why another library?<a class="headerlink" href="#why-another-library" title="Permanent link">&para;</a></h2>
@@ -716,25 +734,35 @@ committed in your project. Example: API urls, Timeout values, etc..</li>
 <li><a href="https://github.com/HBNetwork/python-decouple">python-decouple</a> - Another good one, this library together with
   <a href="https://github.com/dynaconf/dynaconf">Dynaconf</a> and <a href="https://github.com/Pylons/plaster">Plaster</a> were the main
   inspirations for this project until version 5.x</li>
-<li><a href="https://github.com/pydantic/pydantic">Pydantic</a> - A very powerful solution for data validation, they provide a
-  <a href="https://docs.pydantic.dev/usage/settings/">Settings Management</a> tool, which is an good solution for that environment.</li>
+<li><a href="https://github.com/pydantic/pydantic">Pydantic</a> - A very powerful solution for data validation. They provide a
+  <a href="https://docs.pydantic.dev/usage/settings/">Settings Management</a> tool, which is a good solution for that environment.</li>
 </ul>
 <h3 id="why-use-stela">Why use Stela?<a class="headerlink" href="#why-use-stela" title="Permanent link">&para;</a></h3>
 <p>Our key features:</p>
 <ol>
 <li><em><strong>Learn once, use everywhere</strong></em>. Stela aims to be easily used in any Python project or Framework.</li>
-<li><em><strong>Separate settings from secrets from environments</strong></em>. Instead of using a single dotenv file to store all your settings,
+<li><em><strong>Separate settings, secrets, and environments</strong></em>. Instead of using a single dotenv file to store all your settings,
    we use multiple dotenv files, one for each environment. This way, you can split <em>secrets</em> from <em>settings</em>, and you can
    have different values for the same environment variable in different environments.</li>
 <li><em><strong>Easy to implement</strong></em>. Use the command <code>stela init</code> to initialize your project and configure <code>.env</code> and <code>.gitignore</code>
    files.</li>
-<li><em><strong>Easy to use</strong></em>. To access you configuration just include <code>from stela import env</code> in your code. Simple as that.</li>
+<li><em><strong>Easy to use</strong></em>. To access your configuration, just include <code>from stela import env</code> in your code. Simple as that.</li>
 <li><em><strong>One Interface, Any Source</strong></em>. You're not limited to dotenv files. Create your custom logic to import data from any
-source you need.</li>
+   source you need.</li>
 </ol>
 <hr />
+<h2 id="how-it-fits-your-workflow">How it fits your workflow<a class="headerlink" href="#how-it-fits-your-workflow" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>flowchart TD
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    A[.env] --&gt;|global| D[env]
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    B[.env.local] --&gt;|overrides| D
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    C[.env.&amp;lt;environment&amp;gt;] --&gt;|when STELA_ENV is set| D
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    E[.env.&amp;lt;environment&amp;gt;.local] --&gt;|overrides| D
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    F[Custom Loader (optional)] --&gt;|final override| D
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    D --&gt; G[Your app: from stela import env]
+</span></code></pre></div>
+<p>See Quick Setup to get started fast: <a href="quick_setup/">Quick Setup</a>.</p>
 <h2 id="install">Install<a class="headerlink" href="#install" title="Permanent link">&para;</a></h2>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pip<span class="w"> </span>install<span class="w"> </span>stela
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>pip<span class="w"> </span>install<span class="w"> </span>stela
 </span></code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">Currently this project supports:</p>

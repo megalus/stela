@@ -619,7 +619,7 @@
 
 
 <h1 id="quick-setup">Quick Setup<a class="headerlink" href="#quick-setup" title="Permanent link">&para;</a></h1>
-<p>Let's start with a quick setup: suppose a project add with a <code>.env</code> file with the following content:</p>
+<p>Let's start with a quick setup. Suppose your project has a <code>.env</code> file with the following content:</p>
 <div class="language-ini highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># .env</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="na">API_URL</span><span class="o">=</span><span class="s">&quot;http://localhost:8000&quot;</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="na">DB_URL</span><span class="o">=</span><span class="s">&quot;db://fake_user:fake_password@local_db:0000/name&quot;</span>
@@ -631,7 +631,7 @@
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">API_URL</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">API_URL</span>  <span class="c1"># http://localhost:8000</span>
 </span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">DATABASE_URL_CONNECTION</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">DB_URL</span>  <span class="c1"># db://fake_user:fake_password@local_db:0000/name</span>
 </span></code></pre></div>
-<p>Now, create a <code>.env.local</code> file and add the secret value:</p>
+<p>Now, create a <code>.env.local</code> file and add the real secret value:</p>
 <div class="language-ini highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># .env.local</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="na">DB_URL</span><span class="o">=</span><span class="s">&quot;db://real_user:real_password@real_db:0000/name&quot;</span>
 </span></code></pre></div>
@@ -643,7 +643,7 @@
 </span></code></pre></div>
 <p>This is because Stela will first load the content from <code>.env</code> file, and then will override the values with the content from <code>.env.local</code> file.</p>
 <h3 id="but-how-about-the-environments">But how about the environments?<a class="headerlink" href="#but-how-about-the-environments" title="Permanent link">&para;</a></h3>
-<p>Ok, lets add another file: <code>.env.remote</code>:</p>
+<p>Ok, let's add another file: <code>.env.remote</code>:</p>
 <div class="language-ini highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># .env.remote</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="na">API_URL</span><span class="o">=</span><span class="s">&quot;https://remote.api.com&quot;</span>
 </span></code></pre></div>

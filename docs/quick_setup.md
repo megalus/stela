@@ -1,6 +1,6 @@
 # Quick Setup
 
-Let's start with a quick setup: suppose a project add with a `.env` file with the following content:
+Let's start with a quick setup. Suppose your project has a `.env` file with the following content:
 
 ```ini
 # .env
@@ -19,7 +19,7 @@ DATABASE_URL_CONNECTION = env.DB_URL  # db://fake_user:fake_password@local_db:00
 
 ```
 
-Now, create a `.env.local` file and add the secret value:
+Now, create a `.env.local` file and add the real secret value:
 
 ```ini
 # .env.local
@@ -38,7 +38,7 @@ This is because Stela will first load the content from `.env` file, and then wil
 
 ### But how about the environments?
 
-Ok, lets add another file: `.env.remote`:
+Ok, let's add another file: `.env.remote`:
 
 ```ini
 # .env.remote

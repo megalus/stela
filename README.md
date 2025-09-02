@@ -28,6 +28,17 @@ Stela is a Python library that simplifies how you handle:
 - **Secrets**: Sensitive values that should not be committed (passwords, tokens, etc.)
 - **Environment-specific configurations**: Different values for development, testing, and production
 
+### TL;DR
+
+1. pip install stela
+2. stela init --default --no-confirm
+3. Uncomment the `MY_SECRET` line in `.env`
+4. Add `from stela import env` and run `print(env.MY_SECRET)` in your code
+5. Uncomment the `MY_SECRET` line in `.env.local` and get the code again.
+6. Add `export MY_SECRET=memory_value` in your terminal and get the code again.
+
+New to multi-environment setups? Start with the Quick Setup guide: https://megalus.github.io/stela/quick_setup/
+
 ### Install
 
 ```shell
@@ -155,31 +166,25 @@ final_loader = "path.to.my.final_loader"
 
 ```python
 # my_loaders.py
-import boto3
+from typing import Any
 from stela.config import StelaOptions
 
-def final_loader(options: StelaOptions, env_data: dict[str, any]) -> dict[str, any]:
-    """Load settings from AWS Parameter Store.
 
-    :param options: Stela configuration options
-    :param env_data: Data already loaded from dotenv files
-    :return: Updated data dictionary
+def final_loader(options: StelaOptions, env_data: dict[str, Any]) -> dict[str, Any]:
+    """Load settings from a custom source and merge into env_data.
+
+    Args:
+        options: Stela configuration options (includes current_environment).
+        env_data: Data already loaded from dotenv files.
+
+    Returns:
+        Updated data dictionary.
     """
-    # Get the current environment (development, production, etc.)
-    environment = options.current_environment
+    # Example: pretend we fetched data from an external source
+    external = {"API_TIMEOUT": "5", "FEATURE_FLAG": "true"}
 
-    # Connect to AWS Parameter Store
-    ssm = boto3.client('ssm')
-    response = ssm.get_parameters_by_path(
-        Path=f'/my-project/{environment}',
-        WithDecryption=True
-    )
-
-    # Update the environment data with values from Parameter Store
-    for param in response['Parameters']:
-        name = param['Name'].split('/')[-1].upper()
-        env_data[name] = param['Value']
-
+    # Merge/override values
+    env_data.update(external)
     return env_data
 ```
 

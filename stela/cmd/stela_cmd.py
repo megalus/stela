@@ -23,12 +23,14 @@ def cli(ctx):
 
 @cli.command()
 @click.option("--default", is_flag=True, help="Use Default Values.")
-def init(default):
+@click.option("--no-confirm", is_flag=True, help="Do not ask for confirmation.")
+def init(default, no_confirm):
     """Initialize Stela for your project."""
     print_title("Initializing Stela")
-    click.pause(
-        "This command will configure stela for your project.\nPress a key to continue."
-    )
+    if not no_confirm:
+        click.pause(
+            "This command will configure stela for your project.\nPress a key to continue."
+        )
     initializer = stela_init.StelaInit(".")
     initializer.run(default)
 

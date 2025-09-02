@@ -46,7 +46,7 @@ def read_dotenv(
         if show_logs:
             logger.debug(f"File {env_file} not found starting at path {path}.")
         return {}
-    logger.info(f"Reading file: {env_path}") # always log the file being read
+    logger.info(f"Reading file: {env_path}")  # always log the file being read
     dotenv_path = find_dotenv(str(env_path), usecwd=True)
     if not dotenv_path:
         return {}

@@ -142,7 +142,7 @@ class StelaInit:
             use_toml = False
 
         if use_toml:
-            pyproject_doc["tool"]["stela"] = new_stela_config
+            pyproject_doc.setdefault("tool", {})["stela"] = new_stela_config
             with open(PYPROJECT_TOML, "w") as f:
                 f.write(tomlkit.dumps(pyproject_doc))
                 click.secho(
@@ -183,7 +183,8 @@ class StelaInit:
         file_path = os.path.join(path, filename)
         file_exists = os.path.exists(file_path)
         if not file_exists:
-            click.secho(f"Creating {file_path} file", dim=True)
+            path_resolved = os.path.relpath(file_path, Path.cwd())
+            click.secho(f"Creating {path_resolved}", dim=True)
             with open(file_path, "w") as f:
                 f.write(f"# {comment}\n")
 
@@ -196,18 +197,22 @@ class StelaInit:
         else:
             self._create_env_file(
                 self.env_file,
-                "Add here your settings and fake secrets. You can commit this file.",
+                "Add here your settings and fake secrets. "
+                "You can commit this file.\n\n#MY_SECRET=fake_value",
             )
             self._create_env_file(
                 f"{self.env_file}.local",
-                "Add here your local settings and/or real secrets. DO NOT commit this file.",
+                "Add here your local settings and/or real secrets. "
+                "DO NOT commit this file.\n\n#MY_SECRET=real_value",
             )
             if self.default_environment:
                 self._create_env_file(
                     f"{self.env_file}.{self.default_environment}",
-                    "Add here your settings for the default environment. You can commit this file.",
+                    f"Add here your settings for the default environment. "
+                    f"You can commit this file.\n\n#MY_{self.default_environment.upper()}_SECRET=fake_value",
                 )
                 self._create_env_file(
                     f"{self.env_file}.{self.default_environment}.local",
-                    "Add here your local settings for the default environment. DO NOT commit this file.",
+                    f"Add here your local settings for the default environment. "
+                    f"DO NOT commit this file.\n\n#MY_{self.default_environment.upper()}_SECRET=real_value",
                 )

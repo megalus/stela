@@ -1,7 +1,7 @@
 # Using Frameworks
 
-Stela runs at the module level, when you use the `from stela import env` import. Because that, it will work
-seamlessly with many python packages and frameworks. Below are the recommendations and best practices for many of them:
+Stela loads at module import time when you use `from stela import env`. Because of that, it works
+seamlessly with many Python packages and frameworks. Below are recommendations and best practices:
 
 !!! tip "Please check the folder: /examples"
     It contains working implementations for many frameworks.
@@ -88,20 +88,19 @@ use the command `chalice local --no-autoreload` or import `env` inside a functio
 The recommended practice is to import Stela data at the first cell, using the `%set_env` variables to define Stela behavior and
 then call `read_env` function to retrieve the Environment Variables:
 
+```text
+# In a Jupyter cell (IPython magic):
+%set_env STELA_ENV=remote
+%set_env STELA_SHOW_LOGS=False
+```
+
 ```python
-# %%
+# In the next cell, reload and use Stela
 from stela.utils import read_env
 
-### You can change Stela behavior here
-%set_env STELA_ENV = remote
-%set_env STELA_SHOW_LOGS = False
-
-### And use the `read_env` helper to reload environment variables
 env = read_env()
-
 print(f"Current Environment: {env.current_environment}")
 print(f"My Secret: {env.MY_SECRET}")
-# %%
 ```
 
 ---

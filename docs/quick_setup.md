@@ -65,6 +65,23 @@ DATABASE_URL_CONNECTION = env.DB_URL  # db://real_user:real_password@real_db:000
     2. Then, it will load the content from `.env.local` file, overriding previous content, because Stela always looks for `.env.*.local` files
     3. Finally, it will load the content from `.env.remote` file, overriding previous content, because STELA_ENV is set to `remote`.
 
+### Ok, but what if I just define the variable in the environment?
+No problem! Stela will always look for environment variables first. So, if you export the `DB_URL` variable:
+
+```bash
+export DB_URL="db://env_user:env_password@env_db:0000/name"
+```
+
+When you run the python code, you will get the following values:
+
+```python
+from stela import env
+API_URL = env.API_URL  # https://remote.api.com
+DATABASE_URL_CONNECTION = env.DB_URL  # db://env_user:env_password@env_db:0000/name
+```
+
+This is because Stela will first look for environment variables, and then will load the content from `.env` files.
+
 And that's it! Now you can use Stela to manage your settings in any python project.
 
 Stela is highly customizable, so you can use it in any way you want. It can handle several use cases you can have

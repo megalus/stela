@@ -67,7 +67,12 @@ markdown_extensions:
       custom_checkbox: true
   - pymdownx.tilde
   - pymdownx.snippets
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      # make exceptions to highlighting of code:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:mermaid2.fence_mermaid_custom
 
 nav:
   - Intro: index.md
@@ -82,3 +87,8 @@ nav:
   - settings.md
   - troubleshooting.md
   - thanks.md
+
+plugins:
+  - search
+  - macros
+  - mermaid2

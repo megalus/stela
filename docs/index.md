@@ -59,12 +59,21 @@ Our key features:
 
 ```mermaid
 flowchart TD
-    A[.env] -->|global| D[env]
-    B[.env.local] -->|overrides| D
-    C[.env.&lt;environment&gt;] -->|when STELA_ENV is set| D
-    E[.env.&lt;environment&gt;.local] -->|overrides| D
-    F[Custom Loader (optional)] -->|final override| D
-    D --> G[Your app: from stela import env]
+    ST[In your app: <br><code>from stela import env</code>] --> A
+    subgraph All[Reading .env files]
+    A[.env] -->|is override by, if exists| B[.env.local]
+    end
+    B --> A1{STELA_ENV <br>is set?}
+    A1 -- Yes --> C[.env.environment]
+    A1 -- No --> A2
+    subgraph Environment [Override previous data]
+    C[.env.environment] -->|is override by, if exists| E[.env.environment.local]
+    end
+    E --> A2{Custom Loader <br>exists?}
+    A2 -- Yes --> F[Custom Loader]
+    A2 -- No --> G
+    F[Custom Loader] -->|final override| G
+    G[Get from: <br><code>env.MY_SECRET<code>]
 ```
 
 See Quick Setup to get started fast: [Quick Setup](quick_setup.md).

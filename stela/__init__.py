@@ -6,7 +6,6 @@ use the stela_reload function.
 """
 
 import os
-from ast import literal_eval
 from typing import Any, List
 
 from loguru import logger
@@ -15,7 +14,7 @@ from stela.config import StelaOptions
 from stela.exceptions import StelaValueError
 from stela.helpers.stub import create_stela_stub
 from stela.main import StelaMain
-from stela.utils import show_value
+from stela.utils import evaluate_value, show_value
 
 __version__ = "8.1.0"
 
@@ -54,7 +53,11 @@ def _get_stela() -> "Stela":
                     self._get_attributes(current_obj=nested_obj, data_dict=value)
                     setattr(current_obj, attr, nested_obj)
                 else:
-                    current_value = self._evaluate_value(attr, value)
+                    current_value = (
+                        evaluate_value(attr, value)
+                        if stela_config.evaluate_data
+                        else value
+                    )
                     setattr(current_obj, attr, current_value)
 
         @property
@@ -80,46 +83,6 @@ def _get_stela() -> "Stela":
         def lock(self):
             self._locked = True
 
-        @staticmethod
-        def _evaluate_value(item, value: Any) -> Any:
-            """Evaluate a string value into the appropriate Python type.
-
-            This function attempts JSON first (to support true/false, null, lists, and dicts),
-            then falls back to ast.literal_eval for Python literals, and finally returns the
-            original string when parsing is not applicable.
-
-            Args:
-                item: The variable name (used only for logging purposes).
-                value: The raw value, usually a string coming from dotenv or os.environ.
-
-            Returns:
-                The parsed value with the most suitable Python type.
-            """
-            if stela_config.evaluate_data and isinstance(value, str):
-                # Try JSON first to support lowercase booleans and JSON objects/arrays
-                try:
-                    import json
-                    from json import JSONDecodeError
-
-                    current_value = json.loads(value)
-                    logger.debug(
-                        f"Using evaluated (json) value for: {item}. Type is: {type(current_value).__name__}"
-                    )
-                    return current_value
-                except JSONDecodeError:
-                    # Not a valid JSON scalar/object/array; try Python literal eval next
-                    pass
-                # Fallback to Python literal evaluation for values like '1', '3.14', '[1, 2]'
-                try:
-                    current_value = literal_eval(value)
-                    logger.debug(
-                        f"Using evaluated (literal) value for: {item}. Type is: {type(current_value).__name__}"
-                    )
-                    return current_value
-                except (ValueError, SyntaxError):
-                    return value
-            return value
-
         def __getattribute__(self, item):
             # return from os.environ if exists
             if item in os.environ:
@@ -127,7 +90,9 @@ def _get_stela() -> "Stela":
                 logger.debug(
                     f"Using environment value: {item}={show_value(value, stela_config.log_filtered_value)}"
                 )
-                return self._evaluate_value(item, value)
+                return (
+                    evaluate_value(item, value) if stela_config.evaluate_data else value
+                )
             try:
                 value = super().__getattribute__(item)
                 if not item.startswith("_"):
@@ -165,7 +130,7 @@ def _get_stela() -> "Stela":
         def list(self) -> List[str]:
             return [k for k in self._stela_data.settings.keys()]
 
-    create_stela_stub(stela_data.settings)
+    create_stela_stub(stela_data.settings, stela_config.evaluate_data)
 
     stela = Stela()
     stela.lock()

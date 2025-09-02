@@ -3,6 +3,8 @@ from pathlib import Path
 
 from loguru import logger
 
+from stela.utils import evaluate_value
+
 STUB_TEMPLATE = """from typing import Any
 from .config import StelaOptions
 from .main import StelaMain
@@ -28,7 +30,7 @@ env: Stela
 STUB_MODULE = "__init__.pyi"
 
 
-def create_stela_stub(settings) -> tuple[bool, str]:
+def create_stela_stub(settings, evaluate_data: bool) -> tuple[bool, str]:
     try:
         import stela
 
@@ -39,16 +41,16 @@ def create_stela_stub(settings) -> tuple[bool, str]:
 
         all_env_info = {**filtered_environ, **settings}
 
-        content = STUB_TEMPLATE.format(
-            all_envs="\n    ".join(
-                [f"{k}: {type(v).__name__}" for k, v in all_env_info.items()]
-            )
-        )
+        all_properties = []
+        for k, v in sorted(all_env_info.items()):
+            eval_value = evaluate_value(k, v) if evaluate_data else v
+            all_properties.append(f"{k}: {type(eval_value).__name__}")
+
+        content = STUB_TEMPLATE.format(all_envs="\n    ".join(all_properties))
         stela_dir = os.path.dirname(os.path.abspath(stela.__file__))
         file_path = Path.cwd().joinpath(stela_dir, STUB_MODULE)
-        if not file_path.exists():
-            old_content = ""
-        else:
+        old_content = ""
+        if file_path.exists():
             with open(file_path, "r") as f:
                 old_content = f.read()
         if old_content != content:

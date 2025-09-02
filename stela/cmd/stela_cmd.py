@@ -47,7 +47,7 @@ def gen_stub():
     stela_data.get_project_settings()
 
     print_title("Generate Stela Stub file")
-    result, message = create_stela_stub(stela_data.settings)
+    result, message = create_stela_stub(stela_data.settings, stela_config.evaluate_data)
     click.secho(
         f"{'Success' if result else 'Error'}: {message}",
         fg="green" if result else "red",

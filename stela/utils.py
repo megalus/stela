@@ -1,9 +1,12 @@
 """Stela Utils module."""
 
+from ast import literal_eval
 from enum import Enum, unique
 from importlib import reload
 from pathlib import Path
 from typing import Any, Dict, Optional
+
+from loguru import logger
 
 
 @unique
@@ -208,3 +211,43 @@ def merge_env(
     flat_dict.update(env_data)
 
     return flat_dict
+
+
+def evaluate_value(item: str, value: Any) -> Any:
+    """Evaluate a string value into the appropriate Python type.
+
+    This function attempts JSON first (to support true/false, null, lists, and dicts),
+    then falls back to ast.literal_eval for Python literals, and finally returns the
+    original string when parsing is not applicable.
+
+    Args:
+        item: The variable name (used only for logging purposes).
+        value: The raw value, usually a string coming from dotenv or os.environ.
+
+    Returns:
+        The parsed value with the most suitable Python type.
+    """
+    if isinstance(value, str):
+        # Try JSON first to support lowercase booleans and JSON objects/arrays
+        try:
+            import json
+            from json import JSONDecodeError
+
+            current_value = json.loads(value)
+            logger.debug(
+                f"Using evaluated (json) value for: {item}. Type is: {type(current_value).__name__}"
+            )
+            return current_value
+        except JSONDecodeError:
+            # Not a valid JSON scalar/object/array; try Python literal eval next
+            pass
+        # Fallback to Python literal evaluation for values like '1', '3.14', '[1, 2]'
+        try:
+            current_value = literal_eval(value)
+            logger.debug(
+                f"Using evaluated (literal) value for: {item}. Type is: {type(current_value).__name__}"
+            )
+            return current_value
+        except (ValueError, SyntaxError):
+            return value
+    return value

@@ -1,6 +1,13 @@
 # CHANGELOG
 
 
+## v8.1.1 (2025-09-02)
+
+### Fixes
+
+* fix: enhance environment variable handling and documentation; add value evaluation for dynamic types ([`b1c40f9`](https://github.com/megalus/stela/commit/b1c40f93c9b518b780f63b5d2f671c3b1d9f32eb))
+
+
 ## v8.1.0 (2025-09-02)
 
 ### Documentation

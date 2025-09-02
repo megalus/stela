@@ -721,16 +721,16 @@ manipulate <code>dotenvs</code>, and use it in all your backend and frontend pro
 <h3 id="dotenv-load-priorities">Dotenv Load Priorities<a class="headerlink" href="#dotenv-load-priorities" title="Permanent link">&para;</a></h3>
 <p>Stela will return the variable value using this priority order:</p>
 <ol>
-<li>The value from the system environment, if it did not exist in dotenv file. Ex.: <code>MY_VAR=1 python my_script.py</code></li>
+<li>The value from the system environment (always takes precedence when set). Ex.: <code>MY_VAR=1 python my_script.py</code></li>
 <li>The value from the <code>.env.[environment].local</code> if it exists and Stela can find the current environment.</li>
 <li>The value from the <code>.env.[environment]</code> if it exists and Stela can find the current environment.</li>
 <li>The value from the <code>.env.local</code> if it exists.</li>
 <li>The value from the <code>.env</code> if it exists.</li>
 <li>Will raise a <code>StelaValueError</code>.</li>
 </ol>
-<p>Stela will always raise a <code>StelaValueError</code> if you ask for a variable that does not exist in any of the dotenv files or  in memory.
+<p>Stela will always raise a <code>StelaValueError</code> if you ask for a variable that does not exist in any of the dotenv files or in memory.
 You can change this behavior using the <code>raise_on_missing_variable</code> options as described before.</p>
-<p>Also, Stela will always overwrite the <code>os.environ</code> values with the values from the dotenv files.</p>
+<p>Stela will not overwrite existing <code>os.environ</code> values; dotenv and loaders only fill missing keys.</p>
 <h3 id="a-more-concrete-example">A more concrete Example<a class="headerlink" href="#a-more-concrete-example" title="Permanent link">&para;</a></h3>
 <p>Let's create a more complex example, using Django. In this example we will want to run unit tests using the <em>local</em>
 settings, but run the local server using the <em>remote</em> settings, for debugging purposes.</p>

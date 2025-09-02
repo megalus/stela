@@ -30,8 +30,8 @@ Stela is a Python library that simplifies how you handle:
 
 ### TL;DR
 
-1. pip install stela
-2. stela init --default --no-confirm
+1. In a new project run `pip install stela`
+2. On terminal, run `stela init --default --no-confirm`
 3. Uncomment the `MY_SECRET` line in `.env`
 4. Add `from stela import env` and run `print(env.MY_SECRET)` in your code
 5. Uncomment the `MY_SECRET` line in `.env.local` and get the code again.

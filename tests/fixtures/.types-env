@@ -1,0 +1,6 @@
+PORT=8000
+DEBUG=true
+RETRY_TIMES=3
+PI=3.14159
+FEATURES=["search","login","signup"]
+EXTRA_SETTINGS={"cache":true,"timeout":30}

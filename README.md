@@ -108,6 +108,17 @@ DATABASE_URL = env.DB_URL  # db://real_user:real_password@real_db:0000/name
 
 Stela automatically loads values from `.env` first, then overrides them with values from `.env.local`.
 
+### Precedence at a glance
+
+When the same key is defined in multiple places, Stela resolves it using this order (top wins):
+1. Value already present in the process environment (os.environ). Stela will not overwrite existing env vars.
+2. .env.{environment}.local
+3. .env.{environment}
+4. .env.local
+5. .env
+
+If a key is missing everywhere, Stela raises a StelaValueError by default (configurable).
+
 ## Environment-Specific Configuration
 
 Stela makes it easy to manage different environments (development, testing, production):
@@ -196,6 +207,7 @@ from stela import env
 # Values can come from dotenv files or your custom source
 API_URL = env.API_URL
 DB_PASSWORD = env.DB_PASSWORD
+API_TIMEOUT = env.API_TIMEOUT  # From custom loader
 ```
 
 ## Need Help?

@@ -1,6 +1,13 @@
 # CHANGELOG
 
 
+## v8.0.9 (2025-09-02)
+
+### Fixes
+
+* fix: improve documentation clarity and update initialization command options ([`338d22c`](https://github.com/megalus/stela/commit/338d22cbaf034c6266370b7f02baf86357e04f0b))
+
+
 ## v8.0.8 (2025-09-02)
 
 ### Fixes

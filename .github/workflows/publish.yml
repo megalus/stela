@@ -57,7 +57,7 @@ jobs:
           fetch-depth: 0
 
       - name: Docs | Install MKDocs
-        run: pip install mkdocs-material
+        run: pip install mkdocs-material mkdocs-mermaid2-plugin
 
       - name: Docs | Publish Docs
         run: mkdocs gh-deploy --force

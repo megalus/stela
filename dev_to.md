@@ -1,6 +1,4 @@
-## Manage Your Python Environment Variables Like a Pro with Stela
-
-Getting started with environment variables in Python can feel overwhelming. You juggle multiple .env files, try to keep secrets out of version control, and write boilerplate code to parse types. Stela turns this chaos into a smooth, predictable workflow by giving you:
+Getting started with environment variables in Python can feel overwhelming. You may juggle multiple .env files, try to keep secrets out of version control, and write repetitive code to parse types. Stela turns that chaos into a smooth, predictable workflow by offering:
 
 * Automatic type inference
 * A clear separation between settings and secrets
@@ -8,9 +6,9 @@ Getting started with environment variables in Python can feel overwhelming. You 
 * A simple, consistent API
 * Extensible support for custom loaders
 
-Whether you’re building a small script or a large web service, Stela makes your configuration clean, safe, and maintainable.
+Whether you’re building a small script or a large web service, Stela makes configuration clean, safe, and maintainable.
 
-### Why Environment Variables Matter
+### Why environment variables matter
 
 Environment variables let you keep configuration out of your codebase. Instead of hard-coding API URLs, database credentials, or feature flags, you store them externally and load them at runtime. This approach:
 
@@ -18,7 +16,7 @@ Environment variables let you keep configuration out of your codebase. Instead o
 * Makes it easy to switch configs for development, testing, and production
 * Simplifies deployment to containers, CI pipelines, and cloud services
 
-Yet most libraries leave you writing the same boilerplate: read a file, parse strings into ints or booleans, and override defaults. Stela automates all of that.
+Yet most libraries leave you you to write the same boilerplate: read files, parse strings into ints or booleans, and override defaults. Stela automates all of that.
 
 ### Introducing Stela
 
@@ -27,63 +25,74 @@ Stela divides configuration into two concepts:
 * **Settings**: Non-sensitive values you can commit (API endpoints, timeouts, etc.)
 * **Secrets**: Sensitive values you must keep out of your repo (passwords, tokens, etc.)
 
-It loads files in a well-defined order, casts strings to Python types automatically, and lets you add a final loader to pull from AWS Parameter Store, HashiCorp Vault, or any other source.
+It loads files in a well-defined order, casts strings to Python types automatically, and lets you add an optional final loader to pull values from other sources (AWS Parameter Store, HashiCorp Vault, etc.).
 
 ### Installing Stela
 
 Install via pip:
 
-```terminaloutput
+```bash
 pip install stela
 ```
-### Quick Start: Initialize Your Project
+
+### Quick start: initialize your project
 
 Run the built-in init command:
 
-```terminaloutput
+```bash
 stela init --default
 ```
 
-This creates four files and updates your .gitignore:
+This creates a set of configuration files and updates your `.gitignore`. Typical files are:
 
-* .env — default settings (committed)
-* .env.local — secrets (ignored)
-* .env.example — template for collaborators
-* .stela — Stela configuration
+* `.env` — default settings (committed)
+* `.env.local` — secrets (ignored)
+* `.stela` — Stela configuration
 
-### Understanding Your .env Files and Precedence
+Try this quick test to observe precedence:
+1. Add or uncomment a `MY_SECRET` line in `.env`, then open a Python REPL and run:
+   ```python
+   from stela import env
+   print(env.MY_SECRET)
+   ```
+2. Stop the REPL. Add or uncomment `MY_SECRET` in `.env.local`, restart the REPL and run the same code — the value from `.env.local` should take precedence over `.env`.
+3. Set `MY_SECRET` in your process environment and run the REPL again. On macOS/Linux:
+   ```bash
+   export MY_SECRET="value_from_memory"
+   python -c "from stela import env; print(env.MY_SECRET)"
+   ```
+   On Windows PowerShell:
+   ```powershell
+   $env:MY_SECRET="value_from_memory"
+   python -c "from stela import env; print(env.MY_SECRET)"
+   ```
 
-Stela follows a clear loading order to merge variables from dotenv files, and also defines how they interact with in-memory (process) environment variables.
+### Understanding your dotenv files and precedence
 
-Dotenv load order:
+By default Stela reads dotenv files in this order:
 
-* .env
-* .env.local
-* .env.{environment}
-* .env.{environment}.local
+* `.env`
+* `.env.local`
 
-For example, if STELA_ENV=development, Stela will also look for:
+If you set STELA_ENV (for example `STELA_ENV=development`), Stela will also look for:
+* `.env.development`
+* `.env.development.local`
 
-* .env.development
-* .env.development.local
+When the same key exists in multiple places, precedence (what wins) is:
+1. System environment variable already set in memory (`os.environ`) — always wins.
+2. `.env.{environment}.local` (if STELA_ENV is set)
+3. `.env.{environment}` (if STELA_ENV is set)
+4. `.env.local`
+5. `.env`
+6. If a value is not found anywhere, Stela raises a `StelaValueError` by default (this is configurable).
 
-Precedence rules (what wins when the same key exists in multiple places):
+This lets you:
+* Keep safe defaults in `.env`
+* Override with real secrets in `.env.local`
+* Customize per-environment values without changing defaults
+* Still override anything at runtime via process envs (Docker, CI, shell) without editing files
 
-1. System environment variable already set in memory (os.environ) always wins. Example: MY_VAR=1 python app.py. Stela will never overwrite an existing os.environ key.
-2. .env.{environment}.local
-3. .env.{environment}
-4. .env.local
-5. .env
-6. If not found anywhere, Stela raises a StelaValueError by default (configurable).
-
-This means you can:
-
-* Store safe defaults in .env
-* Override with real secrets in .env.local
-* Customize per-environment values without touching your defaults
-* And still override anything at runtime via process envs (e.g., docker, CI, shell) without changing files
-
-### Accessing Settings and Secrets
+### Accessing settings and secrets
 
 In your Python code, just import and use:
 
@@ -93,14 +102,15 @@ from stela import env
 API_URL      = env.API_URL        # str
 TIMEOUT      = env.TIMEOUT        # int
 FEATURE_FLAG = env.FEATURE_FLAG   # bool
-DB_URL       = env.DB_URL         # str with secrets if overridden
+DB_URL       = env.DB_URL         # str (may come from secrets if overridden)
 ```
 
-Stela reads all your .env files under the hood and merges them into a single env object.
+Stela reads your `.env` files under the hood and exposes a single `env` object.
 
-### Type Inference Out of the Box
+### Type inference out of the box
 
-Stela automatically parses values into the right Python types:
+Stela parses values into native Python types automatically:
+
 ```ini
 # .env
 PORT=8000
@@ -110,6 +120,7 @@ PI=3.14159
 FEATURES=["search","login","signup"]
 EXTRA_SETTINGS={"cache":true,"timeout":30}
 ```
+
 ```python
 from stela import env
 
@@ -119,38 +130,44 @@ assert isinstance(env.PI, float)
 assert isinstance(env.FEATURES, list)
 assert isinstance(env.EXTRA_SETTINGS, dict)
 ```
-No more manual casting or custom parsing routines. Stela handles JSON, booleans, numbers, lists, and dictionaries seamlessly.
 
-### Managing Multiple Environments
+Stela handles _JSON_, _booleans_, _numbers_, _lists_, and _dictionaries_ — no manual casting required.
+
+### Managing multiple environments
 
 Create files like `.env.testing` or `.env.production`:
+
 ```ini
 # .env.production
 API_URL="https://api.example.com"
 ```
+
 Switch environments by setting STELA_ENV:
-```terminaloutput
+
+```bash
 export STELA_ENV=production
 ```
-Your code stays the same—Stela picks the right values based on STELA_ENV.
 
-### Separating Settings from Secrets
+Your code stays the same — Stela picks values based on `STELA_ENV` automatically.
 
-Out of the box, stela init updates your .gitignore so that:
+### Separating settings from secrets
+
+The `stela init` command updates your .gitignore so:
 
 * `.env` is committed
 * `.env.local` and `.env.*.local` are ignored
 
-Use .env for harmless defaults and .env.local for real credentials. This pattern keeps secrets safe and makes it easy for teammates to get started.
+Use `.env` for harmless defaults and `.env.local` for real credentials. This keeps secrets out of your repo while making it easy for teammates to get started.
 
-### Advanced: Custom Final Loader
+### Advanced: custom final loader
 
-Stela doesn’t just read dotenv files. You can register a final loader in your .stela config:
+Stela doesn’t only read dotenv files. You can register an optional final loader in your .stela config:
 
 ```ini
 [stela]
 final_loader = "myproject.loaders.custom_loader"
 ```
+
 Then implement `myproject/loaders.py`:
 
 ```python
@@ -172,10 +189,11 @@ def custom_loader(options: StelaOptions, env_data: dict[str, Any]) -> dict[str, 
     # Example: pretend we fetched data from an external source
     external = {"API_TIMEOUT": "5", "FEATURE_FLAG": "true"}
 
-    # Merge/override values
+    # Merge/override values from the external source into env_data
     env_data.update(external)
     return env_data
 ```
+
 Use Stela in your app as usual:
 
 ```python
@@ -187,20 +205,24 @@ API_URL = env.API_URL
 DB_PASSWORD = env.DB_PASSWORD
 API_TIMEOUT = env.API_TIMEOUT  # From custom loader
 ```
-On startup, Stela loads your dotenv files, then calls the custom loader, merging its results into env_data. Existing os.environ values are never overwritten.
 
-### Extensively customizable
-Don't want to infer types? Prefer a different file format? Stela has a lot of customization options. Check out the full docs for: https://megalus.github.io/stela/
+On startup, Stela loads your dotenv files, then calls the custom loader and merges its returned values into the loaded data. Values already present in `os.environ` are never overwritten.
 
-### Conclusion & Next Steps
+### Extensibility
+
+Don't want automatic type inference? Prefer a different file format? Define a deafult environment? Disable logs? Stela is flexible — check https://megalus.github.io/stela/ for all customization options.
+
+### Conclusion & next steps
 
 Stela brings structure, safety, and simplicity to environment variable management in Python. You get:
 
 * Zero-boilerplate type inference
-* Easy separation of settings and secrets
-* Clear multi-environment support
-* Extensible custom loader
+* Clear separation of settings and secrets
+* Straightforward multi-environment support
+* Extensible custom loaders
 
-Ready to give it a try? Check out the full docs at https://megalus.github.io/stela/ and start cleaning up your configuration today!
+Ready to try it? Visit the docs at https://megalus.github.io/stela/ and start cleaning up your configuration today.
+
+If this helped or you have questions, please leave a comment below — I'm happy to answer.
 
 Happy coding! 🚀

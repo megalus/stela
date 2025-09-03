@@ -92,7 +92,6 @@ twine = "*"
 pydantic-settings = "*"
 mkdocs-material = "*"
 mkdocs-mermaid2-plugin = "*"
-mkdocs-macros-plugin = "*"
 pytest-asyncio = "*"
 
 # Frameworks for example directory

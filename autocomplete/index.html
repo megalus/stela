@@ -620,8 +620,7 @@
 
 <h1 id="autocomplete-data-on-ides">Autocomplete data on IDEs<a class="headerlink" href="#autocomplete-data-on-ides" title="Permanent link">&para;</a></h1>
 <p>The best way to work with Environment Variables is using the autocomplete (or IntelliSense) feature from your IDE. To
-make this work with dotenv read data, Stela updates his stub file (<code>stela.__init__.pyi</code>) every time you change your dotenv
-files.</p>
+make this work with dotenv-read data, Stela updates its type stub file (<code>stela/__init__.pyi</code>) every time the configuration is (re)loaded.</p>
 <p><img alt="" src="../images/autocomplete.png" /></p>
 <p>This stub file needs to be saved on the same folder which you've installed the <code>stela</code> package (normally via package manager). In
 other words, in a folder outside your project. To this work, please make sure the user which starts your project has
@@ -651,7 +650,12 @@ sufficient privileges to access these external folders.</p>
 </div>
 </div>
 </div>
-<p>If you want to manually update the stub file, please use the command <code>stela gen-stub</code></p>
+<p>If you want to manually update the stub file, please use the command <code>stela gen-stub</code>.</p>
+<p>Note: dynamic attributes in the stub are typed as <code>Any</code>. This avoids
+misleading static types because values may be parsed to different Python
+types at runtime (int, float, bool, dict, list, etc.). IDE plugins are not
+required — the <code>.pyi</code> is the standard and portable way for editors and
+static analyzers to know the available attributes on <code>env</code>.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>$<span class="w"> </span>stela<span class="w"> </span>gen-stub
 </span></code></pre></div>
 <details class="question">

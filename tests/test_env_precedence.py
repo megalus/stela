@@ -36,3 +36,18 @@ def test_system_env_overrides_dotenv(monkeypatch) -> None:
     # Assert: in-memory value must take precedence over dotenv values
     assert os.getenv("MY_SECRET") == "from_memory"
     assert env.MY_SECRET == "from_memory"
+
+
+def test_local_override_env(monkeypatch) -> None:
+    """Test that local .env file overrides default .env file."""
+
+    # Arrange
+    monkeypatch.setenv("STELA_CONFIG_FILE_PATH", "./tests/fixtures")
+    monkeypatch.setenv("STELA_ENV_FILE", ".over")
+    monkeypatch.setenv("STELA_SHOW_LOGS", "True")
+
+    # Act
+    env = read_env()
+
+    # Assert
+    assert env.FLAG is True

@@ -1,6 +1,17 @@
 # CHANGELOG
 
 
+## v8.1.2 (2025-11-19)
+
+### Continuous Integration
+
+* ci: update documentation and configuration for Stela; add mkdocs-mermaid2-plugin and improve clarity in dev_to.md ([`bfaaf65`](https://github.com/megalus/stela/commit/bfaaf65ca29c5674d6567553cf4c96742cb59147))
+
+### Fixes
+
+* fix: add local environment override tests and improve type inference handling ([`82254a6`](https://github.com/megalus/stela/commit/82254a6296e76bfabe32c7244620777870fc55fd))
+
+
 ## v8.1.1 (2025-09-02)
 
 ### Fixes

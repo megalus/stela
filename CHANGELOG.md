@@ -1,7 +1,18 @@
 # CHANGELOG
 
 
+## v9.0.3 (2026-04-25)
+
+### Unknown
+
+* Merge remote-tracking branch 'origin/main' ([`482316d`](https://github.com/megalus/stela/commit/482316d1ebc87d56d14ff6a34290d8a760823c15))
+
+
 ## v9.0.2 (2026-04-25)
+
+### Fixes
+
+* fix: update build system to use hatchling instead of setuptools ([`1950d3b`](https://github.com/megalus/stela/commit/1950d3b1fbeeeeac93dbccd1673736a395acea97))
 
 ### Unknown
 

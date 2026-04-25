@@ -1,6 +1,13 @@
 # CHANGELOG
 
 
+## v9.0.1 (2026-04-25)
+
+### Fixes
+
+* fix: missing environment in actions ([`267972d`](https://github.com/megalus/stela/commit/267972d82d23b26049b4a2c045da3848f619ca36))
+
+
 ## v9.0.0 (2026-04-25)
 
 ### Breaking

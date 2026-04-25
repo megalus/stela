@@ -10,9 +10,11 @@ jobs:
   release:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'chore(release):')
     runs-on: ubuntu-latest
+    environment:
+      name: pypi
     steps:
       - name: Setup | Checkout Project
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           ref: ${{ github.sha }}
@@ -21,28 +23,44 @@ jobs:
         run: |
           git checkout -B ${{ github.ref_name }} ${{ github.sha }}
 
-      - name: Setup | Install Python 3.12
-        uses: actions/setup-python@v5
+      - name: Setup | Install Python
+        uses: actions/setup-python@v6
         with:
-          python-version: "3.12"
+          python-version: "3.13"
+
+      - name: Setup | Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
 
       - name: Release | Python Semantic Release
         id: release
         uses: python-semantic-release/python-semantic-release@v9.10.0
         with:
-          build: true
+          build: false
           commit: true
           push: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Publish | Build and Publish to PyPI using Poetry
+      - name: Publish | Checkout released tag
         if: steps.release.outputs.released == 'true'
-        uses: JRubics/poetry-publish@v2.0
+        uses: actions/checkout@v6
         with:
-          pypi_token: ${{ secrets.POETRY_PYPI_TOKEN_PYPI }}
+          ref: ${{ steps.release.outputs.tag }}
+          fetch-depth: 0
+
+      - name: Build | Package distribution
+        if: steps.release.outputs.released == 'true'
+        run: uv build
+
+      - name: Publish | Upload to PyPI with trusted publishing
+        if: steps.release.outputs.released == 'true'
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/
 
       - name: Release | Upload to GitHub Release Assets
-        uses: python-semantic-release/publish-action@v9.10.0
+        uses: python-semantic-release/publish-action@v10.3.1
         if: steps.release.outputs.released == 'true'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -56,8 +74,18 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Docs | Install MKDocs
-        run: pip install mkdocs-material mkdocs-mermaid2-plugin
+      - name: Setup | Install Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Setup | Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Docs | Install dependencies
+        run: uv sync --group dev
 
       - name: Docs | Publish Docs
-        run: mkdocs gh-deploy --force
+        run: uv run mkdocs gh-deploy --force

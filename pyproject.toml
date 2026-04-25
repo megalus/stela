@@ -1,111 +1,105 @@
-[tool.pytest]
-addopts = '--pydocstyle'
+[project]
+name = "stela"
+dynamic = ["version"]
+description = "Organize your project settings and secrets with ease"
+readme = "README.md"
+requires-python = ">=3.11,<4.0"
+license = "MIT"
+authors = [{ name = "Chris Maillefaud", email = "chrismaille@users.noreply.github.com" }]
+keywords = ["settings", "configuration", "parser", "dotenv", "environment"]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Development Status :: 4 - Beta",
+    "Environment :: Plugins",
+    "Topic :: Software Development :: Libraries",
+]
+dependencies = [
+    "click",
+    "loguru",
+    "python-dotenv",
+    "toml",
+    "tomlkit",
+]
 
-[tool.black]
-target-version = ['py312']
-include = '\.pyi?$'
-exclude = '''
-(
-  /(
-      \.eggs         # exclude a few common directories in the
-    | \.git          # root of the project
-    | \.hg
-    | \.mypy_cache
-    | \.tox
-    | \.venv
-    | \venv
-    | \.aws-sam
-    | _build
-    | buck-out
-    | build
-    | dist
-    | node_modules
-  )/
-)
-'''
+[project.urls]
+Repository = "https://github.com/megalus/stela"
+Documentation = "https://megalus.github.io/stela/"
 
-[tool.isort]
-profile = "black"
-multi_line_output = 3
-include_trailing_comma = true
-force_grid_wrap = 0
-use_parentheses = true
-ensure_newline_before_comments = true
+[project.scripts]
+stela = "stela.cmd.stela_cmd:cli"
+
+[dependency-groups]
+dev = [
+    "auto-changelog",
+    "bandit",
+    "coverage",
+    "django",
+    "fastapi",
+    "mkdocs-material",
+    "mkdocs-mermaid2-plugin",
+    "mypy",
+    "pre-commit",
+    "pydantic-settings",
+    "pytest",
+    "pytest-asyncio",
+    "pytest-cov",
+    "pytest-mock",
+    "pytest-mypy",
+    "pytest-pydocstyle",
+    "pytest-xdist",
+    "ruff",
+    "yamllint",
+]
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = { attr = "stela.__version__" }
+
+[tool.setuptools.packages.find]
+include = ["stela*"]
+
+[tool.setuptools.package-data]
+stela = ["*.pyi"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+extend-exclude = [
+    ".eggs",
+    ".git",
+    ".hg",
+    ".mypy_cache",
+    ".tox",
+    ".venv",
+    "venv",
+    ".aws-sam",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "lf"
 
 [tool.stela]
 config_file_path = "./tests/fixtures"
 default_environment = "test"
 
 [tool.semantic_release]
-version_variables = [
-    "stela/__init__.py:__version__",
-    "pyproject.toml:version"
-]
+version_variables = ["stela/__init__.py:__version__"]
 branch = "main"
-upload_to_pypi = true
-upload_to_release = true
-build_command = "python -m pip install -U twine poetry && poetry build"
-
-[tool.poetry]
-name = "stela"
-version = "8.1.3"
-description = "Organize your project settings and secrets with ease"
-authors = ["Chris Maillefaud <chrismaille@users.noreply.github.com>"]
-readme = "README.md"
-repository = "https://github.com/megalus/stela"
-keywords = ["settings", "configuration", "parser", "dotenv", "environment"]
-license = "MIT"
-classifiers = [
-    "Intended Audience :: Developers",
-    "Development Status :: 4 - Beta",
-    "Environment :: Plugins",
-    "Topic :: Software Development :: Libraries"
-]
-
-[tool.poetry.dependencies]
-python = ">=3.11, <4.0"
-loguru = "*"
-toml = "*"
-python-dotenv = "*"
-click = "*"
-tomlkit = "*"
-
-
-[tool.poetry.group.dev.dependencies]
-black = {version = "*", allow-prereleases = true}
-coverage = "*"
-mypy = "*"
-pytest = "*"
-pytest-black = "*"
-pytest-cov = "*"
-pytest-mock = "*"
-pytest-mypy = "*"
-pytest-pydocstyle = "*"
-pytest-xdist ="*"
-yamllint = "*"
-auto-changelog = "*"
-isort = "*"
-bandit = "*"
-pre-commit = "*"
-flake8 = "*"
-twine = "*"
-pydantic-settings = "*"
-mkdocs-material = "*"
-mkdocs-mermaid2-plugin = "*"
-pytest-asyncio = "*"
-
-# Frameworks for example directory
-django = "*"
-#flask = "*"
-fastapi = "*"
-#starlite = "*"
-#jupyterlab = "*"
-#chalice = "*"
-#uvicorn = "*"
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.scripts]
-stela = "stela.cmd.stela_cmd:cli"
+build_command = "uv build"

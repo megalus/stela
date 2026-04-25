@@ -12,7 +12,7 @@ These are VS Code coding guidelines. For additional input please check the local
 ## Code Style
 - Follow PEP 8 guidelines for Python code style.
 - Use `pre-commit run --all` for code formatting.
-- Unless otherwise specified in pyproject.toml, line length is 92 characters.
+- Unless otherwise specified in pyproject.toml, line length is 120 characters.
 
 ## Types
 - Always use type hints in the code.
@@ -32,7 +32,7 @@ These are VS Code coding guidelines. For additional input please check the local
 - Use double quotes for strings.
 
 ## Style
-- Use `black` for code formatting, via `pre-commit run -all` command.
+- Use `ruff format` for code formatting and `ruff check` for linting, preferably via `pre-commit run --all-files`.
 
 ## Testing
 - Use `pytest` for testing.

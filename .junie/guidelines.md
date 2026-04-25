@@ -1,4 +1,4 @@
-Project runs on a virtualenv inside WSL. Python interpreter can be found using command `poetry env info`.
+Project runs on a virtualenv inside WSL. Python interpreter can be found in `VIRTUAL_ENV`.
 
 Test runner is `pytest`. To run can use command `make tests` to run all or `make test <path>::<test>`
 

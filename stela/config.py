@@ -33,9 +33,7 @@ class StelaOptions:
     no_env_name: str = "GLOBAL"
 
     @classmethod
-    def get_from_env_or_settings(
-        cls, key: str, file_settings: Dict[str, Any], default: Any
-    ) -> Any:
+    def get_from_env_or_settings(cls, key: str, file_settings: Dict[str, Any], default: Any) -> Any:
         """Get from environment or settings the Stela Option argument.
 
         :param key: Current stela argument.
@@ -56,24 +54,18 @@ class StelaOptions:
     @classmethod
     def _get_current_environment(cls, settings):
         # Get from Memory
-        settings["current_environment"] = os.getenv(
-            settings["environment_variable_name"]
-        )
+        settings["current_environment"] = os.getenv(settings["environment_variable_name"])
 
         # Get from .env if available
         if not settings["current_environment"]:
-            settings["current_environment"] = settings["_dotenv_data"].get(
-                settings["environment_variable_name"]
-            )
+            settings["current_environment"] = settings["_dotenv_data"].get(settings["environment_variable_name"])
 
         # Get from Default
         if not settings["current_environment"]:
             settings["current_environment"] = settings["default_environment"]
 
         # No environment found.
-        if not settings["current_environment"] and settings.get(
-            "use_environment_layers"
-        ):
+        if not settings["current_environment"] and settings.get("use_environment_layers"):
             raise StelaEnvironmentNotFoundError("Environment not found.")
 
     @classmethod
@@ -85,10 +77,7 @@ class StelaOptions:
                 settings["env_file"],
                 f"{settings['env_file']}.local",
             ]
-            if (
-                settings.get("default_environment")
-                and settings["default_environment"] != "GLOBAL"
-            ):
+            if settings.get("default_environment") and settings["default_environment"] != "GLOBAL":
                 files += [
                     f"{settings['env_file']}.{settings['default_environment'].lower()}",
                     f"{settings['env_file']}.{settings['default_environment'].lower()}.local",
@@ -104,11 +93,7 @@ class StelaOptions:
                     filter_logs=settings["log_filtered_value"],
                 )
             # Filter dict for keys which start with "STELA_"
-            settings["_dotenv_data"] = {
-                k: v
-                for k, v in settings["_dotenv_data"].items()
-                if k.startswith("STELA_")
-            }
+            settings["_dotenv_data"] = {k: v for k, v in settings["_dotenv_data"].items() if k.startswith("STELA_")}
 
     def get_extensions(self) -> List[str]:
         """Return file extensions for project configuration files."""
@@ -127,9 +112,7 @@ class StelaOptions:
             )
             settings["config_file_extension"] = StelaFileType[config_file_extension]
         except KeyError:
-            raise StelaFileTypeError(
-                f"Invalid file type: {file_settings.get('config_file_extension')}"
-            )
+            raise StelaFileTypeError(f"Invalid file type: {file_settings.get('config_file_extension')}")
         cls._get_dotenv_data(settings)
         cls._get_current_environment(settings)
         settings["_filenames"] = [
@@ -158,9 +141,7 @@ class StelaOptions:
                 if file_settings:
                     logger.info(f"Using {pyproject_path} for stela settings.")
         if not file_settings:
-            logger.info(
-                "No stela file configuration found. Using default stela settings."
-            )
+            logger.info("No stela file configuration found. Using default stela settings.")
             base_path = Path.cwd()
         settings = {
             "base_path": base_path,
@@ -172,39 +153,25 @@ class StelaOptions:
             "default_environment": cls.get_from_env_or_settings(
                 "default_environment", file_settings, cls.default_environment
             ),
-            "evaluate_data": cls.get_from_env_or_settings(
-                "evaluate_data", file_settings, cls.evaluate_data
-            ),
-            "config_file_path": cls.get_from_env_or_settings(
-                "config_file_path", file_settings, cls.config_file_path
-            ),
-            "show_logs": cls.get_from_env_or_settings(
-                "show_logs", file_settings, cls.show_logs
-            ),
+            "evaluate_data": cls.get_from_env_or_settings("evaluate_data", file_settings, cls.evaluate_data),
+            "config_file_path": cls.get_from_env_or_settings("config_file_path", file_settings, cls.config_file_path),
+            "show_logs": cls.get_from_env_or_settings("show_logs", file_settings, cls.show_logs),
             "log_filtered_value": cls.get_from_env_or_settings(
                 "log_filtered_value",
                 file_settings,
                 cls.log_filtered_value,
             ),
-            "env_file": cls.get_from_env_or_settings(
-                "env_file", file_settings, cls.env_file
-            ),
+            "env_file": cls.get_from_env_or_settings("env_file", file_settings, cls.env_file),
             "warn_if_env_is_missing": cls.get_from_env_or_settings(
                 "warn_if_env_is_missing", file_settings, cls.warn_if_env_is_missing
             ),
-            "dotenv_encoding": cls.get_from_env_or_settings(
-                "dotenv_encoding", file_settings, cls.dotenv_encoding
-            ),
-            "final_loader": cls.get_from_env_or_settings(
-                "final_loader", file_settings, cls.final_loader
-            ),
+            "dotenv_encoding": cls.get_from_env_or_settings("dotenv_encoding", file_settings, cls.dotenv_encoding),
+            "final_loader": cls.get_from_env_or_settings("final_loader", file_settings, cls.final_loader),
             "raise_on_missing_variable": cls.get_from_env_or_settings(
                 "raise_on_missing_variable",
                 file_settings,
                 cls.raise_on_missing_variable,
             ),
-            "no_env_name": cls.get_from_env_or_settings(
-                "no_env_name", file_settings, cls.no_env_name
-            ),
+            "no_env_name": cls.get_from_env_or_settings("no_env_name", file_settings, cls.no_env_name),
         }
         return file_settings, settings

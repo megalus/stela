@@ -21,7 +21,7 @@ class StelaFileType(Enum):
     ENV = [".env"]
 
 
-def read_env() -> "StelaDot":  # type: ignore
+def read_env() -> Any:
     """Reload Stela configuration.
 
     This helper will import again stela module
@@ -187,9 +187,7 @@ def flatten_dict(d, parent_key="", sep="_"):
     return dict(items)
 
 
-def merge_env(
-    target: dict, env_data=dict[str, Any], separator: str = "_"
-) -> dict[str, Any]:
+def merge_env(target: dict, env_data=dict[str, Any], separator: str = "_") -> dict[str, Any]:
     """Merge Env Data in target dict.
 
     Target dict can be a nested dictionary, with lower case keys.
@@ -243,9 +241,7 @@ def evaluate_value(item: str, value: Any) -> Any:
             from json import JSONDecodeError
 
             current_value = json.loads(value)
-            logger.debug(
-                f"Using evaluated (json) value for: {item}. Type is: {type(current_value).__name__}"
-            )
+            logger.debug(f"Using evaluated (json) value for: {item}. Type is: {type(current_value).__name__}")
             return current_value
         except JSONDecodeError:
             # Not a valid JSON scalar/object/array; try Python literal eval next
@@ -253,9 +249,7 @@ def evaluate_value(item: str, value: Any) -> Any:
         # Fallback to Python literal evaluation for values like '1', '3.14', '[1, 2]'
         try:
             current_value = literal_eval(value)
-            logger.debug(
-                f"Using evaluated (literal) value for: {item}. Type is: {type(current_value).__name__}"
-            )
+            logger.debug(f"Using evaluated (literal) value for: {item}. Type is: {type(current_value).__name__}")
             return current_value
         except (ValueError, SyntaxError):
             return value

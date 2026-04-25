@@ -36,12 +36,9 @@ class StelaMain:
                         parents.append(dict_key)
                     log_dict(k, v, parents)
             else:
-                parents_key = (
-                    parents + [dict_key] if dict_key not in parents else parents
-                )
+                parents_key = parents + [dict_key] if dict_key not in parents else parents
                 logger.debug(
-                    f"[{origin}] {'.'.join(parents_key)} = "
-                    f"{show_value(dict_value, self.options.log_filtered_value)}"
+                    f"[{origin}] {'.'.join(parents_key)} = {show_value(dict_value, self.options.log_filtered_value)}"
                 )
 
         for key, value in self.settings.items():
@@ -60,9 +57,7 @@ class StelaMain:
         module_path = ".".join(self.options.final_loader.split(".")[:-1])
         loader_fn = self.options.final_loader.split(".")[-1]
         module = importlib.import_module(module_path)
-        self.settings = getattr(module, loader_fn)(
-            options=self.options, env_data=env_data
-        )
+        self.settings = getattr(module, loader_fn)(options=self.options, env_data=env_data)
         # Preserve existing system env values; allow loader to override only dotenv-injected keys
         forbidden_keys = os.getenv("_ORIGINAL_ENVIRON_KEYS", "").split(",")
         for k, v in self.settings.items():
@@ -125,7 +120,5 @@ def default_loader(options: StelaOptions, env_data: dict[str, Any]) -> dict[str,
     """
     from loguru import logger
 
-    logger.info(
-        f"Using Stela Default Loader. Current environment is: {options.current_environment}"
-    )
+    logger.info(f"Using Stela Default Loader. Current environment is: {options.current_environment}")
     return env_data

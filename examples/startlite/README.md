@@ -1,7 +1,7 @@
 # Example Startlite App
 
 ## Instructions
-1. Run `poetry install`
-2. Go to `examples/starlite` folder
-3. Run `poetry run uvicorn main:app --reload`
+1. Run `uv sync --active --group dev`
+2. Go to `examples/startlite` folder
+3. Run `uv run uvicorn main:app --reload`
 4. Go to `http://localhost:8000`

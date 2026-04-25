@@ -46,9 +46,7 @@ def test_type_inference_from_dotenv(monkeypatch: Any) -> None:
         ('["123", 456]', ["123", 456]),
     ],
 )
-def test_type_inference_list_variants(
-    raw_value: str, expected: list, monkeypatch
-) -> None:
+def test_type_inference_list_variants(raw_value: str, expected: list, monkeypatch) -> None:
     # Arrange
     monkeypatch.setenv("TEST_LIST_VALUE", raw_value)
 

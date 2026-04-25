@@ -45,6 +45,14 @@ New to multi-environment setups? Start with the Quick Setup guide: https://megal
 pip install stela
 ```
 
+### Development
+
+```bash
+# Define your VIRTUAL_ENV location. Example: export VIRTUAL_ENV=$(pwd)
+uv sync --active --group dev
+make ci
+```
+
 ### Documentation
 
 For detailed documentation, visit: https://megalus.github.io/stela/

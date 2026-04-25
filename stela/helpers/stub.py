@@ -35,9 +35,7 @@ def create_stela_stub(settings, evaluate_data: bool) -> tuple[bool, str]:
         import stela
 
         # Get os.environ only for the keys that are in fact environment keys
-        filtered_environ = {
-            k: v for k, v in os.environ.items() if not k.startswith("_") and k.isupper()
-        }
+        filtered_environ = {k: v for k, v in os.environ.items() if not k.startswith("_") and k.isupper()}
 
         all_env_info = {**filtered_environ, **settings}
 

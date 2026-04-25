@@ -48,7 +48,7 @@ pip install stela
 ### Development
 
 ```bash
-# Define your VIRTUAL_ENV location. Example: export VIRTUAL_ENV=$(pwd)
+# Define your VIRTUAL_ENV location. For example: export VIRTUAL_ENV=$(pwd)
 uv sync --active --group dev
 make ci
 ```

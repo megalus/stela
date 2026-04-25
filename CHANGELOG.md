@@ -1,7 +1,18 @@
 # CHANGELOG
 
 
+## v9.0.6 (2026-04-25)
+
+### Unknown
+
+* Merge remote-tracking branch 'origin/main' ([`ededa15`](https://github.com/megalus/stela/commit/ededa151ae84d83a56c26bf2a2c8c37085592b95))
+
+
 ## v9.0.5 (2026-04-25)
+
+### Fixes
+
+* fix: add step to restore branch context from released tag in publish.yml ([`20ed77e`](https://github.com/megalus/stela/commit/20ed77e01846d14257c818f679660926e2a7b2ae))
 
 ### Unknown
 

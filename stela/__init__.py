@@ -19,7 +19,7 @@ from stela.utils import evaluate_value, show_value
 __version__ = "8.1.3"
 
 
-def _get_stela() -> "Stela":
+def _get_stela() -> Any:
     stela_config = StelaOptions.get_config()
 
     stela_data = StelaMain(options=stela_config)
@@ -35,9 +35,7 @@ def _get_stela() -> "Stela":
 
     class Stela:
         __slots__ = (
-            ["_locked"] + [str(k) for k in stela_data.settings.keys()]
-            if stela_data.settings.keys()
-            else ["_locked"]
+            ["_locked"] + [str(k) for k in stela_data.settings.keys()] if stela_data.settings.keys() else ["_locked"]
         )
         _stela_options: StelaOptions = stela_config
         _stela_data: StelaMain = stela_data
@@ -53,26 +51,16 @@ def _get_stela() -> "Stela":
                     self._get_attributes(current_obj=nested_obj, data_dict=value)
                     setattr(current_obj, attr, nested_obj)
                 else:
-                    current_value = (
-                        evaluate_value(attr, value)
-                        if stela_config.evaluate_data
-                        else value
-                    )
+                    current_value = evaluate_value(attr, value) if stela_config.evaluate_data else value
                     setattr(current_obj, attr, current_value)
 
         @property
         def current_environment(self):
-            return (
-                self._stela_options.current_environment
-                or self._stela_options.no_env_name
-            )
+            return self._stela_options.current_environment or self._stela_options.no_env_name
 
         @property
         def default_environment(self):
-            return (
-                self._stela_options.default_environment
-                or self._stela_options.no_env_name
-            )
+            return self._stela_options.default_environment or self._stela_options.no_env_name
 
         def __init__(self, *args, **kwargs):
             self._locked = False
@@ -87,24 +75,16 @@ def _get_stela() -> "Stela":
             # return from os.environ if exists
             if item in os.environ:
                 value = os.environ[item]
-                logger.debug(
-                    f"Using environment value: {item}={show_value(value, stela_config.log_filtered_value)}"
-                )
-                return (
-                    evaluate_value(item, value) if stela_config.evaluate_data else value
-                )
+                logger.debug(f"Using environment value: {item}={show_value(value, stela_config.log_filtered_value)}")
+                return evaluate_value(item, value) if stela_config.evaluate_data else value
             try:
                 value = super().__getattribute__(item)
                 if not item.startswith("_"):
-                    logger.debug(
-                        f"Using stela value: {item}={show_value(value, stela_config.log_filtered_value)}"
-                    )
+                    logger.debug(f"Using stela value: {item}={show_value(value, stela_config.log_filtered_value)}")
                 return value
             except AttributeError as exc:
                 if stela_config.raise_on_missing_variable:
-                    raise StelaValueError(
-                        f"Stela did not found value for {item}."
-                    ) from exc
+                    raise StelaValueError(f"Stela did not found value for {item}.") from exc
                 logger.warning(f"Stela did not found value for {item}. Returning None.")
                 return None
 
@@ -119,9 +99,7 @@ def _get_stela() -> "Stela":
                 try:
                     return getattr(self, var_name)
                 except AttributeError as exc:
-                    raise StelaValueError(
-                        f"Stela did not found value for {var_name}."
-                    ) from exc
+                    raise StelaValueError(f"Stela did not found value for {var_name}.") from exc
             return getattr(self, var_name, None)
 
         def get_or_default(self, var_name: str, default: Any):

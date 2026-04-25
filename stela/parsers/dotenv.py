@@ -49,9 +49,7 @@ def read_dotenv(
     if not dotenv_path:
         return {}
 
-    env_data = dotenv_values(
-        dotenv_path=dotenv_path, verbose=verbose, encoding=encoding, interpolate=False
-    )
+    env_data = dotenv_values(dotenv_path=dotenv_path, verbose=verbose, encoding=encoding, interpolate=False)
     if env_data and show_logs:
         logger.debug(
             f"Filtered values from {dotenv_path}: {[f'{k}={show_value(v, filter_logs)}' for k, v in env_data.items()]}"

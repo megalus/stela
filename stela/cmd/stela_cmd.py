@@ -28,9 +28,7 @@ def init(default, no_confirm):
     """Initialize Stela for your project."""
     print_title("Initializing Stela")
     if not no_confirm:
-        click.pause(
-            "This command will configure stela for your project.\nPress a key to continue."
-        )
+        click.pause("This command will configure stela for your project.\nPress a key to continue.")
     initializer = stela_init.StelaInit(".")
     initializer.run(default)
 

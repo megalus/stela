@@ -1,5 +1,4 @@
 from django.http import HttpResponse
-
 from stela import env
 
 HTML = """

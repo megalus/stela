@@ -1,7 +1,9 @@
+from typing import Any
+
 from asgiref.sync import sync_to_async
 
 
-async def aread_env() -> "Stela":
+async def aread_env() -> Any:
     """Reload Stela configuration asynchronous.
 
     Not really needed for default configuration

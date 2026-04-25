@@ -1,16 +1,23 @@
+UV ?= uv
+UV_RUN = $(UV) run --active
+PYTEST_ARGS = -v -x -p no:warnings --cov-report term-missing --cov=.
+
 update:
-	@poetry update && poetry run pre-commit autoupdate
+	@$(UV) lock --upgrade && $(UV_RUN) pre-commit autoupdate
 
 install:
-	@poetry install
-	@poetry run pre-commit install -f
+	@$(UV) sync --active --group dev
+	@$(UV_RUN) pre-commit install -f
 
 lint:
-	@poetry run pre-commit run --all
+	@$(UV_RUN) pre-commit run --all
 
 .PHONY: tests
 tests:
-	@poetry run pytest -v -x -p no:warnings --cov-report term-missing --cov=.
+	@$(UV_RUN) pytest $(PYTEST_ARGS)
+
+build:
+	@$(UV) build
 
 test:
 	@if [ "$(filter-out $@,$(MAKECMDGOALS))" = "" ]; then \
@@ -18,7 +25,7 @@ test:
 		exit 1; \
 	fi
 	@echo "${BLUE}Running test: $(filter-out $@,$(MAKECMDGOALS))...${NC}"
-	@poetry run pytest -v -x -p no:warnings --cov-report term-missing --cov=. $(filter-out $@,$(MAKECMDGOALS))
+	@$(UV_RUN) pytest $(PYTEST_ARGS) $(filter-out $@,$(MAKECMDGOALS))
 	@echo "${GREEN}Test completed.${NC}"
 
 # Prevent make from treating the argument as a target

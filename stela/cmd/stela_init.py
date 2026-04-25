@@ -115,9 +115,7 @@ class StelaInit:
             if new_stela_config["show_logs"]:
                 new_stela_config["log_filtered_value"] = click.confirm(
                     "Show filtered values in logs?",
-                    default=stela_config.get(
-                        "log_filtered_value", StelaOptions.log_filtered_value
-                    ),
+                    default=stela_config.get("log_filtered_value", StelaOptions.log_filtered_value),
                 )
             self.env_file = click.prompt(
                 "Default env file",
@@ -126,17 +124,13 @@ class StelaInit:
             new_stela_config["env_file"] = self.env_file
             self.dotenv_file_path = click.prompt(
                 "Default relative path for dotenv files?",
-                default=stela_config.get(
-                    "config_file_path", StelaOptions.config_file_path
-                ),
+                default=stela_config.get("config_file_path", StelaOptions.config_file_path),
             )
             new_stela_config["config_file_path"] = self.dotenv_file_path
 
         if not use_default:
             use_toml = (
-                click.confirm("Save stela config in pyproject.toml file?", default=True)
-                if pyproject_content
-                else False
+                click.confirm("Save stela config in pyproject.toml file?", default=True) if pyproject_content else False
             )
         else:
             use_toml = False
@@ -145,9 +139,7 @@ class StelaInit:
             pyproject_doc.setdefault("tool", {})["stela"] = new_stela_config
             with open(PYPROJECT_TOML, "w") as f:
                 f.write(tomlkit.dumps(pyproject_doc))
-                click.secho(
-                    f"Updating {PYPROJECT_TOML} file with stela configuration", dim=True
-                )
+                click.secho(f"Updating {PYPROJECT_TOML} file with stela configuration", dim=True)
             if os.path.exists(STELA_INI_FILE):
                 os.remove(STELA_INI_FILE)
                 click.secho(f"Removing file {STELA_INI_FILE}", dim=True)
@@ -156,9 +148,7 @@ class StelaInit:
                 f.write("[stela]\n")
                 for k, v in new_stela_config.items():
                     f.write(f"{k} = {v}\n")
-                click.secho(
-                    f"Updating {STELA_INI_FILE} file with stela configuration", dim=True
-                )
+                click.secho(f"Updating {STELA_INI_FILE} file with stela configuration", dim=True)
             if pyproject_content and "[tool.stela]" in pyproject_content:
                 del pyproject_doc["tool"]["stela"]
                 with open(PYPROJECT_TOML, "w") as f:
@@ -197,13 +187,11 @@ class StelaInit:
         else:
             self._create_env_file(
                 self.env_file,
-                "Add here your settings and fake secrets. "
-                "You can commit this file.\n\n#MY_SECRET=fake_value",
+                "Add here your settings and fake secrets. You can commit this file.\n\n#MY_SECRET=fake_value",
             )
             self._create_env_file(
                 f"{self.env_file}.local",
-                "Add here your local settings and/or real secrets. "
-                "DO NOT commit this file.\n\n#MY_SECRET=real_value",
+                "Add here your local settings and/or real secrets. DO NOT commit this file.\n\n#MY_SECRET=real_value",
             )
             if self.default_environment:
                 self._create_env_file(

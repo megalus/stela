@@ -95,7 +95,7 @@ mkdocs-mermaid2-plugin = "*"
 pytest-asyncio = "*"
 
 # Frameworks for example directory
-#django = "*"
+django = "*"
 #flask = "*"
 fastapi = "*"
 #starlite = "*"

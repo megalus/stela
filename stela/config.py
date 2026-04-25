@@ -1,5 +1,6 @@
 import os
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from loguru import logger
@@ -12,6 +13,7 @@ from stela.utils import StelaFileType, find_file_folder
 
 @dataclass
 class StelaOptions:
+    base_path: Path
     config_file_extension: StelaFileType = StelaFileType.INI
     env_file: str = ".env"
     log_filtered_value: bool = True
@@ -93,6 +95,7 @@ class StelaOptions:
                 ]
             for file in files:
                 settings["_dotenv_data"] |= read_dotenv(
+                    stela_base_path=settings["base_path"],
                     config_file_path=settings["config_file_path"],
                     env_file=file,
                     encoding=settings["dotenv_encoding"],
@@ -139,24 +142,28 @@ class StelaOptions:
     def get_settings(cls):
         file_settings = {}
         reader = StelaFileReader()
-        toml_path = find_file_folder("pyproject.toml")
-        if toml_path:
-            toml_settings = reader.load_toml(toml_path.joinpath("pyproject.toml"))
-            file_settings = toml_settings.get("tool", {}).get("stela", {})
+        base_path = find_file_folder(".stela")
+        if base_path:
+            stela_path = base_path.joinpath(".stela")
+            ini_settings = reader.load_ini(stela_path)
+            file_settings = ini_settings.get("stela", {})
             if file_settings:
-                logger.info("Using pyproject.toml for stela settings.")
+                logger.info(f"Using {stela_path} for stela settings.")
         if not file_settings:
-            ini_path = find_file_folder(".stela")
-            if ini_path:
-                ini_settings = reader.load_ini(ini_path.joinpath(".stela"))
-                file_settings = ini_settings.get("stela", {})
+            base_path = find_file_folder("pyproject.toml")
+            if base_path:
+                pyproject_path = base_path.joinpath("pyproject.toml")
+                toml_settings = reader.load_toml(pyproject_path)
+                file_settings = toml_settings.get("tool", {}).get("stela", {})
                 if file_settings:
-                    logger.info("Using .stela for stela settings.")
+                    logger.info(f"Using {pyproject_path} for stela settings.")
         if not file_settings:
             logger.info(
                 "No stela file configuration found. Using default stela settings."
             )
+            base_path = Path.cwd()
         settings = {
+            "base_path": base_path,
             "environment_variable_name": cls.get_from_env_or_settings(
                 "environment_variable_name",
                 file_settings,

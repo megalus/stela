@@ -1,6 +1,6 @@
 [stela]
 environment_variable_name = STELA_ENV
 evaluate_data = True
-show_logs = True
+show_logs = False
 env_file = .django-env
 config_file_path = .

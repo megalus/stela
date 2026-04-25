@@ -9,6 +9,7 @@ $ export STELA_FINAL_LOADER="foo.bar"
 
 | Stela Option                | Description                                                                                                         |
 |-----------------------------|---------------------------------------------------------------------------------------------------------------------|
+| `base_path`                 | Base path for Stela, defined in `STELA_BASE_PATH` or folder found during runtime. **Default**: `Path.cwd()`         |
 | `config_file_path`          | Relative path for dotenv files. **Default**: `.`                                                                    |
 | `default_environment`       | Default environment value, used if `environment_variable_name` if not informed. **Default**: `None`                 |
 | `dotenv_encoding`           | Use this encoding to read dotenv files. **Default**: `utf-8`                                                        |
@@ -17,8 +18,8 @@ $ export STELA_FINAL_LOADER="foo.bar"
 | `environment_variable_name` | Stela environment variable to define project current environment. **Default**: `STELA_ENV`                          |
 | `evaluate_data`             | Use `ast.literal_eval` to evaluate variable values. **Default**: `True`                                             |
 | `final_loader`              | Stela Loader function which will be called after read dotenv files. **Default**: `stela.main.loader.default_loader` |
-| `no_env_name`               | Default value when no Environment exists. "Default": `GLOBAL`                                                       |
 | `log_filtered_value`        | When logging data, show values filtered. **Default**: `True`                                                        |
+| `no_env_name`               | Default value when no Environment exists. "Default": `GLOBAL`                                                       |
 | `raise_on_missing_variable` | Raise error if ask Stela for a unknown variable. **Default**: `True`                                                |
 | `show_logs`                 | Stela will use loguru to show logs. **Default**: `False`                                                            |
 | `warn_if_env_is_missing`    | Warn if Stela did not find the `.env` file. **Default**: `False`                                                    |

@@ -1,6 +1,7 @@
 import importlib
 import os
 from dataclasses import dataclass, field
+from typing import Any
 
 from loguru import logger
 
@@ -13,7 +14,7 @@ from stela.utils import show_value
 @dataclass
 class StelaMain:
     options: StelaOptions
-    settings: dict[str, any] = field(default_factory=dict)
+    settings: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         """Save original environment keys.
@@ -75,7 +76,7 @@ class StelaMain:
                 f"{[f'{k}={show_value(v, self.options.log_filtered_value)}' for k, v in self.settings.items()]}"
             )
 
-    def read_env_files(self) -> dict[str, any]:
+    def read_env_files(self) -> dict[str, Any]:
         settings = {}
         current_environment = self.options.current_environment
         dotenv_files = [
@@ -91,6 +92,7 @@ class StelaMain:
             logger.debug(f"Looking for dotenv files: {dotenv_files}")
         for file in dotenv_files:
             env_settings = read_dotenv(
+                stela_base_path=self.options.base_path,
                 config_file_path=self.options.config_file_path,
                 env_file=file,
                 encoding=self.options.dotenv_encoding,
@@ -114,7 +116,7 @@ class StelaMain:
         return settings
 
 
-def default_loader(options: StelaOptions, env_data: dict[str, any]) -> dict[str, any]:
+def default_loader(options: StelaOptions, env_data: dict[str, Any]) -> dict[str, Any]:
     """Stela Default Loader.
 
     :param options: Stela Options

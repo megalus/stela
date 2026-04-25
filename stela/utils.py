@@ -1,5 +1,6 @@
 """Stela Utils module."""
 
+import os
 from ast import literal_eval
 from enum import Enum, unique
 from importlib import reload
@@ -39,19 +40,27 @@ def find_file_folder(file_name: str) -> Optional[Path]:
     For pyproject.toml and conf_stela.py files.
 
     Look for:
-        1. Current working directory up to root
-        2. Current file directory up to root
+        1. Path defined in STELA_BASE_PATH environment variable
+        2. Current working directory up to root
+        3. Current file directory up to root
 
 
     :return: Optional Path
     """
 
     def look_for_file(current_path: Path) -> Optional[Path]:
+        logger.debug(f"Looking for file '{file_name}' in path '{current_path}'")
         if current_path.joinpath(file_name).exists():
             return current_path
         if str(current_path) in ["/", "\\"] or current_path.parent == current_path:
             return None
         return look_for_file(current_path.parent)
+
+    stela_base_path = os.getenv("STELA_BASE_PATH")
+    if stela_base_path:
+        logger.debug(f"Looking for file '{file_name}' in path '{stela_base_path}'")
+        if Path(stela_base_path).joinpath(file_name).exists():
+            return Path(stela_base_path)
 
     found_path = look_for_file(Path().cwd())
     if found_path:

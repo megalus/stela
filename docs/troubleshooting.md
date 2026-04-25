@@ -7,6 +7,11 @@
     If you have a question which this guideline didn't resolve, please open an
     [issue](https://github.com/megalus/stela/issues).
 
+??? Question "Stela did not find my .stela configuration file."
+    Stela will first look for the .stela configuration file in the root project folder, then lookup the parent folders
+    until it finds the .stela file or reaches the root of the filesystem.
+    If you want to specify a different path to the .stela file, use the `STELA_BASE_PATH` environment variable.
+
 ??? Question "Got Error: _Stela did not found value for <MY_VARIABLE>_, but MY_VARIABLE exists in .env file."
     Please check if the root project folder is the same as the stela configuration file. If is correct, and your
     .env file is in another folder, you can use the `env_path` parameter to set the path to the .env file. You can also

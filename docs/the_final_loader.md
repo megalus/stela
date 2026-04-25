@@ -19,12 +19,12 @@ Default behavior is just return data parsed from Env files:
 
 ```python
 from stela.config import StelaOptions
-
+from typing import Any
 
 def default_loader(
         options: StelaOptions,
-        env_data: dict[str, any]
-) -> dict[str, any]:
+        env_data: dict[str, Any]
+) -> dict[str, Any]:
     """Stela Default Loader.
 
     Default Action is just return the env_data received.

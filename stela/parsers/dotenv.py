@@ -7,6 +7,7 @@ from stela.utils import show_value
 
 
 def read_dotenv(
+    stela_base_path: Path,
     config_file_path: str,
     env_file: str,
     verbose: bool,
@@ -22,6 +23,7 @@ def read_dotenv(
     :param encoding: encoding for dotenv file
     :param show_logs: show logs for dotenv file reading
     :param filter_logs: Filter variable value in logs
+    :param stela_base_path: base path for dotenv file search
     :return: Dict
     """
     from loguru import logger
@@ -36,7 +38,7 @@ def read_dotenv(
             return None
         return look_for_file(current_path.parent, file_name)
 
-    path = Path.cwd().joinpath(config_file_path)
+    path = stela_base_path.joinpath(config_file_path)
     env_path = look_for_file(path, env_file)
     if not env_path:
         if show_logs:

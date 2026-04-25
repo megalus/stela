@@ -55,17 +55,11 @@ dev = [
 requires = ["hatchling>=1.27.0"]
 build-backend = "hatchling.build"
 
-[tool.setuptools]
-include-package-data = true
+[tool.hatch.version]
+path = "stela/__init__.py"
 
-[tool.setuptools.dynamic]
-version = { attr = "stela.__version__" }
-
-[tool.setuptools.packages.find]
-include = ["stela*"]
-
-[tool.setuptools.package-data]
-stela = ["*.pyi"]
+[tool.hatch.build.targets.wheel]
+packages = ["stela"]
 
 [tool.ruff]
 line-length = 120

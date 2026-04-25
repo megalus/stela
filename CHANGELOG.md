@@ -1,7 +1,18 @@
 # CHANGELOG
 
 
+## v9.0.5 (2026-04-25)
+
+### Unknown
+
+* Merge remote-tracking branch 'origin/main' ([`517155d`](https://github.com/megalus/stela/commit/517155dbeedbddad3e574e2fd6f60704c351f83e))
+
+
 ## v9.0.4 (2026-04-25)
+
+### Fixes
+
+* fix: update upload settings in pyproject.toml for release management ([`a86de95`](https://github.com/megalus/stela/commit/a86de959bd08c5d674dd93d9bfebab0ff390ec5c))
 
 ### Unknown
 

@@ -1,9 +1,18 @@
 # CHANGELOG
 
 
+## v9.0.2 (2026-04-25)
+
+### Unknown
+
+* Merge remote-tracking branch 'origin/main' ([`41e4154`](https://github.com/megalus/stela/commit/41e4154c0997d7e1bc9a7ad5d036a970964a0408))
+
+
 ## v9.0.1 (2026-04-25)
 
 ### Fixes
+
+* fix: remove caching option from uv setup in publish.yml ([`ce78cef`](https://github.com/megalus/stela/commit/ce78cef925520aeeed21e788984bbfac90f0c7fa))
 
 * fix: missing environment in actions ([`267972d`](https://github.com/megalus/stela/commit/267972d82d23b26049b4a2c045da3848f619ca36))
 

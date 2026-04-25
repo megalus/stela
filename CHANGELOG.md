@@ -1,6 +1,19 @@
 # CHANGELOG
 
 
+## v9.0.0 (2026-04-25)
+
+### Breaking
+
+* feat!: Move from poetry/black to uv/ruff. This is a BREAKING CHANGE commit. ([`d3606f0`](https://github.com/megalus/stela/commit/d3606f06dfddab614966f25f9499a3babaced53b))
+
+### Unknown
+
+* Merge pull request #12 from megalus/feat/uv
+
+New Version: 9 ([`57f99db`](https://github.com/megalus/stela/commit/57f99db72861543d1db997221d708f5c328cda97))
+
+
 ## v8.1.3 (2026-04-25)
 
 ### Fixes

@@ -1,6 +1,13 @@
 # CHANGELOG
 
 
+## v8.1.3 (2026-04-25)
+
+### Fixes
+
+* fix: enhance configuration handling and add base path support for Stela ([`9904bdc`](https://github.com/megalus/stela/commit/9904bdcb7a474e49bfb0b738af6b4f93e1d2f18d))
+
+
 ## v8.1.2 (2025-11-19)
 
 ### Continuous Integration
